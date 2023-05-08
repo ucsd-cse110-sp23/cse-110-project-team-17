@@ -137,157 +137,193 @@ class HistoryQuestion extends JPanel {
 
 
 
-class Task extends JPanel {
 
-  JLabel index;
-  JTextField taskName;
-  JButton doneButton;
+
+
+
+
+class List extends JPanel {
+  Color backgroundColor = new Color(240, 248, 255);
+  Boolean empty;
+
+  List() {
+    BoxLayout layout = new BoxLayout(this, BoxLayout.Y_AXIS);
+    this.setLayout(layout);
+    setAlignmentY(TOP_ALIGNMENT);
+    empty = true;
+  }
+
+  @Override
+  public Component add(Component comp) {
+    
+    if (empty == true && !(comp instanceof JLabel)) {
+        this.removeAll();
+        empty = false;
+        
+    }
+    super.add(comp);
+    return comp;
+  }
+
+
+  public ArrayList<HistoryQuestion> loadHistory()  {
+    // hint 1: use try-catch block
+    // hint 2: use BufferedReader and FileReader
+    // hint 3: task.taskName.setText(line) sets the text of the task
+    try {
+      String linestrings;
+      FileReader fileR = new FileReader("history.txt");
+      BufferedReader bufferR = new BufferedReader(fileR);
+      ArrayList<HistoryQuestion> historyList = new ArrayList<HistoryQuestion>();
+      
+
+      while (bufferR.ready()) {
+          HistoryQuestion set = new HistoryQuestion();
+          set.setMaximumSize(getPreferredSize());
+          linestrings = bufferR.readLine();
+          set.insertQuestion(linestrings);
+          this.add(set);
+          historyList.add(set);
+      }
+      
+        bufferR.close();
+        revalidate();
+
+      return historyList;
+
+    }
+
+    catch (IOException exception) {
+      System.out.println("load not implemented");
+      return null;
+    }
+    
+    
+  }
+
+}
+
+
+interface IChatGPT {
+  public String ask(String prompt) throws IOException, InterruptedException;
+}
+
+class MockChatGPT implements IChatGPT {
+
+  MockChatGPT() {}
+
+  public String ask(String prompt) throws IOException, InterruptedException {
+    return "Mock answer to the following prompt:\n" + prompt;
+  }
+}
+
+class ChatGPT implements IChatGPT {
+  private static final String API_ENDPOINT = "https://api.openai.com/v1/completions";
+  private static final String API_KEY = "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";
+  // Joseph's API Token = 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
+  private static final String MODEL = "text-davinci-003";
+
+  ChatGPT() {}
+
+  public String ask(String prompt) throws IOException, InterruptedException {
+    int maxTokens = 100;
+    String generatedText = "";
+
+
+    JSONObject requestBody = new JSONObject();
+    requestBody.put("model", MODEL);
+    requestBody.put("prompt", prompt);
+    requestBody.put("max_tokens", maxTokens);
+    requestBody.put("temperature", 1.0);
+
+
+    //Create the HTTP client
+    HttpClient client = HttpClient.newHttpClient();
+
+    // Create the request object
+    HttpRequest request = HttpRequest
+    .newBuilder()
+    .uri(URI.create(API_ENDPOINT))
+    .header("Content-type", "application/json")
+    .header("Authorization", String.format("Bearer %s",API_KEY))
+    .POST(HttpRequest.BodyPublishers.ofString(requestBody.toString()))
+    .build();
+
+    // Send the request and receive the response
+    try {
+      HttpResponse<String> response = client.send(
+          request,
+          HttpResponse.BodyHandlers.ofString()
+      );
+      // Process the response
+      String responseBody = response.body();
+      //System.out.println(responseBody);
+
+      JSONObject responseJson = new JSONObject(responseBody);
+
+      JSONArray choices = responseJson.getJSONArray("choices");
+      generatedText = choices.getJSONObject(0).getString("text");
+    }
+    catch (IOException io_e) {
+      System.out.println("Something went wrong with IO in ChatGPT.");
+    }
+    catch (InterruptedException int_e) {
+      System.out.println("Something was interrupted in ChatGPT.");
+    }
+      
+
+    
+
+    return generatedText;
+  }
+}
+
+class ChatBox extends JPanel {
+  JLabel dialogue_type;
+  JTextArea dialogue;
 
   Color gray = new Color(218, 229, 234);
-  Color green = new Color(188, 226, 158);
 
-  private boolean markedDone;
-
-  Task() {
+  ChatBox(String type_input, String dialogue_input) {
     this.setPreferredSize(new Dimension(400, 20)); // set size of task
     this.setBackground(gray); // set background color of task
 
     this.setLayout(new BorderLayout()); // set layout of task
 
-    markedDone = false;
+    dialogue_type = new JLabel(type_input); // create index label
+    dialogue_type.setPreferredSize(new Dimension(80, 20)); // set size of index label
+    dialogue_type.setHorizontalAlignment(JLabel.CENTER); // set alignment of index label
+    this.add(dialogue_type, BorderLayout.WEST); // add index label to task
 
-    index = new JLabel(""); // create index label
-    index.setPreferredSize(new Dimension(20, 20)); // set size of index label
-    index.setHorizontalAlignment(JLabel.CENTER); // set alignment of index label
-    this.add(index, BorderLayout.WEST); // add index label to task
-
-    taskName = new JTextField(""); // create task name text field
-    taskName.setBorder(BorderFactory.createEmptyBorder()); // remove border of text field
-    taskName.setBackground(gray); // set background color of text field
-
-    this.add(taskName, BorderLayout.CENTER);
-
-    doneButton = new JButton("Done");
-    doneButton.setPreferredSize(new Dimension(80, 20));
-    doneButton.setBorder(BorderFactory.createEmptyBorder());
-    doneButton.setFocusPainted(false);
-
-    this.add(doneButton, BorderLayout.EAST);
+    dialogue = new JTextArea(dialogue_input); // create task name text field
+    dialogue.setBorder(BorderFactory.createEmptyBorder()); // remove border of text field
+    dialogue.setBackground(gray); // set background color of text 
+    dialogue.setEditable(false);
+    dialogue.setFont(new Font("Serif", Font.ITALIC, 16));
+    dialogue.setLineWrap(true);
+    dialogue.setWrapStyleWord(true);
+    this.add(dialogue, BorderLayout.CENTER);
   }
-
-  public void changeIndex(int num) {
-    this.index.setText(num + ""); // num to String
-    this.revalidate(); // refresh
-  }
-
-  public JButton getDone() {
-    return doneButton;
-  }
-
-  public boolean getState() {
-    return markedDone;
-  }
-
-  public void changeState() {
-    if (markedDone) {
-      this.setBackground(gray);
-      taskName.setBackground(gray);
-      markedDone = false;
-    }
-    else {
-      this.setBackground(green);
-      taskName.setBackground(green);
-      markedDone = true;
-    }
-    revalidate();
-  }
-
 }
 
-class List extends JPanel {
+class ChatList extends JPanel {
 
   Color backgroundColor = new Color(240, 248, 255);
-  Boolean empty;
 
-  List() {
+  ChatList() {
     GridLayout layout = new GridLayout(10, 1);
-    layout.setVgap(5); // Vertical gap
+    layout.setVgap(20); // Vertical gap
 
-    this.setLayout(layout); // 10 tasks
-    this.setPreferredSize(new Dimension(400, 560));
+    this.setLayout(layout); // 2 chat boxes
+    this.setPreferredSize(new Dimension(400, 100));
     this.setBackground(backgroundColor);
-    empty = true;
   }
 
-  public void updateNumbers() {
-    Component[] listItems = this.getComponents();
-
-    for (int i = 0; i < listItems.length; i++) {
-      if (listItems[i] instanceof HistoryQuestion) {
-        ((HistoryQuestion) listItems[i]).changeIndex(i + 1);
-      }
-    }
-  }
-
-  public void removeCompletedTasks() {
+  public void clearChatWindow() {
     for (Component c : getComponents()) {
-      if (c instanceof HistoryQuestion) {
-        if (((HistoryQuestion) c).getState()) {
-          remove(c); // remove the component
-          updateNumbers(); // update the indexing of all items
-        }
+      if (c instanceof ChatBox) {
+        remove(c); // remove the chatbox component
       }
-    }
-  }
-
-  /**
-   * Loads tasks from a file called "tasks.txt"
-   * @return an ArrayList of Task
-   */
-  public ArrayList<HistoryQuestion> loadHistory() {
-    // hint 1: use try-catch block
-    // hint 2: use BufferedReader and FileReader
-    // hint 3: task.question.setText(line) sets the text of the task
-    ArrayList<HistoryQuestion> result = new ArrayList<>();
-    try {
-      FileReader file = new FileReader("History.txt");
-      BufferedReader br = new BufferedReader(file);
-      String st;  
-      while ((st = br.readLine()) != null) {
-        HistoryQuestion task = new HistoryQuestion();
-        task.question.setText(st);
-        result.add(task);
-      }
-      br.close();
-      file.close();
-    }
-    catch(Exception e) {
-      e.printStackTrace();
-    }
-    //System.out.println("loadTasks() not implemented");
-    updateNumbers();
-    revalidate();
-    return result;
-  }
-
-  /**
-   * Saves tasks to a file called "tasks.txt"
-   */
-  public void saveTasks() {
-    // hint 1: use try-catch block
-    // hint 2: use FileWriter
-    // hint 3 get list of Tasks using this.getComponents()
-    try {
-      FileWriter file = new FileWriter("/Users/rei_crzy/Documents/CSE 110/Lab 5/CSE110Lab5_/src/tasks.txt");
-      Component[] listOfSavedTasks = this.getComponents();
-      for(int i = 0; i < listOfSavedTasks.length; i++) {
-        HistoryQuestion task = (HistoryQuestion) listOfSavedTasks[i];
-        file.write(task.question.getText() + '\n');
-      }
-      file.close();
-    }
-    catch(Exception e) {
-      e.printStackTrace();
     }
   }
 }
