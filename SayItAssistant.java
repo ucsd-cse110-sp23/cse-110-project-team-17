@@ -33,6 +33,7 @@ import javax.swing.JTextField;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
+import javax.swing.BoxLayout;
 
 
 import java.net.URI;
@@ -52,6 +53,8 @@ class HistoryQuestion extends JPanel {
   JLabel index;
   JTextField question;
   JTextField answer;
+  String question_text;
+  String answer_text;
   JButton selectButton; //remove or change to answer cutoff
 
   Color gray = new Color(218, 229, 234);
@@ -77,14 +80,14 @@ class HistoryQuestion extends JPanel {
     question.setBackground(gray); // set background color of text field
     question.setEditable(false);
 
-    answer = new JTextField("Answer: "); // create task name text field
-    answer.setPreferredSize(new Dimension(100, 20));
+    //answer = new JTextField("Answer: "); // create task name text field
+    //answer.setPreferredSize(new Dimension(100, 20));
     //question.setBorder(BorderFactory.createEmptyBorder()); // remove border of text field
-    answer.setBackground(green); // set background color of text field
-    answer.setEditable(false);
+    //answer.setBackground(green); // set background color of text field
+    //answer.setEditable(false);
 
     this.add(question);
-    this.add(answer);
+    //this.add(answer);
 
     selectButton = new JButton("Select");
     selectButton.setPreferredSize(new Dimension(80, 20));
@@ -124,10 +127,20 @@ class HistoryQuestion extends JPanel {
   public void insertQuestion(String questionString) {
       question.setText(question.getText() + questionString);
       question.setCaretPosition(0);
+      question_text = questionString;
   }
 
   public void insertAnswer(String ansString) {
-    question.setText(answer.getText() + ansString);
+    //question.setText(answer.getText() + ansString);
+    answer_text = ansString;
+  }
+
+  public String getQuestionText() {
+    return question_text;
+  }
+
+  public String getAnswerText() {
+    return answer_text;
   }
 
 }
@@ -137,159 +150,101 @@ class HistoryQuestion extends JPanel {
 
 
 
-class Task extends JPanel {
 
-  JLabel index;
-  JTextField taskName;
-  JButton doneButton;
 
-  Color gray = new Color(218, 229, 234);
-  Color green = new Color(188, 226, 158);
 
-  private boolean markedDone;
 
-  Task() {
-    this.setPreferredSize(new Dimension(400, 20)); // set size of task
-    this.setBackground(gray); // set background color of task
-
-    this.setLayout(new BorderLayout()); // set layout of task
-
-    markedDone = false;
-
-    index = new JLabel(""); // create index label
-    index.setPreferredSize(new Dimension(20, 20)); // set size of index label
-    index.setHorizontalAlignment(JLabel.CENTER); // set alignment of index label
-    this.add(index, BorderLayout.WEST); // add index label to task
-
-    taskName = new JTextField(""); // create task name text field
-    taskName.setBorder(BorderFactory.createEmptyBorder()); // remove border of text field
-    taskName.setBackground(gray); // set background color of text field
-
-    this.add(taskName, BorderLayout.CENTER);
-
-    doneButton = new JButton("Done");
-    doneButton.setPreferredSize(new Dimension(80, 20));
-    doneButton.setBorder(BorderFactory.createEmptyBorder());
-    doneButton.setFocusPainted(false);
-
-    this.add(doneButton, BorderLayout.EAST);
-  }
-
-  public void changeIndex(int num) {
-    this.index.setText(num + ""); // num to String
-    this.revalidate(); // refresh
-  }
-
-  public JButton getDone() {
-    return doneButton;
-  }
-
-  public boolean getState() {
-    return markedDone;
-  }
-
-  public void changeState() {
-    if (markedDone) {
-      this.setBackground(gray);
-      taskName.setBackground(gray);
-      markedDone = false;
-    }
-    else {
-      this.setBackground(green);
-      taskName.setBackground(green);
-      markedDone = true;
-    }
-    revalidate();
-  }
-
-}
 
 class List extends JPanel {
-
   Color backgroundColor = new Color(240, 248, 255);
+  Color gray = new Color(218, 229, 234);
   Boolean empty;
 
   List() {
-    GridLayout layout = new GridLayout(10, 1);
-    layout.setVgap(5); // Vertical gap
-
-    this.setLayout(layout); // 10 tasks
-    this.setPreferredSize(new Dimension(400, 560));
-    this.setBackground(backgroundColor);
+    BoxLayout layout = new BoxLayout(this, BoxLayout.Y_AXIS);
+    this.setLayout(layout);
+    setAlignmentY(TOP_ALIGNMENT);
     empty = true;
   }
 
-  public void updateNumbers() {
-    Component[] listItems = this.getComponents();
-
-    for (int i = 0; i < listItems.length; i++) {
-      if (listItems[i] instanceof HistoryQuestion) {
-        ((HistoryQuestion) listItems[i]).changeIndex(i + 1);
-      }
+  @Override
+  public Component add(Component comp) {
+    
+    if (empty == true && !(comp instanceof JLabel)) {
+        this.removeAll();
+        empty = false;
+        
     }
+    if (!(comp instanceof JTextArea)) {
+      removeDefault();
+    }
+    super.add(comp);
+    return comp;
   }
 
-  public void removeCompletedTasks() {
-    for (Component c : getComponents()) {
-      if (c instanceof HistoryQuestion) {
-        if (((HistoryQuestion) c).getState()) {
-          remove(c); // remove the component
-          updateNumbers(); // update the indexing of all items
-        }
-      }
-    }
-  }
 
-  /**
-   * Loads tasks from a file called "tasks.txt"
-   * @return an ArrayList of Task
-   */
-  public ArrayList<HistoryQuestion> loadHistory() {
+  public ArrayList<HistoryQuestion> loadHistory()  {
     // hint 1: use try-catch block
     // hint 2: use BufferedReader and FileReader
-    // hint 3: task.question.setText(line) sets the text of the task
-    ArrayList<HistoryQuestion> result = new ArrayList<>();
+    // hint 3: task.taskName.setText(line) sets the text of the task
     try {
-      FileReader file = new FileReader("History.txt");
-      BufferedReader br = new BufferedReader(file);
-      String st;  
-      while ((st = br.readLine()) != null) {
-        HistoryQuestion task = new HistoryQuestion();
-        task.question.setText(st);
-        result.add(task);
+      String linestrings;
+      FileReader fileR = new FileReader("history.txt");
+      BufferedReader bufferR = new BufferedReader(fileR);
+      ArrayList<HistoryQuestion> historyList = new ArrayList<HistoryQuestion>();
+      
+
+      while (bufferR.ready()) {
+          HistoryQuestion set = new HistoryQuestion();
+          set.setMaximumSize(getPreferredSize());
+          linestrings = bufferR.readLine();
+          set.insertQuestion(linestrings);
+          this.add(set);
+          historyList.add(set);
       }
-      br.close();
-      file.close();
+      
+        bufferR.close();
+        revalidate();
+
+      return historyList;
+
     }
-    catch(Exception e) {
-      e.printStackTrace();
+
+    catch (IOException exception) {
+      System.out.println("load not implemented");
+      return null;
     }
-    //System.out.println("loadTasks() not implemented");
-    updateNumbers();
-    revalidate();
-    return result;
+    
+    
   }
 
-  /**
-   * Saves tasks to a file called "tasks.txt"
-   */
-  public void saveTasks() {
-    // hint 1: use try-catch block
-    // hint 2: use FileWriter
-    // hint 3 get list of Tasks using this.getComponents()
-    try {
-      FileWriter file = new FileWriter("/Users/rei_crzy/Documents/CSE 110/Lab 5/CSE110Lab5_/src/tasks.txt");
-      Component[] listOfSavedTasks = this.getComponents();
-      for(int i = 0; i < listOfSavedTasks.length; i++) {
-        HistoryQuestion task = (HistoryQuestion) listOfSavedTasks[i];
-        file.write(task.question.getText() + '\n');
+  public boolean isEmpty() {
+    return (getComponents().length == 0);
+  }
+
+  public void setDefault() {
+    JTextArea defaultArea = new JTextArea("No history to show. Ask a question!");
+    defaultArea.setBorder(BorderFactory.createEmptyBorder()); // remove border of text field
+    defaultArea.setBackground(gray); // set background color of text 
+    defaultArea.setEditable(false);
+    defaultArea.setFont(new Font("Serif", Font.ITALIC, 16));
+    defaultArea.setLineWrap(true);
+    defaultArea.setWrapStyleWord(true);
+    add(defaultArea);
+  }
+
+  public void removeDefault() {
+    for (Component c : getComponents()) {
+      if (c instanceof JTextArea) {
+        remove(c);
       }
-      file.close();
-    }
-    catch(Exception e) {
-      e.printStackTrace();
     }
   }
+
+  public Component[] getListComponents() {
+    return getComponents();
+  }
+
 }
 
 
@@ -417,6 +372,31 @@ class ChatList extends JPanel {
   }
 }
 
+interface QuestionHandler {
+  public String getQuestion();
+}
+
+class MockQuestion implements QuestionHandler {
+  int index;
+  String[] options = new String[5];
+
+  MockQuestion() {
+    index = 0;
+    options[0] = "Who is Louis Braille?";
+    options[1] = "What did Louis Braille do?";
+    options[2] = "How did Louis Braille invent Braille?";
+    options[3] = "When was Louis Braille born?";
+    options[4] = "Where did Louis Braille live?";
+  }
+
+  public String getQuestion() {
+    String toReturn = options[index];
+    index = (index + 1) % 5;
+    return toReturn;
+  }
+}
+
+
 
 class Footer extends JPanel {
 
@@ -511,7 +491,7 @@ class AppFrame extends JFrame {
   private IChatGPT chatGPT;
   private ChatList chatList;
   private List list;
-  private String prompt;
+  private QuestionHandler qHandler;
   private String chat_gpt_answer;
   private JButton askQuestion;
   private JButton stopRecordingButton;
@@ -526,7 +506,7 @@ class AppFrame extends JFrame {
     footer = new Footer();
     list = new List();
     chatList = new ChatList();
-    prompt = "Who is Louis Braille?";
+    qHandler = new MockQuestion();
     chatGPT = new MockChatGPT();
 
     this.add(header, BorderLayout.NORTH); // Add title bar on top of the screen
@@ -537,6 +517,8 @@ class AppFrame extends JFrame {
     askQuestion = footer.getAskQuestion();
     stopRecordingButton = footer.getStopRecordingButton();
 
+    list.setDefault();
+
     addListeners();
   }
 
@@ -545,11 +527,7 @@ class AppFrame extends JFrame {
       new MouseAdapter() {
         @override
         public void mousePressed(MouseEvent e) {
-          askQuestion.setVisible(false);
-          stopRecordingButton.setVisible(true);
-
-          chatList.clearChatWindow();
-          repaint();
+          QuestionButtonHandler();
         }
       }
     );
@@ -557,46 +535,114 @@ class AppFrame extends JFrame {
       new MouseAdapter() {
         @override
         public void mousePressed(MouseEvent e) {
-          ChatBox question = new ChatBox("Question", prompt);
-          chatList.add(question);
-          revalidate();
-          try {
-            chat_gpt_answer = chatGPT.ask(prompt);
-            ChatBox answer = new ChatBox("Answer", chat_gpt_answer);
-            chatList.add(answer);
-            revalidate();
-          }
-          catch (IOException io_e) {
-            throw new RuntimeException("An IO Exception happened on click.");
-          }
-          catch (InterruptedException int_e) {
-            throw new RuntimeException("An Interruption Exception happened on click.");
-          }
-
-          HistoryQuestion historyQuestion = new HistoryQuestion();
-          list.add(historyQuestion); // Add new task to list
-          historyQuestion.insertQuestion(prompt);
-          historyQuestion.insertAnswer(chat_gpt_answer);
-          list.updateNumbers(); // Updates the numbers of the tasks
-          JButton selectButton = historyQuestion.getDone();
-          selectButton.addActionListener(
-            (ActionEvent e2) -> {
-                historyQuestion.changeState(); // Change color of task
-                list.updateNumbers(); // Updates the numbers of the tasks
-                revalidate(); // Updates the frame
-              }
-          );
-
-          stopRecordingButton.setVisible(false);
-          askQuestion.setVisible(true);
+          StopButtonHandler();
         }
       }
     );
   }
+
+  public void QuestionButtonHandler() {
+    askQuestion.setVisible(false);
+    stopRecordingButton.setVisible(true);
+    chatList.clearChatWindow();
+    repaint();
+  }
+
+  public void StopButtonHandler() {
+    String prompt = qHandler.getQuestion();
+    ChatBox question = new ChatBox("Question", prompt);
+    chatList.add(question);
+    revalidate();
+    try {
+      chat_gpt_answer = chatGPT.ask(prompt);
+      ChatBox answer = new ChatBox("Answer", chat_gpt_answer);
+      chatList.add(answer);
+      revalidate();
+    }
+    catch (IOException io_e) {
+      throw new RuntimeException("An IO Exception happened on click.");
+    }
+    catch (InterruptedException int_e) {
+      throw new RuntimeException("An Interruption Exception happened on click.");
+    }
+
+    HistoryQuestion historyQuestion = new HistoryQuestion();
+    list.add(historyQuestion); // Add new task to list
+    historyQuestion.insertQuestion(prompt);
+    historyQuestion.insertAnswer(chat_gpt_answer);
+    //list.updateNumbers(); // Updates the numbers of the tasks
+    JButton selectButton = historyQuestion.getDone();
+    selectButton.addActionListener(
+      (ActionEvent e2) -> {
+          SelectButtonHandler(historyQuestion);
+        }
+    );
+
+    stopRecordingButton.setVisible(false);
+    askQuestion.setVisible(true);
+  }
+
+  public void SelectButtonHandler(HistoryQuestion historyQuestion) {
+    historyQuestion.changeState(); // Change color of task
+    //list.updateNumbers(); // Updates the numbers of the tasks
+    if (historyQuestion.getState()) {
+      for (Component c : list.getListComponents()) {
+        if (c instanceof HistoryQuestion) {
+          HistoryQuestion currQuestion = (HistoryQuestion) c;
+          if (currQuestion.getState()) {
+            currQuestion.changeState();
+          }
+        }
+      }
+
+      chatList.clearChatWindow();
+      repaint();
+      
+      historyQuestion.changeState();
+      ChatBox historyQuestionBox = 
+        new ChatBox("Question", historyQuestion.getQuestionText());
+      chatList.add(historyQuestionBox);
+      ChatBox historyAnswerBox = 
+        new ChatBox("Answer", historyQuestion.getAnswerText());
+      chatList.add(historyAnswerBox);
+    }
+    else {
+      chatList.clearChatWindow();
+      repaint();
+    }
+    revalidate(); // Updates the frame
+  }
+
+  public Header getHeader() {
+    return header;
+  }
+
+  public Footer getFooter() {
+    return footer;
+  }
+
+  public IChatGPT getChatGPT() {
+    return chatGPT;
+  }
+
+  public ChatList getChatList() {
+    return chatList;
+  }
+
+  public List getHistoryList() {
+    return list;
+  }
+
+  public JButton getAskButton() {
+    return askQuestion;
+  }
+
+  public JButton getStopButton() {
+    return stopRecordingButton;
+  }
 }
 
 public class SayItAssistant {
-
   public static void main(String args[]) {
     new AppFrame(); // Create the frame
   }
