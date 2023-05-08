@@ -33,6 +33,7 @@ import javax.swing.JTextField;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
+import javax.swing.BoxLayout;
 
 
 import java.net.URI;
@@ -137,159 +138,70 @@ class HistoryQuestion extends JPanel {
 
 
 
-class Task extends JPanel {
 
-  JLabel index;
-  JTextField taskName;
-  JButton doneButton;
 
-  Color gray = new Color(218, 229, 234);
-  Color green = new Color(188, 226, 158);
 
-  private boolean markedDone;
 
-  Task() {
-    this.setPreferredSize(new Dimension(400, 20)); // set size of task
-    this.setBackground(gray); // set background color of task
-
-    this.setLayout(new BorderLayout()); // set layout of task
-
-    markedDone = false;
-
-    index = new JLabel(""); // create index label
-    index.setPreferredSize(new Dimension(20, 20)); // set size of index label
-    index.setHorizontalAlignment(JLabel.CENTER); // set alignment of index label
-    this.add(index, BorderLayout.WEST); // add index label to task
-
-    taskName = new JTextField(""); // create task name text field
-    taskName.setBorder(BorderFactory.createEmptyBorder()); // remove border of text field
-    taskName.setBackground(gray); // set background color of text field
-
-    this.add(taskName, BorderLayout.CENTER);
-
-    doneButton = new JButton("Done");
-    doneButton.setPreferredSize(new Dimension(80, 20));
-    doneButton.setBorder(BorderFactory.createEmptyBorder());
-    doneButton.setFocusPainted(false);
-
-    this.add(doneButton, BorderLayout.EAST);
-  }
-
-  public void changeIndex(int num) {
-    this.index.setText(num + ""); // num to String
-    this.revalidate(); // refresh
-  }
-
-  public JButton getDone() {
-    return doneButton;
-  }
-
-  public boolean getState() {
-    return markedDone;
-  }
-
-  public void changeState() {
-    if (markedDone) {
-      this.setBackground(gray);
-      taskName.setBackground(gray);
-      markedDone = false;
-    }
-    else {
-      this.setBackground(green);
-      taskName.setBackground(green);
-      markedDone = true;
-    }
-    revalidate();
-  }
-
-}
 
 class List extends JPanel {
-
   Color backgroundColor = new Color(240, 248, 255);
   Boolean empty;
 
   List() {
-    GridLayout layout = new GridLayout(10, 1);
-    layout.setVgap(5); // Vertical gap
-
-    this.setLayout(layout); // 10 tasks
-    this.setPreferredSize(new Dimension(400, 560));
-    this.setBackground(backgroundColor);
+    BoxLayout layout = new BoxLayout(this, BoxLayout.Y_AXIS);
+    this.setLayout(layout);
+    setAlignmentY(TOP_ALIGNMENT);
     empty = true;
   }
 
-  public void updateNumbers() {
-    Component[] listItems = this.getComponents();
-
-    for (int i = 0; i < listItems.length; i++) {
-      if (listItems[i] instanceof HistoryQuestion) {
-        ((HistoryQuestion) listItems[i]).changeIndex(i + 1);
-      }
+  @Override
+  public Component add(Component comp) {
+    
+    if (empty == true && !(comp instanceof JLabel)) {
+        this.removeAll();
+        empty = false;
+        
     }
+    super.add(comp);
+    return comp;
   }
 
-  public void removeCompletedTasks() {
-    for (Component c : getComponents()) {
-      if (c instanceof HistoryQuestion) {
-        if (((HistoryQuestion) c).getState()) {
-          remove(c); // remove the component
-          updateNumbers(); // update the indexing of all items
-        }
-      }
-    }
-  }
 
-  /**
-   * Loads tasks from a file called "tasks.txt"
-   * @return an ArrayList of Task
-   */
-  public ArrayList<HistoryQuestion> loadHistory() {
+  public ArrayList<HistoryQuestion> loadHistory()  {
     // hint 1: use try-catch block
     // hint 2: use BufferedReader and FileReader
-    // hint 3: task.question.setText(line) sets the text of the task
-    ArrayList<HistoryQuestion> result = new ArrayList<>();
+    // hint 3: task.taskName.setText(line) sets the text of the task
     try {
-      FileReader file = new FileReader("History.txt");
-      BufferedReader br = new BufferedReader(file);
-      String st;  
-      while ((st = br.readLine()) != null) {
-        HistoryQuestion task = new HistoryQuestion();
-        task.question.setText(st);
-        result.add(task);
+      String linestrings;
+      FileReader fileR = new FileReader("history.txt");
+      BufferedReader bufferR = new BufferedReader(fileR);
+      ArrayList<HistoryQuestion> historyList = new ArrayList<HistoryQuestion>();
+      
+
+      while (bufferR.ready()) {
+          HistoryQuestion set = new HistoryQuestion();
+          set.setMaximumSize(getPreferredSize());
+          linestrings = bufferR.readLine();
+          set.insertQuestion(linestrings);
+          this.add(set);
+          historyList.add(set);
       }
-      br.close();
-      file.close();
+      
+        bufferR.close();
+        revalidate();
+
+      return historyList;
+
     }
-    catch(Exception e) {
-      e.printStackTrace();
+
+    catch (IOException exception) {
+      System.out.println("load not implemented");
+      return null;
     }
-    //System.out.println("loadTasks() not implemented");
-    updateNumbers();
-    revalidate();
-    return result;
+    
+    
   }
 
-  /**
-   * Saves tasks to a file called "tasks.txt"
-   */
-  public void saveTasks() {
-    // hint 1: use try-catch block
-    // hint 2: use FileWriter
-    // hint 3 get list of Tasks using this.getComponents()
-    try {
-      FileWriter file = new FileWriter("/Users/rei_crzy/Documents/CSE 110/Lab 5/CSE110Lab5_/src/tasks.txt");
-      Component[] listOfSavedTasks = this.getComponents();
-      for(int i = 0; i < listOfSavedTasks.length; i++) {
-        HistoryQuestion task = (HistoryQuestion) listOfSavedTasks[i];
-        file.write(task.question.getText() + '\n');
-      }
-      file.close();
-    }
-    catch(Exception e) {
-      e.printStackTrace();
-    }
-  }
 }
 
 
@@ -416,6 +328,7 @@ class ChatList extends JPanel {
     }
   }
 }
+
 
 
 class Footer extends JPanel {
@@ -577,12 +490,12 @@ class AppFrame extends JFrame {
           list.add(historyQuestion); // Add new task to list
           historyQuestion.insertQuestion(prompt);
           historyQuestion.insertAnswer(chat_gpt_answer);
-          list.updateNumbers(); // Updates the numbers of the tasks
+          //list.updateNumbers(); // Updates the numbers of the tasks
           JButton selectButton = historyQuestion.getDone();
           selectButton.addActionListener(
             (ActionEvent e2) -> {
                 historyQuestion.changeState(); // Change color of task
-                list.updateNumbers(); // Updates the numbers of the tasks
+                //list.updateNumbers(); // Updates the numbers of the tasks
                 revalidate(); // Updates the frame
               }
           );
