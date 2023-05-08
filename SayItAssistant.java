@@ -53,6 +53,8 @@ class HistoryQuestion extends JPanel {
   JLabel index;
   JTextField question;
   JTextField answer;
+  String question_text;
+  String answer_text;
   JButton selectButton; //remove or change to answer cutoff
 
   Color gray = new Color(218, 229, 234);
@@ -78,14 +80,14 @@ class HistoryQuestion extends JPanel {
     question.setBackground(gray); // set background color of text field
     question.setEditable(false);
 
-    answer = new JTextField("Answer: "); // create task name text field
-    answer.setPreferredSize(new Dimension(100, 20));
+    //answer = new JTextField("Answer: "); // create task name text field
+    //answer.setPreferredSize(new Dimension(100, 20));
     //question.setBorder(BorderFactory.createEmptyBorder()); // remove border of text field
-    answer.setBackground(green); // set background color of text field
-    answer.setEditable(false);
+    //answer.setBackground(green); // set background color of text field
+    //answer.setEditable(false);
 
     this.add(question);
-    this.add(answer);
+    //this.add(answer);
 
     selectButton = new JButton("Select");
     selectButton.setPreferredSize(new Dimension(80, 20));
@@ -125,10 +127,20 @@ class HistoryQuestion extends JPanel {
   public void insertQuestion(String questionString) {
       question.setText(question.getText() + questionString);
       question.setCaretPosition(0);
+      question_text = questionString;
   }
 
   public void insertAnswer(String ansString) {
-    question.setText(answer.getText() + ansString);
+    //question.setText(answer.getText() + ansString);
+    answer_text = ansString;
+  }
+
+  public String getQuestionText() {
+    return question_text;
+  }
+
+  public String getAnswerText() {
+    return answer_text;
   }
 
 }
@@ -145,6 +157,7 @@ class HistoryQuestion extends JPanel {
 
 class List extends JPanel {
   Color backgroundColor = new Color(240, 248, 255);
+  Color gray = new Color(218, 229, 234);
   Boolean empty;
 
   List() {
@@ -161,6 +174,9 @@ class List extends JPanel {
         this.removeAll();
         empty = false;
         
+    }
+    if (!(comp instanceof JTextArea)) {
+      removeDefault();
     }
     super.add(comp);
     return comp;
@@ -200,6 +216,33 @@ class List extends JPanel {
     }
     
     
+  }
+
+  public boolean isEmpty() {
+    return (getComponents().length == 0);
+  }
+
+  public void setDefault() {
+    JTextArea defaultArea = new JTextArea("No history to show. Ask a question!");
+    defaultArea.setBorder(BorderFactory.createEmptyBorder()); // remove border of text field
+    defaultArea.setBackground(gray); // set background color of text 
+    defaultArea.setEditable(false);
+    defaultArea.setFont(new Font("Serif", Font.ITALIC, 16));
+    defaultArea.setLineWrap(true);
+    defaultArea.setWrapStyleWord(true);
+    add(defaultArea);
+  }
+
+  public void removeDefault() {
+    for (Component c : getComponents()) {
+      if (c instanceof JTextArea) {
+        remove(c);
+      }
+    }
+  }
+
+  public Component[] getListComponents() {
+    return getComponents();
   }
 
 }
@@ -450,6 +493,8 @@ class AppFrame extends JFrame {
     askQuestion = footer.getAskQuestion();
     stopRecordingButton = footer.getStopRecordingButton();
 
+    list.setDefault();
+
     addListeners();
   }
 
@@ -496,6 +541,31 @@ class AppFrame extends JFrame {
             (ActionEvent e2) -> {
                 historyQuestion.changeState(); // Change color of task
                 //list.updateNumbers(); // Updates the numbers of the tasks
+                if (historyQuestion.getState()) {
+                  for (Component c : list.getListComponents()) {
+                    if (c instanceof HistoryQuestion) {
+                      HistoryQuestion currQuestion = (HistoryQuestion) c;
+                      if (currQuestion.getState()) {
+                        currQuestion.changeState();
+                      }
+                    }
+                  }
+
+                  chatList.clearChatWindow();
+                  repaint();
+                  
+                  historyQuestion.changeState();
+                  ChatBox historyQuestionBox = 
+                    new ChatBox("Question", historyQuestion.getQuestionText());
+                  chatList.add(historyQuestionBox);
+                  ChatBox historyAnswerBox = 
+                    new ChatBox("Answer", historyQuestion.getAnswerText());
+                  chatList.add(historyAnswerBox);
+                }
+                else {
+                  chatList.clearChatWindow();
+                  repaint();
+                }
                 revalidate(); // Updates the frame
               }
           );
