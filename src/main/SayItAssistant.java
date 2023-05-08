@@ -45,9 +45,6 @@ import java.net.http.HttpResponse.BodyHandler;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-
-
-
 class HistoryQuestion extends JPanel {
 
   JLabel index;
