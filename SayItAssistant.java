@@ -6,12 +6,12 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
+import java.awt.FlowLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.ActionEvent;
 import java.io.BufferedReader;
 import java.io.EOFException;
 import java.io.File;
@@ -19,17 +19,33 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+
+import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JTextArea;
+import javax.swing.SwingConstants;
 import javax.swing.border.Border;
+
+
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.net.http.HttpResponse.BodyHandler;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+
+
 
 class HistoryQuestion extends JPanel {
 
@@ -119,13 +135,14 @@ class HistoryQuestion extends JPanel {
   public void insertAnswer(String ansString) {
     question.setText(answer.getText() + ansString);
 }
-
 }
 
 
 
-class List extends JPanel {
 
+
+
+class List extend JPanel {
   Color backgroundColor = new Color(240, 248, 255);
   Boolean empty;
 
@@ -186,10 +203,138 @@ class List extends JPanel {
 
 }
 
+
+interface IChatGPT {
+  public String ask(String prompt) throws IOException, InterruptedException;
+}
+
+class MockChatGPT implements IChatGPT {
+
+  MockChatGPT() {}
+
+  public String ask(String prompt) throws IOException, InterruptedException {
+    return "Mock answer to the following prompt:\n" + prompt;
+  }
+}
+
+class ChatGPT implements IChatGPT {
+  private static final String API_ENDPOINT = "https://api.openai.com/v1/completions";
+  private static final String API_KEY = "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";
+  // Joseph's API Token = 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
+  private static final String MODEL = "text-davinci-003";
+
+  ChatGPT() {}
+
+  public String ask(String prompt) throws IOException, InterruptedException {
+    int maxTokens = 100;
+    String generatedText = "";
+
+
+    JSONObject requestBody = new JSONObject();
+    requestBody.put("model", MODEL);
+    requestBody.put("prompt", prompt);
+    requestBody.put("max_tokens", maxTokens);
+    requestBody.put("temperature", 1.0);
+
+
+    //Create the HTTP client
+    HttpClient client = HttpClient.newHttpClient();
+
+    // Create the request object
+    HttpRequest request = HttpRequest
+    .newBuilder()
+    .uri(URI.create(API_ENDPOINT))
+    .header("Content-type", "application/json")
+    .header("Authorization", String.format("Bearer %s",API_KEY))
+    .POST(HttpRequest.BodyPublishers.ofString(requestBody.toString()))
+    .build();
+
+    // Send the request and receive the response
+    try {
+      HttpResponse<String> response = client.send(
+          request,
+          HttpResponse.BodyHandlers.ofString()
+      );
+      // Process the response
+      String responseBody = response.body();
+      //System.out.println(responseBody);
+
+      JSONObject responseJson = new JSONObject(responseBody);
+
+      JSONArray choices = responseJson.getJSONArray("choices");
+      generatedText = choices.getJSONObject(0).getString("text");
+    }
+    catch (IOException io_e) {
+      System.out.println("Something went wrong with IO in ChatGPT.");
+    }
+    catch (InterruptedException int_e) {
+      System.out.println("Something was interrupted in ChatGPT.");
+    }
+      
+
+    
+
+    return generatedText;
+  }
+}
+
+class ChatBox extends JPanel {
+  JLabel dialogue_type;
+  JTextArea dialogue;
+
+  Color gray = new Color(218, 229, 234);
+
+  ChatBox(String type_input, String dialogue_input) {
+    this.setPreferredSize(new Dimension(400, 20)); // set size of task
+    this.setBackground(gray); // set background color of task
+
+    this.setLayout(new BorderLayout()); // set layout of task
+
+    dialogue_type = new JLabel(type_input); // create index label
+    dialogue_type.setPreferredSize(new Dimension(80, 20)); // set size of index label
+    dialogue_type.setHorizontalAlignment(JLabel.CENTER); // set alignment of index label
+    this.add(dialogue_type, BorderLayout.WEST); // add index label to task
+
+    dialogue = new JTextArea(dialogue_input); // create task name text field
+    dialogue.setBorder(BorderFactory.createEmptyBorder()); // remove border of text field
+    dialogue.setBackground(gray); // set background color of text 
+    dialogue.setEditable(false);
+    dialogue.setFont(new Font("Serif", Font.ITALIC, 16));
+    dialogue.setLineWrap(true);
+    dialogue.setWrapStyleWord(true);
+    this.add(dialogue, BorderLayout.CENTER);
+  }
+}
+
+class ChatList extends JPanel {
+
+  Color backgroundColor = new Color(240, 248, 255);
+
+  ChatList() {
+    GridLayout layout = new GridLayout(10, 1);
+    layout.setVgap(20); // Vertical gap
+
+    this.setLayout(layout); // 2 chat boxes
+    this.setPreferredSize(new Dimension(400, 100));
+    this.setBackground(backgroundColor);
+  }
+
+  public void clearChatWindow() {
+    for (Component c : getComponents()) {
+      if (c instanceof ChatBox) {
+        remove(c); // remove the chatbox component
+      }
+    }
+  }
+}
+
+
 class Footer extends JPanel {
 
   JButton questionButton;
-  JButton dummyAskQuestionButton;
+
+  JButton askQuestion;
+  JButton stopRecordingButton;
 
   Color backgroundColor = new Color(240, 248, 255);
   Border emptyBorder = BorderFactory.createEmptyBorder();
@@ -197,24 +342,34 @@ class Footer extends JPanel {
   Footer() {
     this.setPreferredSize(new Dimension(400, 60));
     this.setBackground(backgroundColor);
-    GridLayout layout = new GridLayout(1, 4);
+    GridLayout layout = new GridLayout(1, 2);
     this.setLayout(layout);
+    //this.setBorder(BorderFactory.createLineBorder(Color.red));
 
-    questionButton = new JButton("Ask a question"); // add task button
-    questionButton.setFont(new Font("Sans-serif", Font.ITALIC, 10)); // set font
-    this.add(questionButton); // add to footer
+    // questionButton = new JButton("Ask a Question"); // add task button
+    // questionButton.setFont(new Font("Sans-serif", Font.ITALIC, 10)); // set font
+    // this.add(questionButton); // add to footer
 
-    dummyAskQuestionButton = new JButton("Dummy Question Adder"); // add task button
-    dummyAskQuestionButton.setFont(new Font("Sans-serif", Font.ITALIC, 10)); // set font
-    this.add(dummyAskQuestionButton); // add to footer
+    askQuestion = new JButton("Ask a Question"); // add task button
+    askQuestion.setFont(new Font("Sans-serif", Font.ITALIC, 10)); // set font
+    this.add(askQuestion); // add to footer
 
+    stopRecordingButton = new JButton("Stop Recording"); // add task button
+    stopRecordingButton.setFont(new Font("Sans-serif", Font.ITALIC, 10)); // set font
+    this.add(stopRecordingButton); // add to footer
+    stopRecordingButton.setVisible(false);
   }
 
   public JButton getquestionButton() {
     return questionButton;
   }
-  public JButton getdummyAskQuestionButton() {
-    return dummyAskQuestionButton;
+  
+  public JButton getAskQuestion() {
+    return askQuestion;
+  }
+
+  public JButton getStopRecordingButton() {
+    return stopRecordingButton;
   }
 }
 
@@ -225,11 +380,38 @@ class Header extends JPanel {
   Header() {
     this.setPreferredSize(new Dimension(400, 60)); // Size of the header
     this.setBackground(backgroundColor);
+    GridLayout layout = new GridLayout(1, 2);
+    this.setLayout(layout);
+
+    JLabel historyText = new JLabel("History");
+    historyText.setPreferredSize(new Dimension(50, 50));
+    historyText.setFont(new Font("BrixSansBlack", Font.ITALIC, 15));
+    historyText.setHorizontalAlignment(JLabel.LEFT); // Align the text to the center
+    historyText.setVerticalAlignment(SwingConstants.BOTTOM);
+    //historyText.setBorder(BorderFactory.createLineBorder(Color.red));
+    this.add(historyText);
+
+    ImageIcon trashCan = new ImageIcon("/Users/rei_crzy/Documents/CSE 110/Final Project/cse-110-project-team-17/trashCan.png");
+    JButton clearAll = new JButton();
+    clearAll.setText("Clear All");
+    clearAll.setVerticalTextPosition(AbstractButton.CENTER);
+    clearAll.setHorizontalTextPosition(AbstractButton.LEADING); 
+    clearAll.setPreferredSize(new Dimension(50, 50));
+    clearAll.setFont(new Font("BrixSansBlack", Font.ITALIC, 10));
+    clearAll.setHorizontalAlignment(SwingConstants.RIGHT); // Align the text to the center
+    clearAll.setVerticalAlignment(SwingConstants.BOTTOM);
+    //clearAll.setBorder(BorderFactory.createLineBorder(Color.red));
+    this.add(clearAll);
+
     JLabel titleText = new JLabel("SayIt"); // Text of the header
     titleText.setPreferredSize(new Dimension(200, 60));
-    titleText.setFont(new Font("Sans-serif", Font.BOLD, 20));
+    titleText.setFont(new Font("BrixSansBlack", Font.ITALIC, 30));
     titleText.setHorizontalAlignment(JLabel.CENTER); // Align the text to the center
+    //titleText.setBorder(BorderFactory.createLineBorder(Color.red));
     this.add(titleText); // Add the text to the header
+
+
+    
   }
 }
 
@@ -237,10 +419,13 @@ class AppFrame extends JFrame {
 
   private Header header;
   private Footer footer;
+  private IChatGPT chatGPT;
+  private ChatList chatList;
   private List list;
-
-  private JButton questionButton;
-  private JButton dummyAskQuestionButton;
+  private String prompt;
+  private String chat_gpt_answer;
+  private JButton askQuestion;
+  private JButton stopRecordingButton;
 
   AppFrame() {
     this.revalidate();
@@ -251,65 +436,71 @@ class AppFrame extends JFrame {
     header = new Header();
     footer = new Footer();
     list = new List();
-    JScrollPane scrollPane = new JScrollPane(list);
-    scrollPane.setPreferredSize(new Dimension(420,400));
-    this.add(scrollPane, BorderLayout.WEST);
-    JLabel notif = new JLabel("No History");
-    notif.setMaximumSize(new Dimension(100, 20));
-    notif.setAlignmentX(CENTER_ALIGNMENT);
-    list.add(notif);
-   
+    chatList = new ChatList();
+    prompt = "Who is Louis Braille?";
+    chatGPT = new MockChatGPT();
 
     this.add(header, BorderLayout.NORTH); // Add title bar on top of the screen
     this.add(footer, BorderLayout.SOUTH); // Add footer on bottom of the screen
-    questionButton = footer.getquestionButton();
-    dummyAskQuestionButton = footer.getdummyAskQuestionButton();
-    list.loadHistory();
+    this.add(list, BorderLayout.WEST); // Add history list in left of screen
+    this.add(chatList, BorderLayout.CENTER); // Add chat list in middle of footer and title
+
+    askQuestion = footer.getAskQuestion();
+    stopRecordingButton = footer.getStopRecordingButton();
 
     addListeners();
   }
 
   public void addListeners() {
-    questionButton.addMouseListener(
+    askQuestion.addMouseListener(
       new MouseAdapter() {
-        // @override
-        // public void mousePressed(MouseEvent e) {
-        //   Task task = new Task();
-        //   list.add(task); // Add new task to list
-        //   list.updateNumbers(); // Updates the numbers of the tasks
+        @override
+        public void mousePressed(MouseEvent e) {
+          askQuestion.setVisible(false);
+          stopRecordingButton.setVisible(true);
 
-        //   JButton selectButton = task.getDone();
-        //   selectButton.addMouseListener(
-        //     new MouseAdapter() {
-        //       @override
-        //       public void mousePressed(MouseEvent e) {
-        //         task.changeState(); // Change color of task
-        //         list.updateNumbers(); // Updates the numbers of the tasks
-        //         revalidate(); // Updates the frame
-        //       }
-        //     }
-        //   );
-        // }
+          chatList.clearChatWindow();
+          repaint();
+        }
       }
     );
-
-    dummyAskQuestionButton.addActionListener(
-      (ActionEvent e) -> {
-          
-          HistoryQuestion question = new HistoryQuestion();
-          list.add(question); // Add new task to list
-          question.insertQuestion("testing longer string bigger than field adwddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd");
-          question.setMaximumSize(getPreferredSize());
+    stopRecordingButton.addMouseListener(
+      new MouseAdapter() {
+        @override
+        public void mousePressed(MouseEvent e) {
+          ChatBox question = new ChatBox("Question", prompt);
+          chatList.add(question);
           revalidate();
-          //list.updateNumbers(); // Updates the numbers of the tasks
-          JButton selectButton = question.getDone();
+          try {
+            chat_gpt_answer = chatGPT.ask(prompt);
+            ChatBox answer = new ChatBox("Answer", chat_gpt_answer);
+            chatList.add(answer);
+            revalidate();
+          }
+          catch (IOException io_e) {
+            throw new RuntimeException("An IO Exception happened on click.");
+          }
+          catch (InterruptedException int_e) {
+            throw new RuntimeException("An Interruption Exception happened on click.");
+          }
+
+          HistoryQuestion historyQuestion = new HistoryQuestion();
+          list.add(historyQuestion); // Add new task to list
+          historyQuestion.insertQuestion(prompt);
+          historyQuestion.insertAnswer(chat_gpt_answer);
+          list.updateNumbers(); // Updates the numbers of the tasks
+          JButton selectButton = historyQuestion.getDone();
           selectButton.addActionListener(
             (ActionEvent e2) -> {
-                question.changeState(); // Change color of task
-                //list.updateNumbers(); // Updates the numbers of the tasks
+                historyQuestion.changeState(); // Change color of task
+                list.updateNumbers(); // Updates the numbers of the tasks
                 revalidate(); // Updates the frame
               }
           );
+
+          stopRecordingButton.setVisible(false);
+          askQuestion.setVisible(true);
+        }
       }
     );
   }
