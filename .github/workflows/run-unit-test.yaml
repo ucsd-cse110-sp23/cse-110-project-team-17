@@ -39,6 +39,7 @@ jobs:
         run: ./gradlew build
 
       - name: Build and Run Tests
+        run: chmod +x ./src/test/US2Test.java
         run: ./src/test/US2Test.java
       # report the results
       - name: Publish Test Report
