@@ -17,12 +17,18 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+
+import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 
 class Task extends JPanel {
@@ -97,12 +103,14 @@ class List extends JPanel {
   Color backgroundColor = new Color(240, 248, 255);
 
   List() {
-    GridLayout layout = new GridLayout(10, 1);
+    GridLayout layout = new GridLayout(10, 2);
     layout.setVgap(5); // Vertical gap
 
     this.setLayout(layout); // 10 tasks
-    this.setPreferredSize(new Dimension(400, 560));
+    this.setPreferredSize(new Dimension(400, 500));
     this.setBackground(backgroundColor);
+    //this.setBorder(BorderFactory.createLineBorder(Color.green));
+    this.setVisible(true);
   }
 
   public void updateNumbers() {
@@ -182,23 +190,43 @@ class Footer extends JPanel {
 
   JButton questionButton;
 
+  JButton askQuestion;
+  JButton stopRecordingButton;
+
   Color backgroundColor = new Color(240, 248, 255);
   Border emptyBorder = BorderFactory.createEmptyBorder();
 
   Footer() {
     this.setPreferredSize(new Dimension(400, 60));
     this.setBackground(backgroundColor);
-    GridLayout layout = new GridLayout(1, 4);
+    GridLayout layout = new GridLayout(1, 2);
     this.setLayout(layout);
+    //this.setBorder(BorderFactory.createLineBorder(Color.red));
 
-    questionButton = new JButton("Ask a Question"); // add task button
-    questionButton.setFont(new Font("Sans-serif", Font.ITALIC, 10)); // set font
-    this.add(questionButton); // add to footer
+    // questionButton = new JButton("Ask a Question"); // add task button
+    // questionButton.setFont(new Font("Sans-serif", Font.ITALIC, 10)); // set font
+    // this.add(questionButton); // add to footer
 
+    askQuestion = new JButton("Ask a Question"); // add task button
+    askQuestion.setFont(new Font("Sans-serif", Font.ITALIC, 10)); // set font
+    this.add(askQuestion); // add to footer
+
+    stopRecordingButton = new JButton("Stop Recording"); // add task button
+    stopRecordingButton.setFont(new Font("Sans-serif", Font.ITALIC, 10)); // set font
+    this.add(stopRecordingButton); // add to footer
+    stopRecordingButton.setVisible(false);
   }
 
   public JButton getquestionButton() {
     return questionButton;
+  }
+  
+  public JButton getAskQuestion() {
+    return askQuestion;
+  }
+
+  public JButton getStopRecordingButton() {
+    return stopRecordingButton;
   }
 }
 
@@ -209,11 +237,38 @@ class Header extends JPanel {
   Header() {
     this.setPreferredSize(new Dimension(400, 60)); // Size of the header
     this.setBackground(backgroundColor);
+    GridLayout layout = new GridLayout(1, 2);
+    this.setLayout(layout);
+
+    JLabel historyText = new JLabel("History");
+    historyText.setPreferredSize(new Dimension(50, 50));
+    historyText.setFont(new Font("BrixSansBlack", Font.ITALIC, 15));
+    historyText.setHorizontalAlignment(JLabel.LEFT); // Align the text to the center
+    historyText.setVerticalAlignment(SwingConstants.BOTTOM);
+    //historyText.setBorder(BorderFactory.createLineBorder(Color.red));
+    this.add(historyText);
+
+    ImageIcon trashCan = new ImageIcon("/Users/rei_crzy/Documents/CSE 110/Final Project/cse-110-project-team-17/trashCan.png");
+    JButton clearAll = new JButton();
+    clearAll.setText("Clear All");
+    clearAll.setVerticalTextPosition(AbstractButton.CENTER);
+    clearAll.setHorizontalTextPosition(AbstractButton.LEADING); 
+    clearAll.setPreferredSize(new Dimension(50, 50));
+    clearAll.setFont(new Font("BrixSansBlack", Font.ITALIC, 10));
+    clearAll.setHorizontalAlignment(SwingConstants.RIGHT); // Align the text to the center
+    clearAll.setVerticalAlignment(SwingConstants.BOTTOM);
+    //clearAll.setBorder(BorderFactory.createLineBorder(Color.red));
+    this.add(clearAll);
+
     JLabel titleText = new JLabel("SayIt"); // Text of the header
     titleText.setPreferredSize(new Dimension(200, 60));
-    titleText.setFont(new Font("Sans-serif", Font.BOLD, 20));
+    titleText.setFont(new Font("BrixSansBlack", Font.ITALIC, 30));
     titleText.setHorizontalAlignment(JLabel.CENTER); // Align the text to the center
+    //titleText.setBorder(BorderFactory.createLineBorder(Color.red));
     this.add(titleText); // Add the text to the header
+
+
+    
   }
 }
 
@@ -224,6 +279,8 @@ class AppFrame extends JFrame {
   private List list;
 
   private JButton questionButton;
+  private JButton askQuestion;
+  private JButton stopRecordingButton;
 
   AppFrame() {
     this.revalidate();
@@ -240,31 +297,52 @@ class AppFrame extends JFrame {
     this.add(list, BorderLayout.CENTER); // Add list in middle of footer and title
 
     questionButton = footer.getquestionButton();
+    askQuestion = footer.getAskQuestion();
+    stopRecordingButton = footer.getStopRecordingButton();
 
     addListeners();
   }
 
   public void addListeners() {
-    questionButton.addMouseListener(
-      new MouseAdapter() {
-        // @override
-        // public void mousePressed(MouseEvent e) {
-        //   Task task = new Task();
-        //   list.add(task); // Add new task to list
-        //   list.updateNumbers(); // Updates the numbers of the tasks
+    // questionButton.addMouseListener(
+    //   new MouseAdapter() {
+    //     @override
+    //     public void mousePressed(MouseEvent e) {
+    //       Task task = new Task();
+    //       list.add(task); // Add new task to list
+    //       list.updateNumbers(); // Updates the numbers of the tasks
 
-        //   JButton doneButton = task.getDone();
-        //   doneButton.addMouseListener(
-        //     new MouseAdapter() {
-        //       @override
-        //       public void mousePressed(MouseEvent e) {
-        //         task.changeState(); // Change color of task
-        //         list.updateNumbers(); // Updates the numbers of the tasks
-        //         revalidate(); // Updates the frame
-        //       }
-        //     }
-        //   );
-        // }
+    //       JButton doneButton = task.getDone();
+    //       doneButton.addMouseListener(
+    //         new MouseAdapter() {
+    //           @override
+    //           public void mousePressed(MouseEvent e) {
+    //             task.changeState(); // Change color of task
+    //             list.updateNumbers(); // Updates the numbers of the tasks
+    //             revalidate(); // Updates the frame
+    //           }
+    //         }
+    //       );
+    //     }
+    //   }
+    // );
+    askQuestion.addMouseListener(
+      new MouseAdapter() {
+        @override
+        public void mousePressed(MouseEvent e) {
+          askQuestion.setVisible(false);
+          stopRecordingButton.setVisible(true);
+        }
+      }
+    );
+
+    stopRecordingButton.addMouseListener(
+      new MouseAdapter() {
+        @override
+        public void mousePressed(MouseEvent e) {
+          stopRecordingButton.setVisible(false);
+          askQuestion.setVisible(true);
+        }
       }
     );
   }
