@@ -1,34 +1,3 @@
-Skip to content
-Search or jump to…
-Pull requests
-Issues
-Codespaces
-Marketplace
-Explore
- 
-@reisandylamdjani 
-sudolucy
-/
-CSE110-SP23-Lab2
-Public
-Fork your own copy of sudolucy/CSE110-SP23-Lab2
-Code
-Issues
-Pull requests
-Actions
-Projects
-Security
-Insights
-Beta Try the new code view
-CSE110-SP23-Lab2/gradlew
-@sudolucy
-sudolucy Initial commit
-Latest commit 6118fad last month
- History
- 1 contributor
-Executable File  234 lines (207 sloc)  7.88 KB
- 
-
 #!/bin/sh
 
 #
@@ -158,12 +127,14 @@ if [ -n "$JAVA_HOME" ] ; then
     fi
     if [ ! -x "$JAVACMD" ] ; then
         die "ERROR: JAVA_HOME is set to an invalid directory: $JAVA_HOME
+
 Please set the JAVA_HOME variable in your environment to match the
 location of your Java installation."
     fi
 else
     JAVACMD=java
     which java >/dev/null 2>&1 || die "ERROR: JAVA_HOME is not set and no 'java' command could be found in your PATH.
+
 Please set the JAVA_HOME variable in your environment to match the
 location of your Java installation."
 fi
@@ -261,18 +232,3 @@ eval "set -- $(
     )" '"$@"'
 
 exec "$JAVACMD" "$@"
-Footer
-© 2023 GitHub, Inc.
-Footer navigation
-Terms
-Privacy
-Security
-Status
-Docs
-Contact GitHub
-Pricing
-API
-Training
-Blog
-About
-CSE110-SP23-Lab2/gradlew at main · sudolucy/CSE110-SP23-Lab2
