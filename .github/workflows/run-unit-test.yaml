@@ -48,11 +48,11 @@ jobs:
       
       - name: Unit tests
         run: ./gradlew test
-      # # report the results
-      # - name: Publish Test Report
-      #   uses: mikepenz/action-junit-report@v3
-      #   if: success() || failure() # always run even if the previous step fails
-      #   with:
-      #     report_paths: '**/build/test-results/test/TEST-*.xml'
-      #     detailed_summary: true # display detailed summary of the report
-      #     include_passed: true # include passed tests in the results table
+      # report the results
+      - name: Publish Test Report
+        uses: mikepenz/action-junit-report@v3
+        if: success() || failure() # always run even if the previous step fails
+        with:
+          report_paths: '**/build/test-results/test/TEST-*.xml'
+          detailed_summary: true # display detailed summary of the report
+          include_passed: true # include passed tests in the results table
