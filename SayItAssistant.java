@@ -36,7 +36,7 @@ class HistoryQuestion extends JPanel {
   JLabel index;
   JTextArea question;
   JTextField answer;
-  JButton selectButton; //remove or change to answer cutoff
+  JButton selectButton;
 
   Color gray = new Color(218, 229, 234);
   Color green = new Color(188, 226, 158);
@@ -59,7 +59,7 @@ class HistoryQuestion extends JPanel {
     question = new JTextArea("Question: "); // create task name text field
     question.setPreferredSize(new Dimension(300, 20));
     //question.setBorder(BorderFactory.createEmptyBorder()); // remove border of text field
-    question.setBackground(gray); // set background color of text field
+    question.setBackground(Color.white); // set background color of text field
     question.setEditable(false);
 
     answer = new JTextField("Answer: "); // create task name text field
@@ -122,19 +122,68 @@ class HistoryQuestion extends JPanel {
 
 }
 
+
+
 class List extends JPanel {
 
   Color backgroundColor = new Color(240, 248, 255);
   Boolean empty;
-  JPanel innerList;
 
   List() {
     BoxLayout layout = new BoxLayout(this, BoxLayout.Y_AXIS);
     this.setLayout(layout);
     setAlignmentY(TOP_ALIGNMENT);
+    empty = true;
+  }
 
+  @Override
+  public Component add(Component comp) {
+    
+    if (empty == true && !(comp instanceof JLabel)) {
+        this.removeAll();
+        empty = false;
+        
+    }
+    super.add(comp);
+    return comp;
+  }
+
+
+  public ArrayList<HistoryQuestion> loadHistory()  {
+    // hint 1: use try-catch block
+    // hint 2: use BufferedReader and FileReader
+    // hint 3: task.taskName.setText(line) sets the text of the task
+    try {
+      String linestrings;
+      FileReader fileR = new FileReader("history.txt");
+      BufferedReader bufferR = new BufferedReader(fileR);
+      ArrayList<HistoryQuestion> historyList = new ArrayList<HistoryQuestion>();
+      
+
+      while (bufferR.ready()) {
+          HistoryQuestion set = new HistoryQuestion();
+          set.setMaximumSize(getPreferredSize());
+          linestrings = bufferR.readLine();
+          set.insertQuestion(linestrings);
+          this.add(set);
+          historyList.add(set);
+      }
+      
+        bufferR.close();
+        revalidate();
+
+      return historyList;
+
+    }
+
+    catch (IOException exception) {
+      System.out.println("load not implemented");
+      return null;
+    }
+    
     
   }
+
 }
 
 class Footer extends JPanel {
@@ -205,13 +254,17 @@ class AppFrame extends JFrame {
     JScrollPane scrollPane = new JScrollPane(list);
     scrollPane.setPreferredSize(new Dimension(420,400));
     this.add(scrollPane, BorderLayout.WEST);
+    JLabel notif = new JLabel("No History");
+    notif.setMaximumSize(new Dimension(100, 20));
+    notif.setAlignmentX(CENTER_ALIGNMENT);
+    list.add(notif);
+   
 
     this.add(header, BorderLayout.NORTH); // Add title bar on top of the screen
     this.add(footer, BorderLayout.SOUTH); // Add footer on bottom of the screen
-    //this.add(list, BorderLayout.WEST); // Add list in middle of footer and title
-
     questionButton = footer.getquestionButton();
     dummyAskQuestionButton = footer.getdummyAskQuestionButton();
+    list.loadHistory();
 
     addListeners();
   }
@@ -242,13 +295,14 @@ class AppFrame extends JFrame {
 
     dummyAskQuestionButton.addActionListener(
       (ActionEvent e) -> {
+          
           HistoryQuestion question = new HistoryQuestion();
           list.add(question); // Add new task to list
           question.insertQuestion("testing longer string bigger than field adwddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd");
           question.setMaximumSize(getPreferredSize());
+          revalidate();
           //list.updateNumbers(); // Updates the numbers of the tasks
           JButton selectButton = question.getDone();
-          revalidate();
           selectButton.addActionListener(
             (ActionEvent e2) -> {
                 question.changeState(); // Change color of task
