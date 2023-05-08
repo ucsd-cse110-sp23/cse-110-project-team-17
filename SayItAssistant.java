@@ -372,6 +372,30 @@ class ChatList extends JPanel {
   }
 }
 
+interface QuestionHandler {
+  public String getQuestion();
+}
+
+class MockQuestion implements QuestionHandler {
+  int index;
+  String[] options = new String[5];
+
+  MockQuestion() {
+    index = 0;
+    options[0] = "Who is Louis Braille?";
+    options[1] = "What did Louis Braille do?";
+    options[2] = "How did Louis Braille invent Braille?";
+    options[3] = "When was Louis Braille born?";
+    options[4] = "Where did Louis Braille live?";
+  }
+
+  public String getQuestion() {
+    String toReturn = options[index];
+    index = (index + 1) % 5;
+    return toReturn;
+  }
+}
+
 
 
 class Footer extends JPanel {
@@ -467,7 +491,7 @@ class AppFrame extends JFrame {
   private IChatGPT chatGPT;
   private ChatList chatList;
   private List list;
-  private String prompt;
+  private QuestionHandler qHandler;
   private String chat_gpt_answer;
   private JButton askQuestion;
   private JButton stopRecordingButton;
@@ -482,7 +506,7 @@ class AppFrame extends JFrame {
     footer = new Footer();
     list = new List();
     chatList = new ChatList();
-    prompt = "Who is Louis Braille?";
+    qHandler = new MockQuestion();
     chatGPT = new MockChatGPT();
 
     this.add(header, BorderLayout.NORTH); // Add title bar on top of the screen
@@ -503,11 +527,7 @@ class AppFrame extends JFrame {
       new MouseAdapter() {
         @override
         public void mousePressed(MouseEvent e) {
-          askQuestion.setVisible(false);
-          stopRecordingButton.setVisible(true);
-
-          chatList.clearChatWindow();
-          repaint();
+          QuestionButtonHandler();
         }
       }
     );
@@ -515,71 +535,114 @@ class AppFrame extends JFrame {
       new MouseAdapter() {
         @override
         public void mousePressed(MouseEvent e) {
-          ChatBox question = new ChatBox("Question", prompt);
-          chatList.add(question);
-          revalidate();
-          try {
-            chat_gpt_answer = chatGPT.ask(prompt);
-            ChatBox answer = new ChatBox("Answer", chat_gpt_answer);
-            chatList.add(answer);
-            revalidate();
-          }
-          catch (IOException io_e) {
-            throw new RuntimeException("An IO Exception happened on click.");
-          }
-          catch (InterruptedException int_e) {
-            throw new RuntimeException("An Interruption Exception happened on click.");
-          }
-
-          HistoryQuestion historyQuestion = new HistoryQuestion();
-          list.add(historyQuestion); // Add new task to list
-          historyQuestion.insertQuestion(prompt);
-          historyQuestion.insertAnswer(chat_gpt_answer);
-          //list.updateNumbers(); // Updates the numbers of the tasks
-          JButton selectButton = historyQuestion.getDone();
-          selectButton.addActionListener(
-            (ActionEvent e2) -> {
-                historyQuestion.changeState(); // Change color of task
-                //list.updateNumbers(); // Updates the numbers of the tasks
-                if (historyQuestion.getState()) {
-                  for (Component c : list.getListComponents()) {
-                    if (c instanceof HistoryQuestion) {
-                      HistoryQuestion currQuestion = (HistoryQuestion) c;
-                      if (currQuestion.getState()) {
-                        currQuestion.changeState();
-                      }
-                    }
-                  }
-
-                  chatList.clearChatWindow();
-                  repaint();
-                  
-                  historyQuestion.changeState();
-                  ChatBox historyQuestionBox = 
-                    new ChatBox("Question", historyQuestion.getQuestionText());
-                  chatList.add(historyQuestionBox);
-                  ChatBox historyAnswerBox = 
-                    new ChatBox("Answer", historyQuestion.getAnswerText());
-                  chatList.add(historyAnswerBox);
-                }
-                else {
-                  chatList.clearChatWindow();
-                  repaint();
-                }
-                revalidate(); // Updates the frame
-              }
-          );
-
-          stopRecordingButton.setVisible(false);
-          askQuestion.setVisible(true);
+          StopButtonHandler();
         }
       }
     );
   }
+
+  public void QuestionButtonHandler() {
+    askQuestion.setVisible(false);
+    stopRecordingButton.setVisible(true);
+    chatList.clearChatWindow();
+    repaint();
+  }
+
+  public void StopButtonHandler() {
+    String prompt = qHandler.getQuestion();
+    ChatBox question = new ChatBox("Question", prompt);
+    chatList.add(question);
+    revalidate();
+    try {
+      chat_gpt_answer = chatGPT.ask(prompt);
+      ChatBox answer = new ChatBox("Answer", chat_gpt_answer);
+      chatList.add(answer);
+      revalidate();
+    }
+    catch (IOException io_e) {
+      throw new RuntimeException("An IO Exception happened on click.");
+    }
+    catch (InterruptedException int_e) {
+      throw new RuntimeException("An Interruption Exception happened on click.");
+    }
+
+    HistoryQuestion historyQuestion = new HistoryQuestion();
+    list.add(historyQuestion); // Add new task to list
+    historyQuestion.insertQuestion(prompt);
+    historyQuestion.insertAnswer(chat_gpt_answer);
+    //list.updateNumbers(); // Updates the numbers of the tasks
+    JButton selectButton = historyQuestion.getDone();
+    selectButton.addActionListener(
+      (ActionEvent e2) -> {
+          SelectButtonHandler(historyQuestion);
+        }
+    );
+
+    stopRecordingButton.setVisible(false);
+    askQuestion.setVisible(true);
+  }
+
+  public void SelectButtonHandler(HistoryQuestion historyQuestion) {
+    historyQuestion.changeState(); // Change color of task
+    //list.updateNumbers(); // Updates the numbers of the tasks
+    if (historyQuestion.getState()) {
+      for (Component c : list.getListComponents()) {
+        if (c instanceof HistoryQuestion) {
+          HistoryQuestion currQuestion = (HistoryQuestion) c;
+          if (currQuestion.getState()) {
+            currQuestion.changeState();
+          }
+        }
+      }
+
+      chatList.clearChatWindow();
+      repaint();
+      
+      historyQuestion.changeState();
+      ChatBox historyQuestionBox = 
+        new ChatBox("Question", historyQuestion.getQuestionText());
+      chatList.add(historyQuestionBox);
+      ChatBox historyAnswerBox = 
+        new ChatBox("Answer", historyQuestion.getAnswerText());
+      chatList.add(historyAnswerBox);
+    }
+    else {
+      chatList.clearChatWindow();
+      repaint();
+    }
+    revalidate(); // Updates the frame
+  }
+
+  public Header getHeader() {
+    return header;
+  }
+
+  public Footer getFooter() {
+    return footer;
+  }
+
+  public IChatGPT getChatGPT() {
+    return chatGPT;
+  }
+
+  public ChatList getChatList() {
+    return chatList;
+  }
+
+  public List getHistoryList() {
+    return list;
+  }
+
+  public JButton getAskButton() {
+    return askQuestion;
+  }
+
+  public JButton getStopButton() {
+    return stopRecordingButton;
+  }
 }
 
 public class SayItAssistant {
-
   public static void main(String args[]) {
     new AppFrame(); // Create the frame
   }
