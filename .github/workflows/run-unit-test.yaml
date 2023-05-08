@@ -38,8 +38,10 @@ jobs:
       - name: Execute Gradle build
         run: ./gradlew build
 
-      - name: Build and Run Tests
+      - name: Change US2Test Permissions
         run: chmod +x ./src/test/US2Test.java
+
+      - name: Build and Run Tests
         run: ./src/test/US2Test.java
       # report the results
       - name: Publish Test Report
