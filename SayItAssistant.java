@@ -33,6 +33,7 @@ import javax.swing.JTextField;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
+import javax.swing.BoxLayout;
 
 
 import java.net.URI;
@@ -50,9 +51,9 @@ import org.json.JSONObject;
 class HistoryQuestion extends JPanel {
 
   JLabel index;
-  JTextArea question;
+  JTextField question;
   JTextField answer;
-  JButton selectButton;
+  JButton selectButton; //remove or change to answer cutoff
 
   Color gray = new Color(218, 229, 234);
   Color green = new Color(188, 226, 158);
@@ -60,10 +61,9 @@ class HistoryQuestion extends JPanel {
   private boolean selected; //change to be if selected?
 
   HistoryQuestion() {
-    this.setPreferredSize(new Dimension(400, 60)); // set size of task
+    this.setPreferredSize(new Dimension(400, 40)); // set size of task
     this.setBackground(gray); // set background color of task
     this.setLayout(new FlowLayout()); // set layout of task
-    this.setBorder(BorderFactory.createLineBorder(Color.black));;
 
     selected = false;
 
@@ -72,14 +72,14 @@ class HistoryQuestion extends JPanel {
     index.setHorizontalAlignment(JLabel.CENTER); // set alignment of index label
     this.add(index); // add index label to task
 
-    question = new JTextArea("Question: "); // create task name text field
-    question.setPreferredSize(new Dimension(300, 20));
+    question = new JTextField("Question: "); // create task name text field
+    question.setPreferredSize(new Dimension(100, 20));
     //question.setBorder(BorderFactory.createEmptyBorder()); // remove border of text field
-    question.setBackground(Color.white); // set background color of text field
+    question.setBackground(gray); // set background color of text field
     question.setEditable(false);
 
     answer = new JTextField("Answer: "); // create task name text field
-    answer.setPreferredSize(new Dimension(200, 20));
+    answer.setPreferredSize(new Dimension(100, 20));
     //question.setBorder(BorderFactory.createEmptyBorder()); // remove border of text field
     answer.setBackground(green); // set background color of text field
     answer.setEditable(false);
@@ -94,11 +94,6 @@ class HistoryQuestion extends JPanel {
 
     this.add(selectButton);
   }
-
-  @Override
-    public Dimension getMaximumSize() {
-        return getPreferredSize();
-    }
 
   public void changeIndex(int num) {
     this.index.setText(num + ""); // num to String
@@ -134,15 +129,21 @@ class HistoryQuestion extends JPanel {
 
   public void insertAnswer(String ansString) {
     question.setText(answer.getText() + ansString);
+  }
+
 }
-}
 
 
 
 
 
 
-class List extend JPanel {
+
+
+
+
+
+class List extends JPanel {
   Color backgroundColor = new Color(240, 248, 255);
   Boolean empty;
 
@@ -329,6 +330,7 @@ class ChatList extends JPanel {
 }
 
 
+
 class Footer extends JPanel {
 
   JButton questionButton;
@@ -488,12 +490,12 @@ class AppFrame extends JFrame {
           list.add(historyQuestion); // Add new task to list
           historyQuestion.insertQuestion(prompt);
           historyQuestion.insertAnswer(chat_gpt_answer);
-          list.updateNumbers(); // Updates the numbers of the tasks
+          //list.updateNumbers(); // Updates the numbers of the tasks
           JButton selectButton = historyQuestion.getDone();
           selectButton.addActionListener(
             (ActionEvent e2) -> {
                 historyQuestion.changeState(); // Change color of task
-                list.updateNumbers(); // Updates the numbers of the tasks
+                //list.updateNumbers(); // Updates the numbers of the tasks
                 revalidate(); // Updates the frame
               }
           );
