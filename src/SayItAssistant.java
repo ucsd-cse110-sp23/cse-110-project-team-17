@@ -333,6 +333,13 @@ class ChatList extends JPanel {
     this.setBackground(backgroundColor);
   }
 
+  public void clearChatWindow() {
+    for (Component c : getComponents()) {
+      if (c instanceof ChatBox) {
+        remove(c); // remove the chatbox component
+      }
+    }
+  }
 }
 
 class Footer extends JPanel {
@@ -340,22 +347,35 @@ class Footer extends JPanel {
   JButton questionButton;
   JButton dummyAskQuestionButton;
 
+  JButton askQuestion;
+  JButton stopRecordingButton;
+
   Color backgroundColor = new Color(240, 248, 255);
   Border emptyBorder = BorderFactory.createEmptyBorder();
 
   Footer() {
     this.setPreferredSize(new Dimension(400, 60));
     this.setBackground(backgroundColor);
-    GridLayout layout = new GridLayout(1, 4);
+    GridLayout layout = new GridLayout(1, 2);
     this.setLayout(layout);
 
-    questionButton = new JButton("Ask a question"); // add task button
-    questionButton.setFont(new Font("Sans-serif", Font.ITALIC, 10)); // set font
-    this.add(questionButton); // add to footer
+    // questionButton = new JButton("Ask a question"); // add task button
+    // questionButton.setFont(new Font("Sans-serif", Font.ITALIC, 10)); // set font
+    // this.add(questionButton); // add to footer
 
-    dummyAskQuestionButton = new JButton("Dummy Question Adder"); // add task button
-    dummyAskQuestionButton.setFont(new Font("Sans-serif", Font.ITALIC, 10)); // set font
-    this.add(dummyAskQuestionButton); // add to footer
+    // dummyAskQuestionButton = new JButton("Dummy Question Adder"); // add task button
+    // dummyAskQuestionButton.setFont(new Font("Sans-serif", Font.ITALIC, 10)); // set font
+    // this.add(dummyAskQuestionButton); // add to footer
+
+
+    askQuestion = new JButton("Ask a Question"); // add task button
+    askQuestion.setFont(new Font("Sans-serif", Font.ITALIC, 10)); // set font
+    this.add(askQuestion); // add to footer
+
+    stopRecordingButton = new JButton("Stop Recording"); // add task button
+    stopRecordingButton.setFont(new Font("Sans-serif", Font.ITALIC, 10)); // set font
+    this.add(stopRecordingButton); // add to footer
+    stopRecordingButton.setVisible(false);
 
   }
 
@@ -364,6 +384,14 @@ class Footer extends JPanel {
   }
   public JButton getdummyAskQuestionButton() {
     return dummyAskQuestionButton;
+  }
+
+  public JButton getAskQuestion() {
+    return askQuestion;
+  }
+
+  public JButton getStopRecordingButton() {
+    return stopRecordingButton;
   }
 }
 
@@ -391,8 +419,8 @@ class AppFrame extends JFrame {
   private List list;
   private String prompt;
   private String chat_gpt_answer;
-  private JButton questionButton;
-  private JButton dummyAskQuestionButton;
+  private JButton askQuestion;
+  private JButton stopRecordingButton;
 
   AppFrame() {
     this.revalidate();
@@ -412,14 +440,26 @@ class AppFrame extends JFrame {
     this.add(list, BorderLayout.WEST); // Add history list in left of screen
     this.add(chatList, BorderLayout.CENTER); // Add chat list in middle of footer and title
 
-    questionButton = footer.getquestionButton();
-    dummyAskQuestionButton = footer.getdummyAskQuestionButton();
+    askQuestion = footer.getAskQuestion();
+    stopRecordingButton = footer.getStopRecordingButton();
 
     addListeners();
   }
 
   public void addListeners() {
-    questionButton.addMouseListener(
+    askQuestion.addMouseListener(
+      new MouseAdapter() {
+        @override
+        public void mousePressed(MouseEvent e) {
+          askQuestion.setVisible(false);
+          stopRecordingButton.setVisible(true);
+
+          chatList.clearChatWindow();
+          repaint();
+        }
+      }
+    );
+    stopRecordingButton.addMouseListener(
       new MouseAdapter() {
         @override
         public void mousePressed(MouseEvent e) {
@@ -452,24 +492,10 @@ class AppFrame extends JFrame {
                 revalidate(); // Updates the frame
               }
           );
-        }
-      }
-    );
 
-    dummyAskQuestionButton.addActionListener(
-      (ActionEvent e) -> {
-          HistoryQuestion question = new HistoryQuestion();
-          list.add(question); // Add new task to list
-          question.insertQuestion("testing longer string bigger than field");
-          list.updateNumbers(); // Updates the numbers of the tasks
-          JButton selectButton = question.getDone();
-          selectButton.addActionListener(
-            (ActionEvent e2) -> {
-                question.changeState(); // Change color of task
-                list.updateNumbers(); // Updates the numbers of the tasks
-                revalidate(); // Updates the frame
-              }
-          );
+          stopRecordingButton.setVisible(false);
+          askQuestion.setVisible(true);
+        }
       }
     );
   }
