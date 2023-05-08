@@ -9,6 +9,7 @@ permissions:
 
 jobs:
   build:
+    name: Run unit test
     runs-on: ubuntu-latest
 
     steps:
@@ -43,6 +44,9 @@ jobs:
 
       - name: Build and Run Tests
         run: ./src/test/US2Test.java
+      
+      - name: Unit tests
+        run: bash ./gradlew test --stacktrace
       # report the results
       - name: Publish Test Report
         uses: mikepenz/action-junit-report@v3
