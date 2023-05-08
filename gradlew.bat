@@ -87,18 +87,3 @@ exit /b 1
 if "%OS%"=="Windows_NT" endlocal
 
 :omega
-Footer
-© 2023 GitHub, Inc.
-Footer navigation
-Terms
-Privacy
-Security
-Status
-Docs
-Contact GitHub
-Pricing
-API
-Training
-Blog
-About
-CSE110-SP23-Lab2/gradlew.bat at main · sudolucy/CSE110-SP23-Lab2
