@@ -13,12 +13,14 @@ repositories {
 }
 
 dependencies {
-    def junitVersion = '5.8.1'
+    //def junitVersion = '5.8.1'
 
     // This provides the JUnit API.
-    testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
-    // This provides the TestEngine to actually run the tests.
-    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
+    // testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
+    // // This provides the TestEngine to actually run the tests.
+    // testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
+    testImplementation(platform('org.junit:junit-bom:5.9.3'))
+	testImplementation('org.junit.jupiter:junit-jupiter')
 }
 
 test {

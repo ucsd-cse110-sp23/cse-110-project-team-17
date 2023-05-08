@@ -43,7 +43,8 @@ jobs:
         run: chmod +x ./src/test/US2Test.java
 
       - name: Build and Run Tests
-        run: ./src/test/US2Test.java
+        run: javac src/test/US2Test.java
+        run: java src/test/US2Test
       
       - name: Unit tests
         run: bash ./gradlew test --stacktrace
