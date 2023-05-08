@@ -6,19 +6,19 @@ import org.junit.jupiter.api.Test;
 
 public class US2Test {
     @Test 
-    public void testChatGPT() {
+    void testChatGPT() {
         AppFrame testFrame = new AppFrame();
         assertTrue(testFrame.getChatGPT() instanceof IChatGPT);
     }
 
     @Test 
-    public void testNewQuestionButton() {
+    void testNewQuestionButton() {
         AppFrame testFrame = new AppFrame();
         assertTrue(testFrame.getAskButton() instanceof JButton);
     }
 
     @Test 
-    public void testQuestionButtonToggle() {
+    void testQuestionButtonToggle() {
         AppFrame testFrame = new AppFrame();
         JButton questionButton = testFrame.getAskButton();
         JButton stopButton = testFrame.getStopButton();
@@ -33,7 +33,7 @@ public class US2Test {
     }
 
     @Test
-    public void testStory() {
+    void testStory() {
         AppFrame testFrame = new AppFrame();
         JButton questionButton = testFrame.getAskButton();
         JButton stopButton = testFrame.getStopButton();
