@@ -2,6 +2,9 @@
  * This code was refactored from the original code found at:
  * https://copyassignment.com/to-do-list-app-in-java/
  */
+
+package project;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -636,6 +639,14 @@ class AppFrame extends JFrame {
 
   public JButton getStopButton() {
     return stopRecordingButton;
+  }
+
+  public boolean getStopButtonVisibility() {
+    return stopRecordingButton.isVisible();
+  }
+
+  public boolean getAskButtonVisibility() {
+    return askQuestion.isVisible();
   }
 }
 

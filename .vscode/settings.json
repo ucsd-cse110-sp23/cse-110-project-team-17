@@ -1,10 +1,3 @@
-// {
-//     //"java.configuration.updateBuildConfiguration": "interactive",
-//     "java.project.sourcePaths": ["src/main/"],
-//     "java.project.outputPath": "bin",
-//     "java.project.referencedLibraries": [
-//         "lib/**/*.jar",
-//         "/Users/rei_crzy/Documents/CSE 110/Final Project/cse-110-project-team-17/lib/*.jar",
-//         "/cse-110-project-team-17/lib/*.jar"
-//     ]
-// }
+{
+    "java.configuration.updateBuildConfiguration": "automatic"
+}
