@@ -48,6 +48,9 @@ import java.net.http.HttpResponse.BodyHandler;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+
+
+
 class HistoryQuestion extends JPanel {
 
   JLabel index;
@@ -325,10 +328,16 @@ class ChatGPT implements IChatGPT {
 class ChatBox extends JPanel {
   JLabel dialogue_type;
   JTextArea dialogue;
+  String dialogue_label;
+  String dialogue_text;
 
   Color gray = new Color(218, 229, 234);
 
   ChatBox(String type_input, String dialogue_input) {
+
+    dialogue_label = type_input;
+    dialogue_text = dialogue_input;
+
     this.setPreferredSize(new Dimension(400, 20)); // set size of task
     this.setBackground(gray); // set background color of task
 
@@ -347,6 +356,14 @@ class ChatBox extends JPanel {
     dialogue.setLineWrap(true);
     dialogue.setWrapStyleWord(true);
     this.add(dialogue, BorderLayout.CENTER);
+  }
+
+  public String getLabel() {
+    return dialogue_label;
+  }
+
+  public String getDialogueText() {
+    return dialogue_text;
   }
 }
 

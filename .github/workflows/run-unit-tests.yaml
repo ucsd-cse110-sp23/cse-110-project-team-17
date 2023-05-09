@@ -26,12 +26,9 @@ jobs:
       - name: Setup Gradle
         uses: gradle/gradle-build-action@v2
 
-      - name: Change wrapper permissions
-        run: chmod +x ./gradlew
-
       # build everything (includes running unit tests)
       - name: Execute Gradle build
-        uses: coactions/setup-xvfb@v1
+        uses: GabrielBB/xvfb-action@v1
         with:
           run: ./gradlew build
 
