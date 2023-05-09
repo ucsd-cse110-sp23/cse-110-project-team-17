@@ -12,16 +12,24 @@ repositories {
     mavenCentral()
 }
 
+sourceSets {
+    main.java.srcDirs = ['src/main/java']
+    test.java.srcDirs = ['src/test/java']
+}
+
 dependencies {
-    //def junitVersion = '5.8.1'
+    def junitVersion = '5.8.1'
 
     // This provides the JUnit API.
-    // testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
-    // // This provides the TestEngine to actually run the tests.
-    // testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
-    testImplementation(platform('org.junit:junit-bom:5.9.3'))
-	testImplementation('org.junit.jupiter:junit-jupiter')
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
+    // This provides the TestEngine to actually run the tests.
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
+    
+    implementation files('cse-110-project-team-17/lib/json-20230227.jar')
+    implementation 'org.json:json:20230227'
+    //compile files('/Users/rei_crzy/Documents/CSE 110/Final Project/cse-110-project-team-17/lib/json-20230227.jar')
 }
+
 
 test {
     useJUnitPlatform()
