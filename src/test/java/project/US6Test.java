@@ -26,8 +26,10 @@ public class US6Test {
         assertTrue(answer1.getLabel().equals("Answer"));
         assertTrue(question1.getDialogueText().
             equals("Who is Louis Braille?"));
+        
+        String answer_part = "Mock answer to the following prompt:\n";
+        String question_part = "Who is Louis Braille?";
         assertTrue(answer1.getDialogueText().
-            equals("Mock answer to the follwing prompt:\n" + 
-            "Who is Louis Braille?"));
+            equals(answer_part + question_part));
     }
 }
