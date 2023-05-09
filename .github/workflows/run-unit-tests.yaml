@@ -32,7 +32,7 @@ jobs:
 
       # build everything (includes running unit tests)
       - name: Execute Gradle build
-        uses: GabrielBB/xvfb-action@v1
+        uses: coactions/setup-xvfb@v1
         with:
           run: ./gradlew build
 
