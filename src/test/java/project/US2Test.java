@@ -1,25 +1,30 @@
+package project;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import javax.swing.JButton;
 
-import org.junit.jupiter.api.Test;
-
 public class US2Test {
     @Test 
-    public void testChatGPT() {
+    void testChatGPT() {
         AppFrame testFrame = new AppFrame();
         assertTrue(testFrame.getChatGPT() instanceof IChatGPT);
     }
 
     @Test 
-    public void testNewQuestionButton() {
+    void testNewQuestionButton() {
         AppFrame testFrame = new AppFrame();
         assertTrue(testFrame.getAskButton() instanceof JButton);
     }
 
     @Test 
-    public void testQuestionButtonToggle() {
+    void testQuestionButtonToggle() {
         AppFrame testFrame = new AppFrame();
         JButton questionButton = testFrame.getAskButton();
         JButton stopButton = testFrame.getStopButton();
@@ -34,7 +39,7 @@ public class US2Test {
     }
 
     @Test
-    public void testStory() {
+    void testStory() {
         AppFrame testFrame = new AppFrame();
         JButton questionButton = testFrame.getAskButton();
         JButton stopButton = testFrame.getStopButton();
