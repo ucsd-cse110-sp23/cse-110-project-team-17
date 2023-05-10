@@ -10,7 +10,7 @@ public class US2Test {
     @Test 
     void testChatGPT() {
         IQuestionHandler qHandler = new MockQuestion();
-        IChatGPT chatGPT = new ChatGPT();
+        IChatGPT chatGPT = new MockChatGPT();
         AppFrame testFrame = new AppFrame(qHandler, chatGPT);
         assertTrue(testFrame.getChatGPT() instanceof IChatGPT);
     }

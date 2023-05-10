@@ -9,7 +9,7 @@ public class DS1_1Test {
     public void iterationTest() {
         
         IQuestionHandler qHandler = new MockQuestion();
-        IChatGPT chatGPT = new ChatGPT();
+        IChatGPT chatGPT = new MockChatGPT();
         AppFrame testFrame = new AppFrame(qHandler, chatGPT);
         
         ChatList chatList = testFrame.getChatList();
@@ -32,9 +32,9 @@ public class DS1_1Test {
         testFrame.QuestionButtonHandler();
         testFrame.StopButtonHandler();
         HistoryQuestion question1 = 
-            (HistoryQuestion) historyList.getComponents()[0];
-        HistoryQuestion question2 = 
             (HistoryQuestion) historyList.getComponents()[1];
+        HistoryQuestion question2 = 
+            (HistoryQuestion) historyList.getComponents()[2];
         assertTrue(question1.getQuestionText().
             equals("Who is Louis Braille?"));
         assertTrue(question2.getQuestionText().

@@ -7,7 +7,7 @@ public class US6Test {
     @Test 
     void testAnswer() {
         IQuestionHandler qHandler = new MockQuestion();
-        IChatGPT chatGPT = new ChatGPT();
+        IChatGPT chatGPT = new MockChatGPT();
         AppFrame testFrame = new AppFrame(qHandler, chatGPT);
         ChatList chatList = testFrame.getChatList();
         testFrame.QuestionButtonHandler();

@@ -10,10 +10,10 @@ public class US1Test {
     @Test 
     void testHistoryDefault() {
         IQuestionHandler qHandler = new MockQuestion();
-        IChatGPT chatGPT = new ChatGPT();
+        IChatGPT chatGPT = new MockChatGPT();
         AppFrame testFrame = new AppFrame(qHandler, chatGPT);
         List historyList = testFrame.getHistoryList();
-        assertTrue(historyList.getComponents()[0] 
+        assertTrue(historyList.getComponents()[1] 
             instanceof JTextArea);
     }
 
