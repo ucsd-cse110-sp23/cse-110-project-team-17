@@ -1,20 +1,14 @@
 package project;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.BeforeEach;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import javax.swing.JButton;
-import javax.swing.JTextArea;
 
 public class US6Test {
     @Test 
     void testAnswer() {
-        AppFrame testFrame = new AppFrame();
+        IQuestionHandler qHandler = new MockQuestion();
+        IChatGPT chatGPT = new ChatGPT();
+        AppFrame testFrame = new AppFrame(qHandler, chatGPT);
         ChatList chatList = testFrame.getChatList();
         testFrame.QuestionButtonHandler();
         testFrame.StopButtonHandler();

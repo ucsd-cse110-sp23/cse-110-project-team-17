@@ -1,27 +1,26 @@
 package project;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.BeforeEach;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import javax.swing.JButton;
 import javax.swing.JTextArea;
 
 public class US1Test {
     @Test 
     void testHistoryDefault() {
-        AppFrame testFrame = new AppFrame();
+        IQuestionHandler qHandler = new MockQuestion();
+        IChatGPT chatGPT = new ChatGPT();
+        AppFrame testFrame = new AppFrame(qHandler, chatGPT);
         List historyList = testFrame.getHistoryList();
         assertTrue(historyList.getComponents()[0] 
             instanceof JTextArea);
     }
 
     void testHistoryStory() {
-        AppFrame testFrame = new AppFrame();
+        IQuestionHandler qHandler = new MockQuestion();
+        IChatGPT chatGPT = new ChatGPT();
+        AppFrame testFrame = new AppFrame(qHandler, chatGPT);
         List historyList = testFrame.getHistoryList();
         testFrame.QuestionButtonHandler();
         testFrame.StopButtonHandler();

@@ -15,17 +15,10 @@ import java.awt.FlowLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.ActionEvent;
-import java.io.BufferedReader;
-import java.io.EOFException;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 
-import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
-import javax.swing.Icon;
+import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -34,7 +27,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTextArea;
-import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import javax.swing.BoxLayout;
 
@@ -43,7 +35,6 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.net.http.HttpResponse.BodyHandler;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -66,19 +57,19 @@ class HistoryQuestion extends JPanel {
   private boolean selected; //change to be if selected?
 
   HistoryQuestion() {
-    this.setPreferredSize(new Dimension(400, 40)); // set size of task
+    this.setMinimumSize(new Dimension(400, 160)); // set size of task
     this.setBackground(gray); // set background color of task
     this.setLayout(new FlowLayout()); // set layout of task
 
     selected = false;
 
     index = new JLabel(""); // create index label
-    index.setPreferredSize(new Dimension(20, 20)); // set size of index label
+    index.setPreferredSize(new Dimension(20, 160)); // set size of index label
     index.setHorizontalAlignment(JLabel.CENTER); // set alignment of index label
     this.add(index); // add index label to task
 
     question = new JTextField("Question: "); // create task name text field
-    question.setPreferredSize(new Dimension(100, 20));
+    question.setPreferredSize(new Dimension(300, 160));
     //question.setBorder(BorderFactory.createEmptyBorder()); // remove border of text field
     question.setBackground(gray); // set background color of text field
     question.setEditable(false);
@@ -148,12 +139,62 @@ class HistoryQuestion extends JPanel {
 
 }
 
+class HistoryHeader extends JPanel {
+  Color gray = new Color(218, 229, 234);
 
+  HistoryHeader() {
+    BoxLayout layout = new BoxLayout(this, BoxLayout.X_AXIS);
+    this.setLayout(layout);
+    this.setBackground(gray);
+    // this.setMaximumSize(new Dimension(400, 30));
+    setAlignmentY(TOP_ALIGNMENT);
 
+    // Add History label above history scroll window
+    JLabel historyText = new JLabel("History");
+    historyText.setPreferredSize(new Dimension(80, 30));
+    historyText.setFont(new Font("BrixSansBlack", Font.ITALIC, 20));
+    //historyText.setBorder(BorderFactory.createLineBorder(Color.red));
+    this.add(historyText);
 
+    // Add filler space
+    this.add(Box.createRigidArea(new Dimension(120, 30)));
 
+    // Add ClearAll button
+    JButton clearAll = new JButton();
+    clearAll.setText("Clear All");
+    clearAll.setPreferredSize(new Dimension(80, 30));
+    clearAll.setFont(new Font("BrixSansBlack", Font.ITALIC, 10));
+    this.add(clearAll);
+  }
+}
 
+class HistoryWindow extends JPanel {
+  Color gray = new Color(218, 229, 234);
+  HistoryHeader historyHeader;
+  List list;
+  JScrollPane scrollWindow;
 
+  HistoryWindow() {
+    BoxLayout layout = new BoxLayout(this, BoxLayout.Y_AXIS);
+    this.setLayout(layout);
+    this.setBackground(gray);
+    setAlignmentY(TOP_ALIGNMENT);
+
+    // Add History Header
+    historyHeader = new HistoryHeader();
+    this.add(historyHeader);
+
+    // Add History List
+    list = new List();
+    scrollWindow = new JScrollPane(list);
+    this.add(scrollWindow);
+  }
+
+  public List getList() {
+    return this.list;
+  }
+
+}
 
 
 
@@ -162,12 +203,16 @@ class List extends JPanel {
   Color backgroundColor = new Color(240, 248, 255);
   Color gray = new Color(218, 229, 234);
   Boolean empty;
+  int components;
 
   List() {
     BoxLayout layout = new BoxLayout(this, BoxLayout.Y_AXIS);
     this.setLayout(layout);
     setAlignmentY(TOP_ALIGNMENT);
     empty = true;
+    components = 0;
+    this.add(Box.createVerticalGlue());
+    // this.setPreferredSize(new Dimension(400, 160));
   }
 
   @Override
@@ -182,47 +227,12 @@ class List extends JPanel {
       removeDefault();
     }
     super.add(comp);
+    components++;
     return comp;
   }
 
-
-  public ArrayList<HistoryQuestion> loadHistory()  {
-    // hint 1: use try-catch block
-    // hint 2: use BufferedReader and FileReader
-    // hint 3: task.taskName.setText(line) sets the text of the task
-    try {
-      String linestrings;
-      FileReader fileR = new FileReader("history.txt");
-      BufferedReader bufferR = new BufferedReader(fileR);
-      ArrayList<HistoryQuestion> historyList = new ArrayList<HistoryQuestion>();
-      
-
-      while (bufferR.ready()) {
-          HistoryQuestion set = new HistoryQuestion();
-          set.setMaximumSize(getPreferredSize());
-          linestrings = bufferR.readLine();
-          set.insertQuestion(linestrings);
-          this.add(set);
-          historyList.add(set);
-      }
-      
-        bufferR.close();
-        revalidate();
-
-      return historyList;
-
-    }
-
-    catch (IOException exception) {
-      System.out.println("load not implemented");
-      return null;
-    }
-    
-    
-  }
-
   public boolean isEmpty() {
-    return (getComponents().length == 0);
+    return (components == 0);
   }
 
   public void setDefault() {
@@ -233,6 +243,7 @@ class List extends JPanel {
     defaultArea.setFont(new Font("Serif", Font.ITALIC, 16));
     defaultArea.setLineWrap(true);
     defaultArea.setWrapStyleWord(true);
+    defaultArea.setPreferredSize(new Dimension(400, 160));
     add(defaultArea);
   }
 
@@ -389,11 +400,12 @@ class ChatList extends JPanel {
   }
 }
 
-interface QuestionHandler {
+interface IQuestionHandler {
+  public void startQuestion();
   public String getQuestion();
 }
 
-class MockQuestion implements QuestionHandler {
+class MockQuestion implements IQuestionHandler {
   int index;
   String[] options = new String[5];
 
@@ -406,6 +418,8 @@ class MockQuestion implements QuestionHandler {
     options[4] = "Where did Louis Braille live?";
   }
 
+  public void startQuestion() {}
+
   public String getQuestion() {
     String toReturn = options[index];
     index = (index + 1) % 5;
@@ -416,8 +430,6 @@ class MockQuestion implements QuestionHandler {
 
 
 class Footer extends JPanel {
-
-  JButton questionButton;
 
   JButton askQuestion;
   JButton stopRecordingButton;
@@ -432,10 +444,6 @@ class Footer extends JPanel {
     this.setLayout(layout);
     //this.setBorder(BorderFactory.createLineBorder(Color.red));
 
-    // questionButton = new JButton("Ask a Question"); // add task button
-    // questionButton.setFont(new Font("Sans-serif", Font.ITALIC, 10)); // set font
-    // this.add(questionButton); // add to footer
-
     askQuestion = new JButton("Ask a Question"); // add task button
     askQuestion.setFont(new Font("Sans-serif", Font.ITALIC, 10)); // set font
     this.add(askQuestion); // add to footer
@@ -444,10 +452,6 @@ class Footer extends JPanel {
     stopRecordingButton.setFont(new Font("Sans-serif", Font.ITALIC, 10)); // set font
     this.add(stopRecordingButton); // add to footer
     stopRecordingButton.setVisible(false);
-  }
-
-  public JButton getquestionButton() {
-    return questionButton;
   }
   
   public JButton getAskQuestion() {
@@ -464,39 +468,61 @@ class Header extends JPanel {
   Color backgroundColor = new Color(240, 248, 255);
 
   Header() {
+
+    // int rows = 2;
+    // int cols = 3;
+    // int size = rows * cols;
+    // int components = 0;
+
+    // JLabel fillerLabel;
+
     this.setPreferredSize(new Dimension(400, 60)); // Size of the header
     this.setBackground(backgroundColor);
-    GridLayout layout = new GridLayout(1, 2);
+    GridLayout layout = new GridLayout(1,1);
     this.setLayout(layout);
 
-    JLabel historyText = new JLabel("History");
-    historyText.setPreferredSize(new Dimension(50, 50));
-    historyText.setFont(new Font("BrixSansBlack", Font.ITALIC, 15));
-    historyText.setHorizontalAlignment(JLabel.LEFT); // Align the text to the center
-    historyText.setVerticalAlignment(SwingConstants.BOTTOM);
+
+    // Add History label above history scroll window
+    // JLabel historyText = new JLabel("History");
+    // historyText.setPreferredSize(new Dimension(50, 50));
+    // historyText.setFont(new Font("BrixSansBlack", Font.ITALIC, 20));
+    // historyText.setHorizontalAlignment(JLabel.CENTER); // Align the text to the left
+    // historyText.setVerticalAlignment(JLabel.TOP);
     //historyText.setBorder(BorderFactory.createLineBorder(Color.red));
-    this.add(historyText);
+    // this.add(historyText);
+    // components++;
 
-    ImageIcon trashCan = new ImageIcon("/Users/rei_crzy/Documents/CSE 110/Final Project/cse-110-project-team-17/trashCan.png");
-    JButton clearAll = new JButton();
-    clearAll.setText("Clear All");
-    clearAll.setVerticalTextPosition(AbstractButton.CENTER);
-    clearAll.setHorizontalTextPosition(AbstractButton.LEADING); 
-    clearAll.setPreferredSize(new Dimension(50, 50));
-    clearAll.setFont(new Font("BrixSansBlack", Font.ITALIC, 10));
-    clearAll.setHorizontalAlignment(SwingConstants.RIGHT); // Align the text to the center
-    clearAll.setVerticalAlignment(SwingConstants.BOTTOM);
-    //clearAll.setBorder(BorderFactory.createLineBorder(Color.red));
-    this.add(clearAll);
-
+    
+    // Add main title
     JLabel titleText = new JLabel("SayIt"); // Text of the header
     titleText.setPreferredSize(new Dimension(200, 60));
-    titleText.setFont(new Font("BrixSansBlack", Font.ITALIC, 30));
+    titleText.setFont(new Font("BrixSansBlack", Font.ITALIC, 20));
     titleText.setHorizontalAlignment(JLabel.CENTER); // Align the text to the center
     //titleText.setBorder(BorderFactory.createLineBorder(Color.red));
     this.add(titleText); // Add the text to the header
+    // components++;
 
+    // Add a filler on the top right box
+    // fillerLabel = new JLabel("");
+    // this.add(fillerLabel);
+    // components++;
 
+    ImageIcon trashCan = new ImageIcon("/Users/rei_crzy/Documents/CSE 110/Final Project/cse-110-project-team-17/trashCan.png");
+    // JButton clearAll = new JButton();
+    // clearAll.setText("Clear All");
+    // clearAll.setPreferredSize(new Dimension(50, 50));
+    // clearAll.setFont(new Font("BrixSansBlack", Font.ITALIC, 10));
+    // clearAll.setHorizontalAlignment(JButton.CENTER); // Align the text to the center
+    // clearAll.setVerticalAlignment(JButton.BOTTOM);
+    //clearAll.setBorder(BorderFactory.createLineBorder(Color.red));
+    // this.add(clearAll);
+    // components++;
+
+    // while (components < size) {
+      // fillerLabel = new JLabel("");
+      // this.add(fillerLabel);
+      // components++;
+    // }
     
   }
 }
@@ -508,12 +534,13 @@ class AppFrame extends JFrame {
   private IChatGPT chatGPT;
   private ChatList chatList;
   private List list;
-  private QuestionHandler qHandler;
+  private HistoryWindow historyWindow;
+  private IQuestionHandler qHandler;
   private String chat_gpt_answer;
   private JButton askQuestion;
   private JButton stopRecordingButton;
 
-  AppFrame() {
+  AppFrame(IQuestionHandler qHandlerInput, IChatGPT ChatGPTInput) {
     this.revalidate();
     this.setSize(800, 600); // 400 width and 600 height
     this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Close on exit
@@ -521,14 +548,15 @@ class AppFrame extends JFrame {
 
     header = new Header();
     footer = new Footer();
-    list = new List();
+    historyWindow = new HistoryWindow();
+    list = historyWindow.getList();
     chatList = new ChatList();
-    qHandler = new MockQuestion();
-    chatGPT = new MockChatGPT();
+    qHandler = qHandlerInput;
+    chatGPT = ChatGPTInput;
 
     this.add(header, BorderLayout.NORTH); // Add title bar on top of the screen
     this.add(footer, BorderLayout.SOUTH); // Add footer on bottom of the screen
-    this.add(list, BorderLayout.WEST); // Add history list in left of screen
+    this.add(historyWindow, BorderLayout.WEST); // Add history list in left of screen
     this.add(chatList, BorderLayout.CENTER); // Add chat list in middle of footer and title
 
     askQuestion = footer.getAskQuestion();
@@ -559,6 +587,7 @@ class AppFrame extends JFrame {
   }
 
   public void QuestionButtonHandler() {
+    qHandler.startQuestion();
     askQuestion.setVisible(false);
     stopRecordingButton.setVisible(true);
     chatList.clearChatWindow();
@@ -669,7 +698,9 @@ class AppFrame extends JFrame {
 
 public class SayItAssistant {
   public static void main(String args[]) {
-    new AppFrame(); // Create the frame
+    IQuestionHandler qHandler = new MockQuestion();
+    IChatGPT chatGPT = new MockChatGPT();
+    new AppFrame(qHandler, chatGPT); // Create the frame
   }
 }
 
