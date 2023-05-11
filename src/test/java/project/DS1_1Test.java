@@ -4,6 +4,10 @@ package project;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import project.chat_gpt.*;
+import project.question_handler.*;
+import project.gui.*;
+
 public class DS1_1Test {
     @Test
     public void iterationTest() {
@@ -13,7 +17,7 @@ public class DS1_1Test {
         AppFrame testFrame = new AppFrame(qHandler, chatGPT);
         
         ChatList chatList = testFrame.getChatList();
-        List historyList = testFrame.getHistoryList();
+        HistoryList historyList = testFrame.getHistoryList();
         testFrame.QuestionButtonHandler();
         testFrame.StopButtonHandler();
         ChatBox chatquestion1 = (ChatBox)

@@ -6,13 +6,17 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import javax.swing.JTextArea;
 
+import project.chat_gpt.*;
+import project.question_handler.*;
+import project.gui.*;
+
 public class US1Test {
     @Test 
     void testHistoryDefault() {
         IQuestionHandler qHandler = new MockQuestion();
         IChatGPT chatGPT = new MockChatGPT();
         AppFrame testFrame = new AppFrame(qHandler, chatGPT);
-        List historyList = testFrame.getHistoryList();
+        HistoryList historyList = testFrame.getHistoryList();
         assertTrue(historyList.getComponents()[1] 
             instanceof JTextArea);
     }
@@ -22,7 +26,7 @@ public class US1Test {
         IQuestionHandler qHandler = new MockQuestion();
         IChatGPT chatGPT = new MockChatGPT();
         AppFrame testFrame = new AppFrame(qHandler, chatGPT);
-        List historyList = testFrame.getHistoryList();
+        HistoryList historyList = testFrame.getHistoryList();
         testFrame.QuestionButtonHandler();
         testFrame.StopButtonHandler();
         testFrame.QuestionButtonHandler();
@@ -45,7 +49,6 @@ public class US1Test {
         assertEquals(chatAnswer.getLabel(), ("Answer"));
         assertEquals(chatQuestion.getDialogueText(), 
             ("Who is Louis Braille?"));
-        System.out.println(chatAnswer.getDialogueText());
         assertEquals(chatAnswer.getDialogueText(), 
             ("Mock answer to the following prompt:\n" + 
             "Who is Louis Braille?"));

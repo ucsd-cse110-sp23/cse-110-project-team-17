@@ -6,6 +6,10 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import javax.swing.JButton;
 
+import project.chat_gpt.*;
+import project.question_handler.*;
+// import project.gui.*;
+
 public class US2Test {
     @Test 
     void testChatGPT() {
