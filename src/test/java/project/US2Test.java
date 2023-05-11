@@ -1,31 +1,37 @@
 package project;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.BeforeEach;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import javax.swing.JButton;
+
+import project.chat_gpt.*;
+import project.question_handler.*;
+// import project.gui.*;
 
 public class US2Test {
     @Test 
     void testChatGPT() {
-        AppFrame testFrame = new AppFrame();
+        IQuestionHandler qHandler = new MockQuestion();
+        IChatGPT chatGPT = new MockChatGPT();
+        AppFrame testFrame = new AppFrame(qHandler, chatGPT);
         assertTrue(testFrame.getChatGPT() instanceof IChatGPT);
     }
 
     @Test 
     void testNewQuestionButton() {
-        AppFrame testFrame = new AppFrame();
+        IQuestionHandler qHandler = new MockQuestion();
+        IChatGPT chatGPT = new ChatGPT();
+        AppFrame testFrame = new AppFrame(qHandler, chatGPT);
         assertTrue(testFrame.getAskButton() instanceof JButton);
     }
 
     @Test 
     void testQuestionButtonToggle() {
-        AppFrame testFrame = new AppFrame();
+        IQuestionHandler qHandler = new MockQuestion();
+        IChatGPT chatGPT = new ChatGPT();
+        AppFrame testFrame = new AppFrame(qHandler, chatGPT);
         JButton questionButton = testFrame.getAskButton();
         JButton stopButton = testFrame.getStopButton();
         assertTrue(questionButton.isVisible());
@@ -40,7 +46,9 @@ public class US2Test {
 
     @Test
     void testStory() {
-        AppFrame testFrame = new AppFrame();
+        IQuestionHandler qHandler = new MockQuestion();
+        IChatGPT chatGPT = new ChatGPT();
+        AppFrame testFrame = new AppFrame(qHandler, chatGPT);
         JButton questionButton = testFrame.getAskButton();
         JButton stopButton = testFrame.getStopButton();
         assertTrue(questionButton.isVisible());

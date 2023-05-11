@@ -2,24 +2,22 @@ package project;
 
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.BeforeEach;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import javax.swing.JButton;
-import javax.swing.JTextArea;
+import project.chat_gpt.*;
+import project.question_handler.*;
+import project.gui.*;
 
 public class DS1_1Test {
     @Test
     public void iterationTest() {
         
-        AppFrame testFrame = new AppFrame();
+        IQuestionHandler qHandler = new MockQuestion();
+        IChatGPT chatGPT = new MockChatGPT();
+        AppFrame testFrame = new AppFrame(qHandler, chatGPT);
         
         ChatList chatList = testFrame.getChatList();
-        List historyList = testFrame.getHistoryList();
+        HistoryList historyList = testFrame.getHistoryList();
         testFrame.QuestionButtonHandler();
         testFrame.StopButtonHandler();
         ChatBox chatquestion1 = (ChatBox)
@@ -38,9 +36,9 @@ public class DS1_1Test {
         testFrame.QuestionButtonHandler();
         testFrame.StopButtonHandler();
         HistoryQuestion question1 = 
-            (HistoryQuestion) historyList.getComponents()[0];
-        HistoryQuestion question2 = 
             (HistoryQuestion) historyList.getComponents()[1];
+        HistoryQuestion question2 = 
+            (HistoryQuestion) historyList.getComponents()[2];
         assertTrue(question1.getQuestionText().
             equals("Who is Louis Braille?"));
         assertTrue(question2.getQuestionText().

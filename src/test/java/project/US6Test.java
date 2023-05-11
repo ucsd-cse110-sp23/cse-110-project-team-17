@@ -1,21 +1,24 @@
 package project;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.BeforeEach;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import javax.swing.JButton;
-import javax.swing.JTextArea;
+import java.io.IOException;
+
+import project.chat_gpt.*;
+import project.question_handler.*;
+import project.gui.*;
 
 public class US6Test {
     @Test 
-    void testAnswer() {
-        AppFrame testFrame = new AppFrame();
+    void testAnswer() throws IOException, InterruptedException {
+        IQuestionHandler qHandler = new MockQuestion();
+        IChatGPT chatGPT = new MockChatGPT();
+        AppFrame testFrame = new AppFrame(qHandler, chatGPT);
         ChatList chatList = testFrame.getChatList();
+
+        String question = qHandler.peekQuestion();
+
         testFrame.QuestionButtonHandler();
         testFrame.StopButtonHandler();
         ChatBox question1 = (ChatBox)
@@ -27,9 +30,8 @@ public class US6Test {
         assertTrue(question1.getDialogueText().
             equals("Who is Louis Braille?"));
         
-        String answer_part = "Mock answer to the following prompt:\n";
-        String question_part = "Who is Louis Braille?";
+        String answer_part = chatGPT.ask(question);
         assertTrue(answer1.getDialogueText().
-            equals(answer_part + question_part));
+            equals(answer_part));
     }
 }
