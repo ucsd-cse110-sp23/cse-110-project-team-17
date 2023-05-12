@@ -31,5 +31,9 @@ public class HistoryWindow extends JPanel {
     public HistoryList getList() {
       return this.list;
     }
+
+    public HistoryHeader getHistoryHeader() {
+      return this.historyHeader;
+    }
   
   }

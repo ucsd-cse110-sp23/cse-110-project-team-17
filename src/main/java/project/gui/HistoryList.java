@@ -71,5 +71,18 @@ public class HistoryList extends JPanel {
     public Component[] getListComponents() {
       return getComponents();
     }
-  
+
+    public void removeEverything() {
+      this.removeAll();
+      components = 0;
+      empty = true;
+    }
+
+    public int getComponentsNum() {
+      return components;
+    }
+    
+    public boolean getEmpty() {
+      return empty;
+    }
   }

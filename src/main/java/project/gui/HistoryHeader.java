@@ -12,6 +12,7 @@ import javax.swing.JPanel;
 
 public class HistoryHeader extends JPanel {
     Color gray = new Color(218, 229, 234);
+    JButton clearAll;
   
     public HistoryHeader() {
       BoxLayout layout = new BoxLayout(this, BoxLayout.X_AXIS);
@@ -31,10 +32,14 @@ public class HistoryHeader extends JPanel {
       this.add(Box.createRigidArea(new Dimension(120, 30)));
   
       // Add ClearAll button
-      JButton clearAll = new JButton();
+      clearAll = new JButton();
       clearAll.setText("Clear All");
       clearAll.setPreferredSize(new Dimension(80, 30));
       clearAll.setFont(new Font("BrixSansBlack", Font.ITALIC, 10));
       this.add(clearAll);
+    }
+
+    public JButton getClearAll() {
+      return this.clearAll;
     }
 }
