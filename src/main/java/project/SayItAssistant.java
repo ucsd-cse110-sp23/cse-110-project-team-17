@@ -32,6 +32,8 @@ class AppFrame extends JFrame {
   private String chat_gpt_answer;
   private JButton askQuestion;
   private JButton stopRecordingButton;
+  private JButton clearAll;
+  
 
   AppFrame(IQuestionHandler qHandlerInput, IChatGPT ChatGPTInput) {
     this.revalidate();
@@ -54,6 +56,7 @@ class AppFrame extends JFrame {
 
     askQuestion = footer.getAskQuestion();
     stopRecordingButton = footer.getStopRecordingButton();
+    clearAll = historyWindow.getHistoryHeader().getClearAll();
 
     list.setDefault();
 
@@ -77,6 +80,20 @@ class AppFrame extends JFrame {
         }
       }
     );
+    clearAll.addMouseListener(
+      new MouseAdapter() {
+        @override
+        public void mousePressed(MouseEvent e) {
+          clearAll();
+        }
+      }
+    );
+  }
+
+  public void clearAll() {
+    list.removeEverything();
+    chatList.removeAll();
+    this.revalidate();
   }
 
   public void QuestionButtonHandler() {
