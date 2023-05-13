@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import javax.swing.JButton;
 
+import project.audio_handler.*;
 import project.chat_gpt.*;
 import project.question_handler.*;
 // import project.gui.*;
@@ -13,25 +14,28 @@ import project.question_handler.*;
 public class US2Test {
     @Test 
     void testChatGPT() {
-        IQuestionHandler qHandler = new MockQuestion();
+        IQuestionHandler qHandler = new MockQuestionHandler();
         IChatGPT chatGPT = new MockChatGPT();
-        AppFrame testFrame = new AppFrame(qHandler, chatGPT);
+        IAudioHandler audioHandler = new MockAudioHandler();
+        AppFrame testFrame = new AppFrame(qHandler, chatGPT, audioHandler);
         assertTrue(testFrame.getChatGPT() instanceof IChatGPT);
     }
 
     @Test 
     void testNewQuestionButton() {
-        IQuestionHandler qHandler = new MockQuestion();
+        IQuestionHandler qHandler = new MockQuestionHandler();
         IChatGPT chatGPT = new ChatGPT();
-        AppFrame testFrame = new AppFrame(qHandler, chatGPT);
+        IAudioHandler audioHandler = new MockAudioHandler();
+        AppFrame testFrame = new AppFrame(qHandler, chatGPT, audioHandler);
         assertTrue(testFrame.getAskButton() instanceof JButton);
     }
 
     @Test 
     void testQuestionButtonToggle() {
-        IQuestionHandler qHandler = new MockQuestion();
+        IQuestionHandler qHandler = new MockQuestionHandler();
         IChatGPT chatGPT = new ChatGPT();
-        AppFrame testFrame = new AppFrame(qHandler, chatGPT);
+        IAudioHandler audioHandler = new MockAudioHandler();
+        AppFrame testFrame = new AppFrame(qHandler, chatGPT, audioHandler);
         JButton questionButton = testFrame.getAskButton();
         JButton stopButton = testFrame.getStopButton();
         assertTrue(questionButton.isVisible());
@@ -46,9 +50,10 @@ public class US2Test {
 
     @Test
     void testStory() {
-        IQuestionHandler qHandler = new MockQuestion();
+        IQuestionHandler qHandler = new MockQuestionHandler();
         IChatGPT chatGPT = new ChatGPT();
-        AppFrame testFrame = new AppFrame(qHandler, chatGPT);
+        IAudioHandler audioHandler = new MockAudioHandler();
+        AppFrame testFrame = new AppFrame(qHandler, chatGPT, audioHandler);
         JButton questionButton = testFrame.getAskButton();
         JButton stopButton = testFrame.getStopButton();
         assertTrue(questionButton.isVisible());

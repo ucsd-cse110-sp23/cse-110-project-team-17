@@ -5,6 +5,7 @@
 
 package project;
 
+import project.audio_handler.*;
 import project.chat_gpt.*;
 import project.question_handler.*;
 import project.gui.*;
@@ -29,13 +30,13 @@ class AppFrame extends JFrame {
   private HistoryList list;
   private HistoryWindow historyWindow;
   private IQuestionHandler qHandler;
+  private IAudioHandler audioHandler;
   private String chat_gpt_answer;
   private JButton askQuestion;
   private JButton stopRecordingButton;
   private JButton clearAll;
-  
 
-  AppFrame(IQuestionHandler qHandlerInput, IChatGPT ChatGPTInput) {
+  AppFrame(IQuestionHandler qHandler, IChatGPT chatGPT, IAudioHandler audioHandler) {
     this.revalidate();
     this.setSize(800, 600); // 400 width and 600 height
     this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Close on exit
@@ -46,8 +47,9 @@ class AppFrame extends JFrame {
     historyWindow = new HistoryWindow();
     list = historyWindow.getList();
     chatList = new ChatList();
-    qHandler = qHandlerInput;
-    chatGPT = ChatGPTInput;
+    this.qHandler = qHandler;
+    this.chatGPT = chatGPT;
+    this.audioHandler = audioHandler;
 
     this.add(header, BorderLayout.NORTH); // Add title bar on top of the screen
     this.add(footer, BorderLayout.SOUTH); // Add footer on bottom of the screen
@@ -97,7 +99,7 @@ class AppFrame extends JFrame {
   }
 
   public void QuestionButtonHandler() {
-    qHandler.startQuestion();
+    audioHandler.startRecording();
     askQuestion.setVisible(false);
     stopRecordingButton.setVisible(true);
     chatList.clearChatWindow();
@@ -105,7 +107,14 @@ class AppFrame extends JFrame {
   }
 
   public void StopButtonHandler() {
-    String prompt = qHandler.getQuestion();
+    String filename = audioHandler.stopRecording();
+    String prompt = "";
+    try {
+      prompt = qHandler.getQuestion(filename);
+    }
+    catch (IOException io_e) {
+      throw new RuntimeException("An IO Exception happened while getting question.");
+    }
     ChatBox question = new ChatBox("Question", prompt);
     chatList.add(question);
     revalidate();
@@ -208,9 +217,10 @@ class AppFrame extends JFrame {
 
 public class SayItAssistant {
   public static void main(String args[]) {
-    IQuestionHandler qHandler = new MockQuestion();
+    IQuestionHandler qHandler = new MockQuestionHandler();
     IChatGPT chatGPT = new MockChatGPT();
-    new AppFrame(qHandler, chatGPT); // Create the frame
+    IAudioHandler audioHandler = new MockAudioHandler();
+    new AppFrame(qHandler, chatGPT, audioHandler); // Create the frame
   }
 }
 

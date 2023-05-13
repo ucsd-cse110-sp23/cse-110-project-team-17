@@ -7,12 +7,15 @@ import java.io.IOException;
 import project.chat_gpt.*;
 import project.question_handler.*;
 import project.gui.*;
+import project.audio_handler.*;
+
 public class US4Test {
     @Test
     void testClearAllButtons() throws IOException {
-        IQuestionHandler qHandler = new MockQuestion();
+        IQuestionHandler qHandler = new MockQuestionHandler();
         IChatGPT chatGPT = new MockChatGPT();
-        AppFrame testFrame = new AppFrame(qHandler, chatGPT);
+        IAudioHandler audioHandler = new MockAudioHandler();
+        AppFrame testFrame = new AppFrame(qHandler, chatGPT, audioHandler);
         ChatList chatList = testFrame.getChatList();
         HistoryList historyList = new HistoryList();
 

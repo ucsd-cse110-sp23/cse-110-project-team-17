@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import javax.swing.JTextArea;
 
+import project.audio_handler.*;
 import project.chat_gpt.*;
 import project.question_handler.*;
 import project.gui.*;
@@ -13,9 +14,10 @@ import project.gui.*;
 public class US1Test {
     @Test 
     void testHistoryDefault() {
-        IQuestionHandler qHandler = new MockQuestion();
+        IQuestionHandler qHandler = new MockQuestionHandler();
         IChatGPT chatGPT = new MockChatGPT();
-        AppFrame testFrame = new AppFrame(qHandler, chatGPT);
+        IAudioHandler audioHandler = new MockAudioHandler();
+        AppFrame testFrame = new AppFrame(qHandler, chatGPT, audioHandler);
         HistoryList historyList = testFrame.getHistoryList();
         assertTrue(historyList.getComponents()[1] 
             instanceof JTextArea);
@@ -23,9 +25,15 @@ public class US1Test {
 
     @Test
     void testHistoryStory() {
-        IQuestionHandler qHandler = new MockQuestion();
+
+        String questionString1 = "What is project/dummy_audio/TestRecording0?";
+        String questionString2 = "What is project/dummy_audio/TestRecording1?";
+        String answer_part = "Mock answer to the following prompt:\n";
+
+        IQuestionHandler qHandler = new MockQuestionHandler();
         IChatGPT chatGPT = new MockChatGPT();
-        AppFrame testFrame = new AppFrame(qHandler, chatGPT);
+        IAudioHandler audioHandler = new MockAudioHandler();
+        AppFrame testFrame = new AppFrame(qHandler, chatGPT, audioHandler);
         HistoryList historyList = testFrame.getHistoryList();
         testFrame.QuestionButtonHandler();
         testFrame.StopButtonHandler();
@@ -36,9 +44,9 @@ public class US1Test {
         HistoryQuestion question2 = 
             (HistoryQuestion) historyList.getComponents()[2];
         assertTrue(question1.getQuestionText().
-            equals("Who is Louis Braille?"));
+            equals(questionString1));
         assertTrue(question2.getQuestionText().
-            equals("What did Louis Braille do?"));
+            equals(questionString2));
         testFrame.SelectButtonHandler(question1);
         ChatList chatList = testFrame.getChatList();
         ChatBox chatQuestion = 
@@ -48,9 +56,8 @@ public class US1Test {
         assertEquals(chatQuestion.getLabel(), ("Question"));
         assertEquals(chatAnswer.getLabel(), ("Answer"));
         assertEquals(chatQuestion.getDialogueText(), 
-            ("Who is Louis Braille?"));
+            (questionString1));
         assertEquals(chatAnswer.getDialogueText(), 
-            ("Mock answer to the following prompt:\n" + 
-            "Who is Louis Braille?"));
+            (answer_part + questionString1));
     }
 }

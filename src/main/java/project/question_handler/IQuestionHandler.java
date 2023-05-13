@@ -1,7 +1,7 @@
 package project.question_handler;
 
+import java.io.IOException;
+
 public interface IQuestionHandler {
-    public void startQuestion();
-    public String peekQuestion();
-    public String getQuestion();
+    public String getQuestion(String filename) throws IOException;
 }

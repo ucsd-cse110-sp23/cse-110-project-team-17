@@ -2,7 +2,6 @@ package project;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 
@@ -11,27 +10,35 @@ import project.chat_gpt.*;
 import project.question_handler.*;
 import project.gui.*;
 
-public class US6Test {
-    @Test 
-    void testAnswer() throws IOException, InterruptedException {
 
+public class US3Test {
+    @Test
+    void testStartAndStopRecording() {
+        IAudioHandler audioHandler = new MockAudioHandler();
+        audioHandler.startRecording();
+        String file1 = audioHandler.stopRecording();
+        audioHandler.startRecording();
+        String file2 = audioHandler.stopRecording();
+        assertTrue(!file1.equals(file2));
+    }
+
+    @Test
+    void testStartAndStopRecordingGUI() throws IOException, InterruptedException {
         IQuestionHandler qHandler = new MockQuestionHandler();
         IChatGPT chatGPT = new MockChatGPT();
         IAudioHandler audioHandler = new MockAudioHandler();
-        IAudioHandler audioHandlerTest = new MockAudioHandler();
-        AppFrame testFrame = new AppFrame(qHandler, chatGPT, audioHandler);
-        ChatList chatList = testFrame.getChatList();
+        IAudioHandler audioHandler2 = new MockAudioHandler();
 
-        audioHandlerTest.startRecording();
-        String filename = audioHandlerTest.stopRecording();
-        String question = qHandler.getQuestion(filename);
-
+        audioHandler2.startRecording();
+        String filename = audioHandler2.stopRecording();
         String filename_first = filename.split("[.]")[0];
         String expected_question = "What is " + filename_first + "?";
-        assertEquals(question, expected_question);
 
+        AppFrame testFrame = new AppFrame(qHandler, chatGPT, audioHandler);
         testFrame.QuestionButtonHandler();
         testFrame.StopButtonHandler();
+
+        ChatList chatList = testFrame.getChatList();
         ChatBox question1 = (ChatBox)
             chatList.getComponents()[0];
         ChatBox answer1 = (ChatBox)
