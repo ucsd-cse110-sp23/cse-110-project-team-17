@@ -13,6 +13,7 @@ import javax.swing.JPanel;
 public class HistoryHeader extends JPanel {
     Color gray = new Color(218, 229, 234);
     JButton clearAll;
+    JButton deleteSelected;
   
     public HistoryHeader() {
       BoxLayout layout = new BoxLayout(this, BoxLayout.X_AXIS);
@@ -37,9 +38,20 @@ public class HistoryHeader extends JPanel {
       clearAll.setPreferredSize(new Dimension(80, 30));
       clearAll.setFont(new Font("BrixSansBlack", Font.ITALIC, 10));
       this.add(clearAll);
+
+      // Add deleteSelected button
+      deleteSelected = new JButton();
+      deleteSelected.setText("Delete Selected");
+      deleteSelected.setPreferredSize(new Dimension(80, 30));
+      deleteSelected.setFont(new Font("BrixSansBlack", Font.ITALIC, 10));
+      this.add(deleteSelected);
     }
 
     public JButton getClearAll() {
       return this.clearAll;
+    }
+
+    public JButton getdeleteSelected() {
+      return this.deleteSelected;
     }
 }

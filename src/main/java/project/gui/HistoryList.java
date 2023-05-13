@@ -72,6 +72,18 @@ public class HistoryList extends JPanel {
       return getComponents();
     }
 
+    public void deleteSelected() {
+      for (Component c : getComponents()) {
+        if (c instanceof HistoryQuestion) {
+          HistoryQuestion workingQ = (HistoryQuestion) c;
+          if (workingQ.getState() == true) {
+            remove(workingQ);
+            components--;
+          }
+        }
+      }
+    }
+
     public void removeEverything() {
       this.removeAll();
       components = 0;
