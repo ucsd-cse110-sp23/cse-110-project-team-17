@@ -98,6 +98,7 @@ class AppFrame extends JFrame {
         @override
         public void mousePressed(MouseEvent e) {
           list.deleteSelected();
+          chatList.clearChatWindow();
           repaint();
           revalidate();
         }
