@@ -1,9 +1,9 @@
 package project;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
-
 import javax.swing.JTextArea;
 
 import project.audio_handler.*;
@@ -11,12 +11,28 @@ import project.chat_gpt.*;
 import project.question_handler.*;
 import project.gui.*;
 
+import java.io.*;
+
 public class US1Test {
+
+    @BeforeEach
+    void cleanHistory() {
+        String filename = "project/history.csv";
+        String dir_path = "src/main/java";
+        File potential_dir = new File(dir_path);
+        if (potential_dir.isDirectory()) {
+            filename = dir_path + "/" + filename;
+        }
+        File historyFile = new File(filename);
+        historyFile.delete();
+    }
+
     @Test 
     void testHistoryDefault() {
         IQuestionHandler qHandler = new MockQuestionHandler();
         IChatGPT chatGPT = new MockChatGPT();
         IAudioHandler audioHandler = new MockAudioHandler();
+
         AppFrame testFrame = new AppFrame(qHandler, chatGPT, audioHandler);
         HistoryList historyList = testFrame.getHistoryList();
         assertTrue(historyList.getComponents()[1] 
@@ -25,10 +41,9 @@ public class US1Test {
 
     @Test
     void testHistoryStory() {
-
         String questionString1 = "What is project/dummy_audio/TestRecording0?";
         String questionString2 = "What is project/dummy_audio/TestRecording1?";
-        String answer_part = "Mock answer to the following prompt:\n";
+        String answer_part = "Mock answer to the following prompt: ";
 
         IQuestionHandler qHandler = new MockQuestionHandler();
         IChatGPT chatGPT = new MockChatGPT();

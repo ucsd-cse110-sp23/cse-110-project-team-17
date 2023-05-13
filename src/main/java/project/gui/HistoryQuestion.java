@@ -18,6 +18,7 @@ public class HistoryQuestion extends JPanel {
     JTextField answer;
     String question_text;
     String answer_text;
+    String index_str;
     JButton selectButton; //remove or change to answer cutoff
   
     Color gray = new Color(218, 229, 234);
@@ -25,10 +26,14 @@ public class HistoryQuestion extends JPanel {
   
     private boolean selected; //change to be if selected?
   
-    public HistoryQuestion() {
+    public HistoryQuestion(String index_str, String question_text, String answer_text) {
       this.setMinimumSize(new Dimension(400, 160)); // set size of task
       this.setBackground(gray); // set background color of task
       this.setLayout(new FlowLayout()); // set layout of task
+
+      this.index_str = index_str;
+      this.question_text = question_text;
+      this.answer_text = answer_text;
   
       selected = false;
   
@@ -42,6 +47,7 @@ public class HistoryQuestion extends JPanel {
       //question.setBorder(BorderFactory.createEmptyBorder()); // remove border of text field
       question.setBackground(gray); // set background color of text field
       question.setEditable(false);
+      question.setText("Question: " + question_text);
   
       this.add(question);
   
@@ -51,6 +57,11 @@ public class HistoryQuestion extends JPanel {
       selectButton.setFocusPainted(false);
   
       this.add(selectButton);
+    }
+
+    public void setIndex(int num) {
+      index_str = Integer.toString(num);
+      this.index.setText(index_str);
     }
   
     public JButton getDone() {
@@ -92,6 +103,10 @@ public class HistoryQuestion extends JPanel {
   
     public String getAnswerText() {
       return answer_text;
+    }
+
+    public String getIndex() {
+      return index_str;
     }
   
 }

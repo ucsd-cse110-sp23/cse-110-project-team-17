@@ -7,6 +7,6 @@ public class MockChatGPT implements IChatGPT {
     public MockChatGPT() {}
 
     public String ask(String prompt) throws IOException, InterruptedException {
-        return "Mock answer to the following prompt:\n" + prompt;
+        return "Mock answer to the following prompt: " + prompt;
     }
 }

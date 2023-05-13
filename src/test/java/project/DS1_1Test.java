@@ -2,6 +2,7 @@ package project;
 
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import project.audio_handler.*;
@@ -9,7 +10,25 @@ import project.chat_gpt.*;
 import project.question_handler.*;
 import project.gui.*;
 
+import java.io.*;
+
 public class DS1_1Test {
+
+    @BeforeEach
+    void cleanHistory() {
+        String filename = "project/history.csv";
+        String dir_path = "src/main/java";
+        File potential_dir = new File(dir_path);
+        if (potential_dir.isDirectory()) {
+            filename = dir_path + "/" + filename;
+        }
+        System.out.println(System.getProperty("user.dir"));
+        System.out.println(filename);
+        File historyFile = new File(filename);
+        historyFile.delete();
+        System.out.println("Nuked history file.");
+    }
+
     @Test
     public void iterationTest() {
         
@@ -21,7 +40,7 @@ public class DS1_1Test {
 
         String questionString1 = "What is project/dummy_audio/TestRecording0?";
         String questionString2 = "What is project/dummy_audio/TestRecording1?";
-        String answer_part = "Mock answer to the following prompt:\n";
+        String answer_part = "Mock answer to the following prompt: ";
         
         ChatList chatList = testFrame.getChatList();
         HistoryList historyList = testFrame.getHistoryList();
