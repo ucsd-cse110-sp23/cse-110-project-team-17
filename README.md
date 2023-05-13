@@ -1,2 +1,2 @@
 
-# CSE 110 SP23 Lab 2!
+# CSE 110 Project, Team 17 - SayIt Assistant
