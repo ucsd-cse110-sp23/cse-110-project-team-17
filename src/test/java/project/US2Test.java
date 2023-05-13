@@ -1,6 +1,7 @@
 package project;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
@@ -11,7 +12,22 @@ import project.chat_gpt.*;
 import project.question_handler.*;
 // import project.gui.*;
 
+import java.io.*;
+
 public class US2Test {
+
+    @BeforeEach
+    void cleanHistory() {
+        String filename = "project/history.txt";
+        String dir_path = "src/main/java";
+        File potential_dir = new File(dir_path);
+        if (potential_dir.isDirectory()) {
+            filename = dir_path + "/" + filename;
+        }
+        File historyFile = new File(filename);
+        historyFile.delete();
+    }
+
     @Test 
     void testChatGPT() {
         IQuestionHandler qHandler = new MockQuestionHandler();
@@ -24,7 +40,7 @@ public class US2Test {
     @Test 
     void testNewQuestionButton() {
         IQuestionHandler qHandler = new MockQuestionHandler();
-        IChatGPT chatGPT = new ChatGPT();
+        IChatGPT chatGPT = new MockChatGPT();
         IAudioHandler audioHandler = new MockAudioHandler();
         AppFrame testFrame = new AppFrame(qHandler, chatGPT, audioHandler);
         assertTrue(testFrame.getAskButton() instanceof JButton);
@@ -33,7 +49,7 @@ public class US2Test {
     @Test 
     void testQuestionButtonToggle() {
         IQuestionHandler qHandler = new MockQuestionHandler();
-        IChatGPT chatGPT = new ChatGPT();
+        IChatGPT chatGPT = new MockChatGPT();
         IAudioHandler audioHandler = new MockAudioHandler();
         AppFrame testFrame = new AppFrame(qHandler, chatGPT, audioHandler);
         JButton questionButton = testFrame.getAskButton();
@@ -51,7 +67,7 @@ public class US2Test {
     @Test
     void testStory() {
         IQuestionHandler qHandler = new MockQuestionHandler();
-        IChatGPT chatGPT = new ChatGPT();
+        IChatGPT chatGPT = new MockChatGPT();
         IAudioHandler audioHandler = new MockAudioHandler();
         AppFrame testFrame = new AppFrame(qHandler, chatGPT, audioHandler);
         JButton questionButton = testFrame.getAskButton();

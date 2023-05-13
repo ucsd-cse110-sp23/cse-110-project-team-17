@@ -47,9 +47,12 @@ public class HistoryHeader extends JPanel {
       this.add(deleteSelected);
     }
 
+    
+
     public JButton getClearAll() {
       return this.clearAll;
     }
+
 
     public JButton getdeleteSelected() {
       return this.deleteSelected;

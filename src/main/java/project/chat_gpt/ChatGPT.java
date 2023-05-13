@@ -64,6 +64,6 @@ public class ChatGPT implements IChatGPT {
         System.out.println("Something was interrupted in ChatGPT.");
         }
 
-        return generatedText;
+        return generatedText.trim();
     }
 }

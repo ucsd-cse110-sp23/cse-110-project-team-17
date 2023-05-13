@@ -21,7 +21,7 @@ public class DS1_1Test {
 
         String questionString1 = "What is project/dummy_audio/TestRecording0?";
         String questionString2 = "What is project/dummy_audio/TestRecording1?";
-        String answer_part = "Mock answer to the following prompt:\n";
+        String answer_part = "Mock answer to the following prompt: ";
         
         ChatList chatList = testFrame.getChatList();
         HistoryList historyList = testFrame.getHistoryList();

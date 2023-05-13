@@ -20,6 +20,7 @@ import java.io.IOException;
 // import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JTextArea;
 
 class AppFrame extends JFrame {
 
@@ -47,6 +48,11 @@ class AppFrame extends JFrame {
     footer = new Footer();
     historyWindow = new HistoryWindow();
     list = historyWindow.getList();
+    list.populateOldHistory();
+    oldHistoryHandler();
+    if (list.getComponents().length == 1) {
+      list.setDefault();
+    }
     chatList = new ChatList();
     this.qHandler = qHandler;
     this.chatGPT = chatGPT;
@@ -61,8 +67,6 @@ class AppFrame extends JFrame {
     stopRecordingButton = footer.getStopRecordingButton();
     clearAll = historyWindow.getHistoryHeader().getClearAll();
     deleteSelected = historyWindow.getHistoryHeader().getdeleteSelected();
-
-    list.setDefault();
 
     addListeners();
   }
@@ -92,7 +96,6 @@ class AppFrame extends JFrame {
         }
       }
     );
-
     deleteSelected.addMouseListener(
       new MouseAdapter() {
         @override
@@ -145,7 +148,7 @@ class AppFrame extends JFrame {
       throw new RuntimeException("An Interruption Exception happened on click.");
     }
 
-    HistoryQuestion historyQuestion = new HistoryQuestion();
+    HistoryQuestion historyQuestion = new HistoryQuestion("0", prompt, chat_gpt_answer);
     list.add(historyQuestion); // Add new task to list
     historyQuestion.insertQuestion(prompt);
     historyQuestion.insertAnswer(chat_gpt_answer);
@@ -190,6 +193,24 @@ class AppFrame extends JFrame {
       repaint();
     }
     revalidate(); // Updates the frame
+  }
+
+  public void oldHistoryHandler() {
+    for (Component c : list.getComponents()) {
+      if (!(c instanceof JTextArea)) {
+        list.removeDefault();
+      }
+      if (c instanceof HistoryQuestion) {
+        HistoryQuestion historyQuestion = (HistoryQuestion) c;
+        JButton SelectButton = historyQuestion.getDone();
+        SelectButton.addActionListener(
+          (ActionEvent e2) -> {
+            SelectButtonHandler(historyQuestion);
+          }
+        );
+      }
+    }
+    revalidate();
   }
 
   public Header getHeader() {

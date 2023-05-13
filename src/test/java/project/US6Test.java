@@ -1,6 +1,7 @@
 package project;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -11,7 +12,22 @@ import project.chat_gpt.*;
 import project.question_handler.*;
 import project.gui.*;
 
+import java.io.*;
+
 public class US6Test {
+
+    @BeforeEach
+    void cleanHistory() {
+        String filename = "project/history.txt";
+        String dir_path = "src/main/java";
+        File potential_dir = new File(dir_path);
+        if (potential_dir.isDirectory()) {
+            filename = dir_path + "/" + filename;
+        }
+        File historyFile = new File(filename);
+        historyFile.delete();
+    }
+
     @Test 
     void testAnswer() throws IOException, InterruptedException {
 
