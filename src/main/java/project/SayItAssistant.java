@@ -35,6 +35,7 @@ class AppFrame extends JFrame {
   private JButton askQuestion;
   private JButton stopRecordingButton;
   private JButton clearAll;
+  private JButton deleteSelected;
 
   AppFrame(IQuestionHandler qHandler, IChatGPT chatGPT, IAudioHandler audioHandler) {
     this.revalidate();
@@ -59,6 +60,7 @@ class AppFrame extends JFrame {
     askQuestion = footer.getAskQuestion();
     stopRecordingButton = footer.getStopRecordingButton();
     clearAll = historyWindow.getHistoryHeader().getClearAll();
+    deleteSelected = historyWindow.getHistoryHeader().getdeleteSelected();
 
     list.setDefault();
 
@@ -87,6 +89,17 @@ class AppFrame extends JFrame {
         @override
         public void mousePressed(MouseEvent e) {
           clearAll();
+        }
+      }
+    );
+
+    deleteSelected.addMouseListener(
+      new MouseAdapter() {
+        @override
+        public void mousePressed(MouseEvent e) {
+          list.deleteSelected();
+          repaint();
+          revalidate();
         }
       }
     );
