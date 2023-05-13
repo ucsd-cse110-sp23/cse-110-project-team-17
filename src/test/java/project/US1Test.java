@@ -60,4 +60,15 @@ public class US1Test {
         assertEquals(chatAnswer.getDialogueText(), 
             (answer_part + questionString1));
     }
+
+    @Test
+    void testingHistoryListParameters() {
+        IQuestionHandler qHandler = new MockQuestionHandler();
+        IChatGPT chatGPT = new MockChatGPT();
+        IAudioHandler audioHandler = new MockAudioHandler();
+        AppFrame testFrame = new AppFrame(qHandler, chatGPT, audioHandler);
+        HistoryList historyList = testFrame.getHistoryList();
+        assertTrue(historyList.getComponentsNum() == 2);
+        assertTrue(!historyList.getEmpty());
+    }
 }
