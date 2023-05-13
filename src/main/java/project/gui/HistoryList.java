@@ -72,9 +72,9 @@ public class HistoryList extends JPanel {
           throw new RuntimeException("IO Exception in csv writer.");
         }
         count++;
+        components++;
       }
       super.add(comp);
-      components++;
       return comp;
     }
   
@@ -158,6 +158,7 @@ public class HistoryList extends JPanel {
       components = 0;
       File historyFile = new File(filename);
       historyFile.delete();
+      setDefault();
       empty = true;
     }
 
@@ -174,7 +175,7 @@ public class HistoryList extends JPanel {
       if (historyFile.isFile()) {
         try {
           Scanner csv_scanner = new Scanner(historyFile);
-          int max = 0;
+          int max = -1;
           while (csv_scanner.hasNextLine()) {
             removeDefault();
             String[] question_parts = csv_scanner.nextLine().split(",");
@@ -190,7 +191,7 @@ public class HistoryList extends JPanel {
             components++;
           }
           csv_scanner.close();
-          if (max != 0) {
+          if (max != -1) {
             count = max + 1;
           }
         }

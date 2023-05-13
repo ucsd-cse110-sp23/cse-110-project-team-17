@@ -16,7 +16,7 @@ public class US4Test {
 
     @BeforeEach
     void cleanHistory() {
-        String filename = "project/history.txt";
+        String filename = "project/history.csv";
         String dir_path = "src/main/java";
         File potential_dir = new File(dir_path);
         if (potential_dir.isDirectory()) {
@@ -25,7 +25,7 @@ public class US4Test {
         File historyFile = new File(filename);
         historyFile.delete();
     }
-    
+
     @Test
     void testClearAllButtons() throws IOException {
         IQuestionHandler qHandler = new MockQuestionHandler();

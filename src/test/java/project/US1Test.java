@@ -17,14 +17,17 @@ public class US1Test {
 
     @BeforeEach
     void cleanHistory() {
-        String filename = "project/history.txt";
+        String filename = "project/history.csv";
         String dir_path = "src/main/java";
         File potential_dir = new File(dir_path);
         if (potential_dir.isDirectory()) {
             filename = dir_path + "/" + filename;
         }
+        System.out.println(System.getProperty("user.dir"));
+        System.out.println(filename);
         File historyFile = new File(filename);
         historyFile.delete();
+        System.out.println("Nuked history file.");
     }
 
     @Test 
@@ -41,7 +44,7 @@ public class US1Test {
 
     @Test
     void testHistoryStory() {
-
+        System.out.println("Started history story test.");
         String questionString1 = "What is project/dummy_audio/TestRecording0?";
         String questionString2 = "What is project/dummy_audio/TestRecording1?";
         String answer_part = "Mock answer to the following prompt: ";

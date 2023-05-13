@@ -50,7 +50,7 @@ class AppFrame extends JFrame {
     list = historyWindow.getList();
     list.populateOldHistory();
     oldHistoryHandler();
-    if (list.getComponents().length == 1) {
+    if (list.getComponentsNum() == 0) {
       list.setDefault();
     }
     chatList = new ChatList();
