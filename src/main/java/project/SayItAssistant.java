@@ -30,7 +30,6 @@ import java.util.concurrent.*;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JTextArea;
 
 class AppFrame extends JFrame {
 
@@ -476,6 +475,16 @@ class AppFrame extends JFrame {
   // Method to get "Stop Recording" button
   public JButton getStopButton() {
     return stopRecordingButton;
+  }
+
+  // Method to get "Clear All" button
+  public JButton getClearButton() {
+    return clearAll;
+  }
+
+  // Method to get "Delete Selected" button
+  public JButton getDeleteButton() {
+    return deleteSelected;
   }
 
   // Method to get visibility of "Stop Recording" button
