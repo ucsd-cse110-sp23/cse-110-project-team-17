@@ -18,23 +18,29 @@ public class Footer extends JPanel {
     Color backgroundColor = new Color(240, 248, 255);
     Border emptyBorder = BorderFactory.createEmptyBorder();
 
+    // Footer Constructor, sets format and adds the 
+    // "Ask a Question" and "Stop Recording" buttons
     public Footer() {
+
+        // Sets format
         this.setPreferredSize(new Dimension(400, 60));
         this.setBackground(backgroundColor);
         GridLayout layout = new GridLayout(1, 2);
         this.setLayout(layout);
-        //this.setBorder(BorderFactory.createLineBorder(Color.red));
 
+        // Adds "Ask a Question" button
         askQuestion = new JButton("Ask a Question"); // add task button
         askQuestion.setFont(new Font("Sans-serif", Font.ITALIC, 10)); // set font
         this.add(askQuestion); // add to footer
 
+        // Adds "Stop Recording" button
         stopRecordingButton = new JButton("Stop Recording"); // add task button
         stopRecordingButton.setFont(new Font("Sans-serif", Font.ITALIC, 10)); // set font
         this.add(stopRecordingButton); // add to footer
-        stopRecordingButton.setVisible(false);
+        stopRecordingButton.setVisible(false); // Sets stop button to invisible initially
     }
 
+    // Returns the "Ask a Question" button
     public JButton getAskQuestion() {
         return askQuestion;
     }

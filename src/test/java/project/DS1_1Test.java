@@ -13,7 +13,8 @@ import project.gui.*;
 import java.io.*;
 
 public class DS1_1Test {
-
+    
+    // Delete history.csv file (fresh start)
     @BeforeEach
     void cleanHistory() {
         String filename = "project/history.csv";
@@ -31,17 +32,19 @@ public class DS1_1Test {
 
     @Test
     public void iterationTest() {
-        
+        // Create mock handlers and appframe
         IQuestionHandler qHandler = new MockQuestionHandler();
         IChatGPT chatGPT = new MockChatGPT();
         IAudioHandler audioHandler = new MockAudioHandler();
-
         AppFrame testFrame = new AppFrame(qHandler, chatGPT, audioHandler);
 
+        // Set up expected values
         String questionString1 = "What is project/dummy_audio/TestRecording0?";
         String questionString2 = "What is project/dummy_audio/TestRecording1?";
         String answer_part = "Mock answer to the following prompt: ";
         
+        // Test the "Ask a Question" and "Stop Recording" buttons
+        // Verify that the question and answer show up as expected in chat window
         ChatList chatList = testFrame.getChatList();
         HistoryList historyList = testFrame.getHistoryList();
         testFrame.QuestionButtonHandler();
@@ -54,9 +57,12 @@ public class DS1_1Test {
         assertTrue(answer1.getLabel().equals("Answer"));
         assertTrue(chatquestion1.getDialogueText().
             equals(questionString1));
-        
         assertTrue(answer1.getDialogueText().
             equals(answer_part + questionString1));
+
+        
+        // Test the "Select" button
+        // Verify that the selected question and answer show up as expected in chat window
         testFrame.QuestionButtonHandler();
         testFrame.StopButtonHandler();
         HistoryQuestion question1 = 

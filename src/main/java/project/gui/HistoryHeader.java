@@ -15,11 +15,14 @@ public class HistoryHeader extends JPanel {
     JButton clearAll;
     JButton deleteSelected;
   
+    // HistoryHeader constructor, adds the "Clear All" and "Delete Selected"
+    // buttons, as well as sets format
     public HistoryHeader() {
+      
+      // Sets format
       BoxLayout layout = new BoxLayout(this, BoxLayout.X_AXIS);
       this.setLayout(layout);
       this.setBackground(gray);
-      // this.setMaximumSize(new Dimension(400, 30));
       setAlignmentY(TOP_ALIGNMENT);
   
       // Add History label above history scroll window
@@ -48,12 +51,12 @@ public class HistoryHeader extends JPanel {
     }
 
     
-
+    // Return "Clear All" button
     public JButton getClearAll() {
       return this.clearAll;
     }
 
-
+    // Return "Delete Selected" button
     public JButton getdeleteSelected() {
       return this.deleteSelected;
     }

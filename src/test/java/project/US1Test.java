@@ -15,6 +15,7 @@ import java.io.*;
 
 public class US1Test {
 
+    // Delete history.csv file (fresh start)
     @BeforeEach
     void cleanHistory() {
         String filename = "project/history.csv";
@@ -27,6 +28,7 @@ public class US1Test {
         historyFile.delete();
     }
 
+    // Test that text area is displayed as default when there are no questions
     @Test 
     void testHistoryDefault() {
         IQuestionHandler qHandler = new MockQuestionHandler();
@@ -39,16 +41,22 @@ public class US1Test {
             instanceof JTextArea);
     }
 
+    // Test History Methods
     @Test
     void testHistoryStory() {
+        // Set expected values
         String questionString1 = "What is project/dummy_audio/TestRecording0?";
         String questionString2 = "What is project/dummy_audio/TestRecording1?";
         String answer_part = "Mock answer to the following prompt: ";
 
+        // Create mock handlers and appframe
         IQuestionHandler qHandler = new MockQuestionHandler();
         IChatGPT chatGPT = new MockChatGPT();
         IAudioHandler audioHandler = new MockAudioHandler();
         AppFrame testFrame = new AppFrame(qHandler, chatGPT, audioHandler);
+
+        // Confirm that HistoryQuestion components correspond to 
+        // expected question values
         HistoryList historyList = testFrame.getHistoryList();
         testFrame.QuestionButtonHandler();
         testFrame.StopButtonHandler();
@@ -62,6 +70,9 @@ public class US1Test {
             equals(questionString1));
         assertTrue(question2.getQuestionText().
             equals(questionString2));
+        
+        // Confirm that select button works as expected 
+        // (i.e., chat window displays the correct question)
         testFrame.SelectButtonHandler(question1);
         ChatList chatList = testFrame.getChatList();
         ChatBox chatQuestion = 

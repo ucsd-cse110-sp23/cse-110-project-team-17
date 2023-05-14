@@ -14,6 +14,7 @@ import java.io.*;
 
 public class US4Test {
 
+    // Delete history.csv file (fresh start)
     @BeforeEach
     void cleanHistory() {
         String filename = "project/history.csv";
@@ -26,15 +27,19 @@ public class US4Test {
         historyFile.delete();
     }
 
+    // Test that Clear All button properly clears everything
     @Test
     void testClearAllButtons() throws IOException {
+        // Create mock handlers and appframe
         IQuestionHandler qHandler = new MockQuestionHandler();
         IChatGPT chatGPT = new MockChatGPT();
         IAudioHandler audioHandler = new MockAudioHandler();
         AppFrame testFrame = new AppFrame(qHandler, chatGPT, audioHandler);
+
+        // Verify that all relevant HistoryList components (and ChatList) are
+        // wiped
         ChatList chatList = testFrame.getChatList();
         HistoryList historyList = new HistoryList();
-
         testFrame.QuestionButtonHandler();
         testFrame.StopButtonHandler();
         ChatBox question1 = (ChatBox)

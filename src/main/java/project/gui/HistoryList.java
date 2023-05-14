@@ -25,14 +25,20 @@ public class HistoryList extends JPanel {
     String path;
     String folder;
   
+    // HistoryList constructor, sets format and prepares filepath of 
+    // history.csv file for reading and writing
     public HistoryList() {
       count = 0;
+      empty = true;
+      components = 0;
+
+      // Sets format
       BoxLayout layout = new BoxLayout(this, BoxLayout.Y_AXIS);
       this.setLayout(layout);
       setAlignmentY(TOP_ALIGNMENT);
-      empty = true;
-      components = 0;
       this.add(Box.createVerticalGlue());
+
+      // Prepares filepath
       folder = "project";
       path = folder;
       filename = folder + "/history.csv";
@@ -42,23 +48,30 @@ public class HistoryList extends JPanel {
         filename = dir_path + "/" + filename;
         path = dir_path + "/" + path;
       }
-      // this.setPreferredSize(new Dimension(400, 160));
     }
   
+    // Overridden add method, which removes default settings
+    // if input is not a JTextArea and writes to history.csv if
+    // input is a HistoryQuestion
+    // Also updates count and component variables
     @Override
     public Component add(Component comp) {
       
+      // Updates empty state
       if (empty == true && !(comp instanceof JLabel)) {
           this.removeAll();
           empty = false;
-          
       }
+
+      // Removes default settings if necessary
       if (!(comp instanceof JTextArea)) {
         removeDefault();
       }
+
+      // Writes to history.csv and updates count/components
+      // if input is HistoryQuestion
       if (comp instanceof HistoryQuestion) {
         HistoryQuestion historyQuestion = (HistoryQuestion) comp;
-        historyQuestion.setIndex(count);
         String index = historyQuestion.getIndex();
         String question = historyQuestion.getQuestionText();
         String answer = historyQuestion.getAnswerText();
@@ -78,17 +91,24 @@ public class HistoryList extends JPanel {
       return comp;
     }
   
+    // Method to check if there are any HistoryQuestions in the HistoryList
     public boolean isEmpty() {
       return (components == 0);
     }
   
+    // Method to set default text in HistoryList for display
     public void setDefault() {
+
+      // Sets format
       BoxLayout layout = new BoxLayout(this, BoxLayout.Y_AXIS);
       this.setLayout(layout);
       setAlignmentY(TOP_ALIGNMENT);
+      add(Box.createVerticalGlue());
+
       empty = true;
       components = 0;
-      add(Box.createVerticalGlue());
+      
+      // Creates default JTextArea
       JTextArea defaultArea = new JTextArea("No history to show. Ask a question!");
       defaultArea.setBorder(BorderFactory.createEmptyBorder()); // remove border of text field
       defaultArea.setBackground(gray); // set background color of text 
@@ -97,9 +117,10 @@ public class HistoryList extends JPanel {
       defaultArea.setLineWrap(true);
       defaultArea.setWrapStyleWord(true);
       defaultArea.setPreferredSize(new Dimension(400, 160));
-      add(defaultArea);
+      add(defaultArea); // adds default text area to History List
     }
   
+    // Method to remove default text area
     public void removeDefault() {
       for (Component c : getComponents()) {
         if (c instanceof JTextArea) {
@@ -108,20 +129,34 @@ public class HistoryList extends JPanel {
       }
     }
   
+    // Method to return components of HistoryList as an array of Components
     public Component[] getListComponents() {
       return getComponents();
     }
 
+    // Method to handle deleting the selected HistoryQuestion (if any) in 
+    // the HistoryList
     public void deleteSelected() {
+
+
       for (Component c : getComponents()) {
+
         if (c instanceof HistoryQuestion) {
           HistoryQuestion workingQ = (HistoryQuestion) c;
+
+          // Check if a HistoryQuestion is selected
           if (workingQ.getState() == true) {
             String removal_index = workingQ.getIndex();
+
+            // Set up filepath for history.csv updates
             String temp_file_path = path + "/temphistory.csv";
             File tempHistory = new File(temp_file_path);
             File historyFile = new File(filename);
+
             if (historyFile.isFile()) {
+
+              // Iterate through history.csv line by line, storing 
+              // each line that is not the one to be deleted in temphistory.csv
               try {
                 Scanner csv_scanner = new Scanner(historyFile);
                 FileWriter csv_writer = new FileWriter(tempHistory, true);
@@ -132,7 +167,6 @@ public class HistoryList extends JPanel {
                   if (!(removal_index.equals(question_parts[0]))) {
                     csv_writer.write(next_line + "\n");
                   }
-                  components++;
                 }
                 csv_scanner.close();
                 csv_writer.close();
@@ -144,15 +178,23 @@ public class HistoryList extends JPanel {
                 throw new RuntimeException("IO Exception during scanning.");
               }
             }
+
+            // Clean up files
             historyFile.delete();
             tempHistory.renameTo(historyFile);
+
+            // Actually remove HistoryQuestion and update default as needed
             remove(workingQ);
             components--;
+            if (components == 0) {
+              setDefault();
+            }
           }
         }
       }
     }
 
+    // Method to remove all HistoryQuestions and restore default
     public void removeEverything() {
       this.removeAll();
       components = 0;
@@ -162,22 +204,37 @@ public class HistoryList extends JPanel {
       empty = true;
     }
 
+    // Method to return number of HistoryQuestions
     public int getComponentsNum() {
       return components;
     }
+
+    // Method to return current count
+    public int getCount() {
+      return count;
+    }
     
+    // Method to check if HistoryList has any HistoryQuestions
     public boolean getEmpty() {
       return empty;
     }
 
+    // Method to populate HistoryList using contents of history.csv
     public void populateOldHistory() {
+
+      // Initializes history.csv File
       File historyFile = new File(filename);
       if (historyFile.isFile()) {
         try {
+
+          // Create Scanner to read file
           Scanner csv_scanner = new Scanner(historyFile);
           int max = -1;
           while (csv_scanner.hasNextLine()) {
+            // Remove default from HistoryList, since we are adding a HistoryQuestion 
             removeDefault();
+
+            // Parse line and create HistoryQuestion
             String[] question_parts = csv_scanner.nextLine().split(",");
             int index = Integer.parseInt(question_parts[0]);
             String question = question_parts[1];
@@ -190,6 +247,7 @@ public class HistoryList extends JPanel {
             super.add(historyQuestion);
             components++;
           }
+          
           csv_scanner.close();
           if (max != -1) {
             count = max + 1;

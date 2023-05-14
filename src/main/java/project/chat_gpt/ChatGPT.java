@@ -11,18 +11,23 @@ import org.json.JSONObject;
 import java.io.IOException;
 
 public class ChatGPT implements IChatGPT {
+
+
+    // API Constants
     private static final String API_ENDPOINT = "https://api.openai.com/v1/completions";
     private static final String API_KEY = "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";
     // Joseph's API Token = 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
     private static final String MODEL = "text-davinci-003";
 
+    // Empty constructor
     public ChatGPT() {}
 
+    // Method that uses ChatGPT to return an answer to the given prompt
     public String ask(String prompt) throws IOException, InterruptedException {
         int maxTokens = 100;
         String generatedText = "";
 
-
+        // Prepares JSON requestBody
         JSONObject requestBody = new JSONObject();
         requestBody.put("model", MODEL);
         requestBody.put("prompt", prompt);
@@ -64,6 +69,7 @@ public class ChatGPT implements IChatGPT {
         System.out.println("Something was interrupted in ChatGPT.");
         }
 
+        // Returns properly formatted answer String
         return generatedText.trim();
     }
 }

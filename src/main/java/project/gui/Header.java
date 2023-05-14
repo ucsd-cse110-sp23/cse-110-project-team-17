@@ -12,8 +12,10 @@ public class Header extends JPanel {
 
 Color backgroundColor = new Color(240, 248, 255);
 
+    // Header Constructor, sets up app title and sets format
     public Header() {
 
+        // Sets format
         this.setPreferredSize(new Dimension(400, 60)); // Size of the header
         this.setBackground(backgroundColor);
         GridLayout layout = new GridLayout(1,1);
@@ -24,9 +26,6 @@ Color backgroundColor = new Color(240, 248, 255);
         titleText.setPreferredSize(new Dimension(200, 60));
         titleText.setFont(new Font("BrixSansBlack", Font.ITALIC, 20));
         titleText.setHorizontalAlignment(JLabel.CENTER); // Align the text to the center
-        //titleText.setBorder(BorderFactory.createLineBorder(Color.red));
-        this.add(titleText); // Add the text to the header
-        // components++;
-        
+        this.add(titleText); // Add the text to the header        
     }
 }

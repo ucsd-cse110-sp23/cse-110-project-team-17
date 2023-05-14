@@ -13,10 +13,12 @@ import org.json.JSONException;
 
 public class QuestionHandler implements IQuestionHandler {
 
+    // API Constants
     private static String API_ENDPOINT;
     private static String TOKEN;
     private static String MODEL;
 
+    // QuestionHandler Constructor, prepares for use of Whisper API
     public QuestionHandler() {
         API_ENDPOINT = 
             "https://api.openai.com/v1/audio/transcriptions";
