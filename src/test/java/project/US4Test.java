@@ -1,6 +1,7 @@
 package project;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterAll;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
@@ -17,6 +18,19 @@ public class US4Test {
     // Delete history.csv file (fresh start)
     @BeforeEach
     void cleanHistory() {
+        String filename = "project/history.csv";
+        String dir_path = "src/main/java";
+        File potential_dir = new File(dir_path);
+        if (potential_dir.isDirectory()) {
+            filename = dir_path + "/" + filename;
+        }
+        File historyFile = new File(filename);
+        historyFile.delete();
+    }
+
+    // Delete history.csv file (once at end of all tests)
+    @AfterAll
+    static void cleanUp() {
         String filename = "project/history.csv";
         String dir_path = "src/main/java";
         File potential_dir = new File(dir_path);
@@ -52,6 +66,8 @@ public class US4Test {
         historyList.removeEverything();
         assertTrue(historyList.getEmpty());
         assertTrue(0 == historyList.getComponentsNum());
+
+        // Close test frame
         testFrame.closeFrame();
     }
 }

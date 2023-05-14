@@ -2,6 +2,7 @@ package project;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterAll;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -30,6 +31,19 @@ public class US5Test {
         File historyFile = new File(filename);
         historyFile.delete();
         System.out.println("Nuked history file.");
+    }
+
+    // Delete history.csv file (once at end of all tests)
+    @AfterAll
+    static void cleanUp() {
+        String filename = "project/history.csv";
+        String dir_path = "src/main/java";
+        File potential_dir = new File(dir_path);
+        if (potential_dir.isDirectory()) {
+            filename = dir_path + "/" + filename;
+        }
+        File historyFile = new File(filename);
+        historyFile.delete();
     }
 
     // Test deletion when history list is empty
