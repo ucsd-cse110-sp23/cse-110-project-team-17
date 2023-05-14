@@ -15,6 +15,7 @@ Instructions:
 - In the GUI the history window on the left contains previous questions asked
     - The Clear All button clears all previous questions asked, leaving a clean slate
     - The Delete Selected button clears the specific question selected
+        - To select a question, find the specific question desired in the history window and click the select button to the right of that question
 - The Right window contains the chatbox where SayIt Assistant will give the user answers to their questions
 - To ask a question: 
     - Click the Ask a Question button in the bottom left
