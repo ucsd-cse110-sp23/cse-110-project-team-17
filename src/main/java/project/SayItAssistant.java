@@ -46,6 +46,7 @@ class AppFrame extends JFrame {
   private JButton stopRecordingButton;
   private JButton clearAll;
   private JButton deleteSelected;
+  private HttpServer server;
 
   public final String URL = "http://localhost:8100/";
 
@@ -66,7 +67,7 @@ class AppFrame extends JFrame {
 
     try {
       // create a server
-      HttpServer server = HttpServer.create(
+      server = HttpServer.create(
         new InetSocketAddress(SERVER_HOSTNAME, SERVER_PORT),
         0
       );
@@ -396,10 +397,6 @@ class AppFrame extends JFrame {
   public void oldHistoryHandler() {
     // For all components
     for (Component c : list.getComponents()) {
-      // Remove default if we are not adding a JTextArea component
-      if (!(c instanceof JTextArea)) {
-        list.removeDefault();
-      }
       // If we are adding a HistoryQuestion
       if (c instanceof HistoryQuestion) {
 
@@ -489,6 +486,12 @@ class AppFrame extends JFrame {
   // Method to get visibility of "Ask a Question" button
   public boolean getAskButtonVisibility() {
     return askQuestion.isVisible();
+  }
+
+  // Method to close frame
+  public void closeFrame() {
+    server.stop(1);
+    this.dispose();
   }
 }
 

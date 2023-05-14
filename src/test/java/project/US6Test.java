@@ -82,5 +82,6 @@ public class US6Test {
             equals(expected_question));
         assertTrue(answer1.getDialogueText().
             equals(answer_part));
+        testFrame.closeFrame();
     }
 }

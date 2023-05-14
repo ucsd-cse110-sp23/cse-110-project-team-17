@@ -103,7 +103,7 @@ public class HistoryList extends JPanel {
       BoxLayout layout = new BoxLayout(this, BoxLayout.Y_AXIS);
       this.setLayout(layout);
       setAlignmentY(TOP_ALIGNMENT);
-      add(Box.createVerticalGlue());
+      this.add(Box.createVerticalGlue());
 
       empty = true;
       components = 0;

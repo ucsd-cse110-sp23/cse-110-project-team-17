@@ -74,5 +74,6 @@ public class US3Test {
         String answer_part = chatGPT.ask(expected_question);
         assertTrue(answer1.getDialogueText().
             equals(answer_part));
+        testFrame.closeFrame();
     }
 }

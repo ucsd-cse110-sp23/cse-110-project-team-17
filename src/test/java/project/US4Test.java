@@ -52,5 +52,6 @@ public class US4Test {
         historyList.removeEverything();
         assertTrue(historyList.getEmpty());
         assertTrue(0 == historyList.getComponentsNum());
+        testFrame.closeFrame();
     }
 }

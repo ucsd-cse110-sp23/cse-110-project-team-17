@@ -59,16 +59,14 @@ public class DS1_1Test {
             equals(questionString1));
         assertTrue(answer1.getDialogueText().
             equals(answer_part + questionString1));
-
-        
         // Test the "Select" button
         // Verify that the selected question and answer show up as expected in chat window
         testFrame.QuestionButtonHandler();
         testFrame.StopButtonHandler();
         HistoryQuestion question1 = 
-            (HistoryQuestion) historyList.getComponents()[1];
+            (HistoryQuestion) historyList.getComponents()[0];
         HistoryQuestion question2 = 
-            (HistoryQuestion) historyList.getComponents()[2];
+            (HistoryQuestion) historyList.getComponents()[1];
         assertTrue(question1.getQuestionText().
             equals(questionString1));
         assertTrue(question2.getQuestionText().
@@ -84,5 +82,6 @@ public class DS1_1Test {
             equals(questionString1));
         assertTrue(answer1.getDialogueText().
             equals(answer_part + questionString1));
+        testFrame.closeFrame();
     }
 }

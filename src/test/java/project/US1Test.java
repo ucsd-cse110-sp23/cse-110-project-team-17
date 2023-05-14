@@ -37,8 +37,9 @@ public class US1Test {
 
         AppFrame testFrame = new AppFrame(qHandler, chatGPT, audioHandler);
         HistoryList historyList = testFrame.getHistoryList();
-        assertTrue(historyList.getComponents()[1] 
+        assertTrue(historyList.getComponents()[0] 
             instanceof JTextArea);
+        testFrame.closeFrame();
     }
 
     // Test History Methods
@@ -63,9 +64,9 @@ public class US1Test {
         testFrame.QuestionButtonHandler();
         testFrame.StopButtonHandler();
         HistoryQuestion question1 = 
-            (HistoryQuestion) historyList.getComponents()[1];
+            (HistoryQuestion) historyList.getComponents()[0];
         HistoryQuestion question2 = 
-            (HistoryQuestion) historyList.getComponents()[2];
+            (HistoryQuestion) historyList.getComponents()[1];
         assertTrue(question1.getQuestionText().
             equals(questionString1));
         assertTrue(question2.getQuestionText().
@@ -85,5 +86,6 @@ public class US1Test {
             (questionString1));
         assertEquals(chatAnswer.getDialogueText(), 
             (answer_part + questionString1));
+        testFrame.closeFrame();
     }
 }
