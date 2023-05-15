@@ -29,12 +29,17 @@ jobs:
       - name: Reset permissions
         run: chmod +x ./gradlew
 
+      - name: Update sudo
+        run: sudo apt-get update
+
+      - name: Install fix-missing
+        run: sudo apt-get install --fix-missing
 
       # build everything (includes running unit tests)
       - name: Execute Gradle build
         uses: coactions/setup-xvfb@v1
         with:
-          run: ./gradlew build --fix-missing
+          run: ./gradlew build
 
       # report the results
       - name: Publish Test Report
