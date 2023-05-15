@@ -70,17 +70,19 @@ public class US3Test {
         String expected_question = "What is " + filename_first + "?";
 
         // Create appframe
-        AppFrame testFrame = new AppFrame(qHandler, chatGPT, audioHandler);
+        AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
+        testApp.createGUI();
+        AppGUI appGUI = testApp.getAppGUI();
 
         // Verify that on stopping and starting recording, the actual 
         // chat window displays the expected dialogue
-        testFrame.QuestionButtonHandler();
-        testFrame.StopButtonHandler();
-        ChatList chatList = testFrame.getChatList();
-        ChatBox question1 = (ChatBox)
-            chatList.getComponents()[0];
-        ChatBox answer1 = (ChatBox)
-            chatList.getComponents()[1];
+        appGUI.QuestionButtonHandler();
+        appGUI.StopButtonHandler();
+        ChatWindowGUI chatWindow = appGUI.getChatWindow();
+        ChatBoxGUI question1 = (ChatBoxGUI)
+            chatWindow.getComponents()[0];
+        ChatBoxGUI answer1 = (ChatBoxGUI)
+            chatWindow.getComponents()[1];
         assertTrue(question1.getLabel().equals("Question"));
         assertTrue(answer1.getLabel().equals("Answer"));
         assertTrue(question1.getDialogueText().
@@ -90,6 +92,6 @@ public class US3Test {
             equals(answer_part));
 
         // Close test frame
-        testFrame.closeFrame();
+        testApp.closeApp();
     }
 }

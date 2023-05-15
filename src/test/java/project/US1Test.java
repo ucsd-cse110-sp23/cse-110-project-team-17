@@ -49,13 +49,15 @@ public class US1Test {
         IChatGPT chatGPT = new MockChatGPT();
         IAudioHandler audioHandler = new MockAudioHandler();
 
-        AppFrame testFrame = new AppFrame(qHandler, chatGPT, audioHandler);
-        HistoryList historyList = testFrame.getHistoryList();
-        assertTrue(historyList.getComponents()[0] 
+        AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
+        testApp.createGUI();
+        AppGUI appGUI = testApp.getAppGUI();
+        HistoryListGUI historyListGUI = appGUI.getHistoryList();
+        assertTrue(historyListGUI.getComponents()[1] 
             instanceof JTextArea);
         
         // Close test frame
-        testFrame.closeFrame();
+        testApp.closeApp();
     }
 
     // Test History Methods
@@ -70,32 +72,34 @@ public class US1Test {
         IQuestionHandler qHandler = new MockQuestionHandler();
         IChatGPT chatGPT = new MockChatGPT();
         IAudioHandler audioHandler = new MockAudioHandler();
-        AppFrame testFrame = new AppFrame(qHandler, chatGPT, audioHandler);
+        AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
+        testApp.createGUI();
+        AppGUI appGUI = testApp.getAppGUI();
 
         // Confirm that HistoryQuestion components correspond to 
         // expected question values
-        HistoryList historyList = testFrame.getHistoryList();
-        testFrame.QuestionButtonHandler();
-        testFrame.StopButtonHandler();
-        testFrame.QuestionButtonHandler();
-        testFrame.StopButtonHandler();
-        HistoryQuestion question1 = 
-            (HistoryQuestion) historyList.getComponents()[0];
-        HistoryQuestion question2 = 
-            (HistoryQuestion) historyList.getComponents()[1];
-        assertTrue(question1.getQuestionText().
+        HistoryListHandler historyList = testApp.getHistoryList();
+        appGUI.QuestionButtonHandler();
+        appGUI.StopButtonHandler();
+        appGUI.QuestionButtonHandler();
+        appGUI.StopButtonHandler();
+        HistoryQuestionHandler question1 = 
+            (HistoryQuestionHandler) historyList.getHistoryList().get(0);
+        HistoryQuestionHandler question2 = 
+            (HistoryQuestionHandler) historyList.getHistoryList().get(1);
+        assertTrue(question1.getQuestion().
             equals(questionString1));
-        assertTrue(question2.getQuestionText().
+        assertTrue(question2.getQuestion().
             equals(questionString2));
         
         // Confirm that select button works as expected 
         // (i.e., chat window displays the correct question)
-        testFrame.SelectButtonHandler(question1);
-        ChatList chatList = testFrame.getChatList();
-        ChatBox chatQuestion = 
-            (ChatBox) chatList.getComponents()[0];
-        ChatBox chatAnswer = 
-            (ChatBox) chatList.getComponents()[1];
+        appGUI.SelectButtonHandler(question1.getHistoryQuestionGUI());
+        ChatWindowGUI chatWindow = appGUI.getChatWindow();
+        ChatBoxGUI chatQuestion = 
+            (ChatBoxGUI) chatWindow.getComponents()[0];
+        ChatBoxGUI chatAnswer = 
+            (ChatBoxGUI) chatWindow.getComponents()[1];
         assertEquals(chatQuestion.getLabel(), ("Question"));
         assertEquals(chatAnswer.getLabel(), ("Answer"));
         assertEquals(chatQuestion.getDialogueText(), 
@@ -104,7 +108,7 @@ public class US1Test {
             (answer_part + questionString1));
 
         // Close test frame
-        testFrame.closeFrame();
+        testApp.closeApp();
     }
 
     @Test
@@ -112,12 +116,12 @@ public class US1Test {
         IQuestionHandler qHandler = new MockQuestionHandler();
         IChatGPT chatGPT = new MockChatGPT();
         IAudioHandler audioHandler = new MockAudioHandler();
-        AppFrame testFrame = new AppFrame(qHandler, chatGPT, audioHandler);
-        HistoryList historyList = testFrame.getHistoryList();
-        assertTrue(historyList.getComponentsNum() == 0);
-        assertTrue(!historyList.getEmpty());
+        AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
+        testApp.createGUI();
+        HistoryListHandler historyList = testApp.getHistoryList();
+        assertTrue(historyList.getHistoryList().size() == 0);
 
         // Close test frame
-        testFrame.closeFrame();
+        testApp.closeApp();
     }
 }

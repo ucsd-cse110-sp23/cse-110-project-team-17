@@ -68,7 +68,9 @@ public class US6Test {
         IChatGPT chatGPT = new MockChatGPT();
         IAudioHandler audioHandler = new MockAudioHandler();
         IAudioHandler audioHandlerTest = new MockAudioHandler();
-        AppFrame testFrame = new AppFrame(qHandler, chatGPT, audioHandler);
+        AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
+        testApp.createGUI();
+        AppGUI appGUI = testApp.getAppGUI();
         
         // Use second mock audio handler to obtain expected question
         audioHandlerTest.startRecording();
@@ -83,13 +85,13 @@ public class US6Test {
         
         // Verify that expected question and answer are actually displayed
         // in the chat window
-        ChatList chatList = testFrame.getChatList();
-        testFrame.QuestionButtonHandler();
-        testFrame.StopButtonHandler();
-        ChatBox question1 = (ChatBox)
-            chatList.getComponents()[0];
-        ChatBox answer1 = (ChatBox)
-            chatList.getComponents()[1];
+        ChatWindowGUI chatWindow = appGUI.getChatWindow();
+        appGUI.QuestionButtonHandler();
+        appGUI.StopButtonHandler();
+        ChatBoxGUI question1 = (ChatBoxGUI)
+            chatWindow.getComponents()[0];
+        ChatBoxGUI answer1 = (ChatBoxGUI)
+            chatWindow.getComponents()[1];
         assertTrue(question1.getLabel().equals("Question"));
         assertTrue(answer1.getLabel().equals("Answer"));
         assertTrue(question1.getDialogueText().
@@ -98,6 +100,6 @@ public class US6Test {
             equals(answer_part));
 
         // Close test frame
-        testFrame.closeFrame();
+        testApp.closeApp();
     }
 }

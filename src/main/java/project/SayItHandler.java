@@ -125,7 +125,6 @@ public class SayItHandler implements HttpHandler {
             String chat_answer = data.get(value); // Retrieve data from hashmap
             if (chat_answer != null) {
                 response = "Deleted entry {" + value + ", " + chat_answer + "}";
-                System.out.println(response);
                 data.remove(value);
             } else {
                 response = "No data found for " + value;
