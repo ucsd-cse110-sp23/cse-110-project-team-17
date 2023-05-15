@@ -29,6 +29,8 @@ jobs:
       - name: Reset permissions
         run: chmod +x ./gradlew
 
+      - name: Update sudo
+        run: apt-get update
 
       # build everything (includes running unit tests)
       - name: Execute Gradle build
