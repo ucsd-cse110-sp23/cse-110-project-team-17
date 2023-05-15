@@ -106,4 +106,19 @@ public class US1Test {
         // Close test frame
         testFrame.closeFrame();
     }
+
+    // Test HistoryList parameter correctness on creation
+    @Test
+    void testingHistoryListParameters() {
+        IQuestionHandler qHandler = new MockQuestionHandler();
+        IChatGPT chatGPT = new MockChatGPT();
+        IAudioHandler audioHandler = new MockAudioHandler();
+        AppFrame testFrame = new AppFrame(qHandler, chatGPT, audioHandler);
+        HistoryList historyList = testFrame.getHistoryList();
+        assertTrue(historyList.getComponentsNum() == 0);
+        assertTrue(!historyList.getEmpty());
+
+        // Close test frame
+        testFrame.closeFrame();
+    }
 }
