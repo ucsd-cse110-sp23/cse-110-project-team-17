@@ -235,6 +235,15 @@ class AppFrame extends JFrame {
   // Method to handle starting the recording to ask a question
   public void QuestionButtonHandler() {
 
+    for (Component c : list.getComponents()) {
+      if (c instanceof HistoryQuestion) {
+        HistoryQuestion historyQuestion = (HistoryQuestion) c;
+        if (historyQuestion.getState()) {
+          historyQuestion.changeState();
+        }
+      }
+    }
+
     // Start recording
     audioHandler.startRecording();
 
