@@ -107,7 +107,6 @@ public class US1Test {
         testFrame.closeFrame();
     }
 
-    // Test HistoryList parameter correctness on creation
     @Test
     void testingHistoryListParameters() {
         IQuestionHandler qHandler = new MockQuestionHandler();
@@ -117,8 +116,5 @@ public class US1Test {
         HistoryList historyList = testFrame.getHistoryList();
         assertTrue(historyList.getComponentsNum() == 0);
         assertTrue(!historyList.getEmpty());
-
-        // Close test frame
-        testFrame.closeFrame();
     }
 }
