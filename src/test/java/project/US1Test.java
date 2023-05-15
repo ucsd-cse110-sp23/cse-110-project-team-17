@@ -116,5 +116,8 @@ public class US1Test {
         HistoryList historyList = testFrame.getHistoryList();
         assertTrue(historyList.getComponentsNum() == 0);
         assertTrue(!historyList.getEmpty());
+
+        // Close test frame
+        testFrame.closeFrame();
     }
 }
