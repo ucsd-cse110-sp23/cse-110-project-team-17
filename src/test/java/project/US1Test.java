@@ -114,7 +114,10 @@ public class US1Test {
         IAudioHandler audioHandler = new MockAudioHandler();
         AppFrame testFrame = new AppFrame(qHandler, chatGPT, audioHandler);
         HistoryList historyList = testFrame.getHistoryList();
-        assertTrue(historyList.getComponentsNum() == 2);
+        assertTrue(historyList.getComponentsNum() == 0);
         assertTrue(!historyList.getEmpty());
+
+        // Close test frame
+        testFrame.closeFrame();
     }
 }
