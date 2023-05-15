@@ -1,5 +1,6 @@
 package project.audio_handler;
 
+// Uses Java's Sound API to record audio
 import javax.sound.sampled.*;
 import java.io.*;
 
@@ -13,10 +14,12 @@ public class AudioHandler implements IAudioHandler {
 
     String filename;
     
+    // AudioHandler constructor
     public AudioHandler() {
         count = 0;
     }
 
+    // Method to start recording audio, uses thread to not freeze GUI
     public void startRecording() {
         Thread recordThread = new Thread(() -> {
             startRecordingHelper();
@@ -24,6 +27,7 @@ public class AudioHandler implements IAudioHandler {
         recordThread.start();
     }
 
+    // Helper method to record audio and convert to .wav file
     private void startRecordingHelper() {
         try {
             filename = "project/audio/Recording" + count + ".wav";
@@ -55,6 +59,7 @@ public class AudioHandler implements IAudioHandler {
         }
     }
 
+    // Method to stop recording audio and return filename of audio file
     public String stopRecording() {
         line.stop();
         line.close();
@@ -63,7 +68,7 @@ public class AudioHandler implements IAudioHandler {
         return temp;
     }
 
-
+    // Helper method to format audio
     private AudioFormat getFormatHelper() {
         float sampleRate = 16000;
         int sampleSizeInBits = 8;

@@ -16,6 +16,7 @@ import java.io.*;
 
 public class US2Test {
 
+    // Delete history.csv file (fresh start)
     @BeforeEach
     void cleanHistory() {
         String filename = "project/history.txt";
@@ -28,6 +29,7 @@ public class US2Test {
         historyFile.delete();
     }
 
+    // Test if ChatGPT handler is made correctly
     @Test 
     void testChatGPT() {
         IQuestionHandler qHandler = new MockQuestionHandler();
@@ -35,8 +37,10 @@ public class US2Test {
         IAudioHandler audioHandler = new MockAudioHandler();
         AppFrame testFrame = new AppFrame(qHandler, chatGPT, audioHandler);
         assertTrue(testFrame.getChatGPT() instanceof IChatGPT);
+        testFrame.closeFrame();
     }
 
+    // Test that "Ask a Question" button exists
     @Test 
     void testNewQuestionButton() {
         IQuestionHandler qHandler = new MockQuestionHandler();
@@ -44,10 +48,29 @@ public class US2Test {
         IAudioHandler audioHandler = new MockAudioHandler();
         AppFrame testFrame = new AppFrame(qHandler, chatGPT, audioHandler);
         assertTrue(testFrame.getAskButton() instanceof JButton);
+        testFrame.closeFrame();
     }
 
+    // Test that "Ask a Question" button toggles visibility
     @Test 
     void testQuestionButtonToggle() {
+        IQuestionHandler qHandler = new MockQuestionHandler();
+        IChatGPT chatGPT = new MockChatGPT();
+        IAudioHandler audioHandler = new MockAudioHandler();
+        AppFrame testFrame = new AppFrame(qHandler, chatGPT, audioHandler);
+        JButton questionButton = testFrame.getAskButton();
+        JButton stopButton = testFrame.getStopButton();
+        assertTrue(questionButton.isVisible());
+        assertFalse(stopButton.isVisible());
+        testFrame.QuestionButtonHandler();
+        assertFalse(questionButton.isVisible());
+        assertTrue(stopButton.isVisible());
+        testFrame.closeFrame();
+    }
+
+    // Test that "Ask a Question" and "Stop Recording" buttons toggle
+    @Test
+    void testStory() {
         IQuestionHandler qHandler = new MockQuestionHandler();
         IChatGPT chatGPT = new MockChatGPT();
         IAudioHandler audioHandler = new MockAudioHandler();
@@ -62,21 +85,7 @@ public class US2Test {
         testFrame.StopButtonHandler();
         assertTrue(questionButton.isVisible());
         assertFalse(stopButton.isVisible());
-    }
-
-    @Test
-    void testStory() {
-        IQuestionHandler qHandler = new MockQuestionHandler();
-        IChatGPT chatGPT = new MockChatGPT();
-        IAudioHandler audioHandler = new MockAudioHandler();
-        AppFrame testFrame = new AppFrame(qHandler, chatGPT, audioHandler);
-        JButton questionButton = testFrame.getAskButton();
-        JButton stopButton = testFrame.getStopButton();
-        assertTrue(questionButton.isVisible());
-        assertFalse(stopButton.isVisible());
-        testFrame.QuestionButtonHandler();
-        assertFalse(questionButton.isVisible());
-        assertTrue(stopButton.isVisible());
+        testFrame.closeFrame();
     }
 
     
