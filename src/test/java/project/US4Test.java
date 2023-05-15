@@ -49,11 +49,12 @@ public class US4Test {
         IChatGPT chatGPT = new MockChatGPT();
         IAudioHandler audioHandler = new MockAudioHandler();
         AppFrame testFrame = new AppFrame(qHandler, chatGPT, audioHandler);
+        String regex = ";;;";
 
         // Verify that all relevant HistoryList components (and ChatList) are
         // wiped
         ChatList chatList = testFrame.getChatList();
-        HistoryList historyList = new HistoryList();
+        HistoryList historyList = new HistoryList(regex);
         testFrame.QuestionButtonHandler();
         testFrame.StopButtonHandler();
         ChatBox question1 = (ChatBox)

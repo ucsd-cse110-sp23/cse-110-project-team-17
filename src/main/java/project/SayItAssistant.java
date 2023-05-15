@@ -46,6 +46,7 @@ class AppFrame extends JFrame {
   private JButton clearAll;
   private JButton deleteSelected;
   private HttpServer server;
+  private String regex = ";;;";
 
   public final String URL = "http://localhost:8100/";
 
@@ -71,7 +72,7 @@ class AppFrame extends JFrame {
         0
       );
       // Set the context
-      server.createContext("/", new SayItHandler(data));
+      server.createContext("/", new SayItHandler(data, regex));
 
       // Set executor
       server.setExecutor(threadPoolExecutor);
@@ -93,7 +94,7 @@ class AppFrame extends JFrame {
     // Creates GUI components and updates based on old history
     header = new Header();
     footer = new Footer();
-    historyWindow = new HistoryWindow();
+    historyWindow = new HistoryWindow(regex);
     list = historyWindow.getList();
     list.populateOldHistory();
     oldHistoryHandler();
@@ -234,6 +235,15 @@ class AppFrame extends JFrame {
   // Method to handle starting the recording to ask a question
   public void QuestionButtonHandler() {
 
+    for (Component c : list.getComponents()) {
+      if (c instanceof HistoryQuestion) {
+        HistoryQuestion historyQuestion = (HistoryQuestion) c;
+        if (historyQuestion.getState()) {
+          historyQuestion.changeState();
+        }
+      }
+    }
+
     // Start recording
     audioHandler.startRecording();
 
@@ -295,7 +305,7 @@ class AppFrame extends JFrame {
       OutputStreamWriter out = new OutputStreamWriter(
         conn.getOutputStream()
       );
-      out.write(count_str + "," + prompt + "," + chat_gpt_answer);
+      out.write(count_str + regex + prompt + regex + chat_gpt_answer);
       out.flush();
       out.close();
       BufferedReader in = new BufferedReader(
@@ -364,7 +374,7 @@ class AppFrame extends JFrame {
           new InputStreamReader(conn.getInputStream())
         );
         chat_string = in.readLine();
-        String[] chat_data = chat_string.split(",");
+        String[] chat_data = chat_string.split(regex);
         question = chat_data[0];
         answer = chat_data[1];
         in.close();
@@ -405,7 +415,7 @@ class AppFrame extends JFrame {
         String index = historyQuestion.getIndex();
         String question = historyQuestion.getQuestionText();
         String answer = historyQuestion.getAnswerText();
-        String chat_data = question + "," + answer;
+        String chat_data = question + regex + answer;
 
         // Make a "POST" request using index and chat_data
         try {
@@ -416,7 +426,7 @@ class AppFrame extends JFrame {
           OutputStreamWriter out = new OutputStreamWriter(
                   conn.getOutputStream()
                 );
-                out.write(index + "," + chat_data);
+                out.write(index + regex + chat_data);
                 out.flush();
                 out.close();
           BufferedReader in = new BufferedReader(

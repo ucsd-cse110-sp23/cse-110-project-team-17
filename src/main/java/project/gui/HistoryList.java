@@ -24,13 +24,15 @@ public class HistoryList extends JPanel {
     String filename;
     String path;
     String folder;
+    private String regex;
   
     // HistoryList constructor, sets format and prepares filepath of 
     // history.csv file for reading and writing
-    public HistoryList() {
+    public HistoryList(String regex) {
       count = 0;
       empty = true;
       components = 0;
+      this.regex = regex;
 
       // Sets format
       BoxLayout layout = new BoxLayout(this, BoxLayout.Y_AXIS);
@@ -78,7 +80,7 @@ public class HistoryList extends JPanel {
         try {
           File csv_file = new File(filename);
           FileWriter csv_writer = new FileWriter(csv_file, true);
-          csv_writer.write(index + "," + question + "," + answer + "\n");
+          csv_writer.write(index + regex + question + regex + answer + "\n");
           csv_writer.close();
         }
         catch (IOException ioe) {
@@ -163,7 +165,7 @@ public class HistoryList extends JPanel {
                 while (csv_scanner.hasNextLine()) {
                   removeDefault();
                   String next_line = csv_scanner.nextLine();
-                  String[] question_parts = next_line.split(",");
+                  String[] question_parts = next_line.split(regex);
                   if (!(removal_index.equals(question_parts[0]))) {
                     csv_writer.write(next_line + "\n");
                   }
@@ -236,7 +238,7 @@ public class HistoryList extends JPanel {
             removeDefault();
 
             // Parse line and create HistoryQuestion
-            String[] question_parts = csv_scanner.nextLine().split(",");
+            String[] question_parts = csv_scanner.nextLine().split(regex);
             int index = Integer.parseInt(question_parts[0]);
             String question = question_parts[1];
             String answer = question_parts[2];

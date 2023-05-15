@@ -43,6 +43,7 @@ public class HistoryQuestion extends JPanel {
       index = new JLabel(""); // create index label
       index.setPreferredSize(new Dimension(20, 160)); // set size of index label
       index.setHorizontalAlignment(JLabel.LEFT); // set alignment of index label
+      index.setText(index_str);
       this.add(index); // add index label to task
   
       // Creates question JTextField

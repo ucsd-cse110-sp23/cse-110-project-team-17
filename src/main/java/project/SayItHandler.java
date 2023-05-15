@@ -7,9 +7,11 @@ import java.util.*;
 
 public class SayItHandler implements HttpHandler {
     private final Map<String, String> data;
+    private String regex;
     
-    public SayItHandler(Map<String, String> data) {
+    public SayItHandler(Map<String, String> data, String regex) {
         this.data = data;
+        this.regex = regex;
     }
 
     // Method to handle requests
@@ -65,11 +67,11 @@ public class SayItHandler implements HttpHandler {
         InputStream inStream = httpExchange.getRequestBody();
         Scanner scanner = new Scanner(inStream);
         String postData = scanner.nextLine();
-        String[] chat_data = postData.split(",");
+        String[] chat_data = postData.split(regex);
         String index = chat_data[0];
         String question = chat_data[1];
         String answer = chat_data[2];
-        String chat_string = question + "," + answer;
+        String chat_string = question + regex + answer;
 
         // Store data in hashmap
         data.put(index, chat_string);
@@ -86,11 +88,11 @@ public class SayItHandler implements HttpHandler {
         InputStream inStream = httpExchange.getRequestBody();
         Scanner scanner = new Scanner(inStream);
         String postData = scanner.nextLine();
-        String[] chat_data = postData.split(",");
+        String[] chat_data = postData.split(regex);
         String index = chat_data[0];
         String question = chat_data[1];
         String answer = chat_data[2];
-        String chat_string = question + "," + answer;
+        String chat_string = question + regex + answer;
 
 
         String response;
