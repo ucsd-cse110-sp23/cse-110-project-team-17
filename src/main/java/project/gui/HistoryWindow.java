@@ -13,8 +13,8 @@ public class HistoryWindow extends JPanel {
     JScrollPane scrollWindow;
   
     // HistoryWindow constructor, adds HistoryHeader and HistoryList
-    public HistoryWindow() {
-      
+    public HistoryWindow(String regex) {
+
       // Sets format
       BoxLayout layout = new BoxLayout(this, BoxLayout.Y_AXIS);
       this.setLayout(layout);
@@ -26,7 +26,7 @@ public class HistoryWindow extends JPanel {
       this.add(historyHeader);
   
       // Add History List
-      list = new HistoryList();
+      list = new HistoryList(regex);
       scrollWindow = new JScrollPane(list);
       this.add(scrollWindow);
     }

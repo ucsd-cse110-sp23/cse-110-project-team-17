@@ -49,7 +49,8 @@ public class US5Test {
     // Test deletion when history list is empty
     @Test
     void testDeleteNothingSelected() throws IOException {
-        HistoryList historyList = new HistoryList();
+        String regex = ";;;";
+        HistoryList historyList = new HistoryList(regex);
         assertTrue(0 == historyList.getComponentsNum());
         historyList.deleteSelected();
         assertTrue(0 == historyList.getComponentsNum());
@@ -58,7 +59,8 @@ public class US5Test {
     // Test deletion when no history question is selected
     @Test
     void testDeleteNothingSelectedMultiQuestions() throws IOException {
-        HistoryList historyList = new HistoryList();
+        String regex = ";;;";
+        HistoryList historyList = new HistoryList(regex);
         String question1 = "question1";
         String question2 = "question2";
         String question3 = "question3";
@@ -82,7 +84,8 @@ public class US5Test {
 
         String question1 = "question1";
         String answer1 = "answer1";
-        HistoryList historyList = new HistoryList();
+        String regex = ";;;";
+        HistoryList historyList = new HistoryList(regex);
 
         HistoryQuestion Q1 = new HistoryQuestion("1", question1, answer1);
         Q1.changeState();
@@ -96,7 +99,8 @@ public class US5Test {
     // Test deletion when deleting a question while there are multiple questions
     @Test
     void testDeleteSelectedMultiQuestions() throws IOException {
-        HistoryList historyList = new HistoryList();
+        String regex = ";;;";
+        HistoryList historyList = new HistoryList(regex);
 
         String question1 = "What is 2+2?";
         String answer1 = "4";
