@@ -232,6 +232,7 @@ public class HistoryList extends JPanel {
           int max = -1;
           while (csv_scanner.hasNextLine()) {
             // Remove default from HistoryList, since we are adding a HistoryQuestion 
+            removeAll();
             removeDefault();
 
             // Parse line and create HistoryQuestion

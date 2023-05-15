@@ -1,5 +1,6 @@
 package project;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -28,6 +29,19 @@ public class US1Test {
         historyFile.delete();
     }
 
+    // Delete history.csv file (once at end of all tests)
+    @AfterAll
+    static void cleanUp() {
+        String filename = "project/history.csv";
+        String dir_path = "src/main/java";
+        File potential_dir = new File(dir_path);
+        if (potential_dir.isDirectory()) {
+            filename = dir_path + "/" + filename;
+        }
+        File historyFile = new File(filename);
+        historyFile.delete();
+    }
+
     // Test that text area is displayed as default when there are no questions
     @Test 
     void testHistoryDefault() {
@@ -39,6 +53,8 @@ public class US1Test {
         HistoryList historyList = testFrame.getHistoryList();
         assertTrue(historyList.getComponents()[0] 
             instanceof JTextArea);
+        
+        // Close test frame
         testFrame.closeFrame();
     }
 
@@ -86,6 +102,8 @@ public class US1Test {
             (questionString1));
         assertEquals(chatAnswer.getDialogueText(), 
             (answer_part + questionString1));
+
+        // Close test frame
         testFrame.closeFrame();
     }
 

@@ -2,6 +2,7 @@ package project;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterAll;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
@@ -29,6 +30,19 @@ public class US2Test {
         historyFile.delete();
     }
 
+    // Delete history.csv file (once at end of all tests)
+    @AfterAll
+    static void cleanUp() {
+        String filename = "project/history.csv";
+        String dir_path = "src/main/java";
+        File potential_dir = new File(dir_path);
+        if (potential_dir.isDirectory()) {
+            filename = dir_path + "/" + filename;
+        }
+        File historyFile = new File(filename);
+        historyFile.delete();
+    }
+
     // Test if ChatGPT handler is made correctly
     @Test 
     void testChatGPT() {
@@ -37,6 +51,8 @@ public class US2Test {
         IAudioHandler audioHandler = new MockAudioHandler();
         AppFrame testFrame = new AppFrame(qHandler, chatGPT, audioHandler);
         assertTrue(testFrame.getChatGPT() instanceof IChatGPT);
+
+        // Close test frame
         testFrame.closeFrame();
     }
 
@@ -48,6 +64,8 @@ public class US2Test {
         IAudioHandler audioHandler = new MockAudioHandler();
         AppFrame testFrame = new AppFrame(qHandler, chatGPT, audioHandler);
         assertTrue(testFrame.getAskButton() instanceof JButton);
+
+        // Close test frame
         testFrame.closeFrame();
     }
 
@@ -65,6 +83,8 @@ public class US2Test {
         testFrame.QuestionButtonHandler();
         assertFalse(questionButton.isVisible());
         assertTrue(stopButton.isVisible());
+
+        // Close test frame
         testFrame.closeFrame();
     }
 
@@ -85,6 +105,8 @@ public class US2Test {
         testFrame.StopButtonHandler();
         assertTrue(questionButton.isVisible());
         assertFalse(stopButton.isVisible());
+
+        // Close test frame
         testFrame.closeFrame();
     }
 
