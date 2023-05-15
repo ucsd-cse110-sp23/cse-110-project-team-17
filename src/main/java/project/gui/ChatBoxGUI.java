@@ -10,7 +10,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 
-public class ChatBox extends JPanel {
+public class ChatBoxGUI extends JPanel {
     JLabel dialogue_type;
     JTextArea dialogue;
     String dialogue_label;
@@ -20,7 +20,7 @@ public class ChatBox extends JPanel {
 
     // ChatBox Constructor, uses type_input to determine label and 
     // dialogue_input as main text of ChatBox
-    public ChatBox(String type_input, String dialogue_input) {
+    public ChatBoxGUI(String type_input, String dialogue_input) {
 
         dialogue_label = type_input;
         dialogue_text = dialogue_input;

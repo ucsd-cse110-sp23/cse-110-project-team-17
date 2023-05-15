@@ -49,33 +49,48 @@ public class US5Test {
     // Test deletion when history list is empty
     @Test
     void testDeleteNothingSelected() throws IOException {
+        IQuestionHandler qHandler = new MockQuestionHandler();
+        IChatGPT chatGPT = new MockChatGPT();
+        IAudioHandler audioHandler = new MockAudioHandler();
+        AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
+        testApp.createGUI();
         String regex = ";;;";
-        HistoryList historyList = new HistoryList(regex);
-        assertTrue(0 == historyList.getComponentsNum());
+        HTTPRequestMaker httpRequestMaker = testApp.getRequestMaker();
+        HistoryListHandler historyList = new HistoryListHandler(regex, httpRequestMaker);
+        assertTrue(0 == historyList.getHistoryList().size());
         historyList.deleteSelected();
-        assertTrue(0 == historyList.getComponentsNum());
+        assertTrue(0 == historyList.getHistoryList().size());
+
+        // Close app
+        testApp.closeApp();
     }
 
     // Test deletion when no history question is selected
     @Test
     void testDeleteNothingSelectedMultiQuestions() throws IOException {
+        IQuestionHandler qHandler = new MockQuestionHandler();
+        IChatGPT chatGPT = new MockChatGPT();
+        IAudioHandler audioHandler = new MockAudioHandler();
+        AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
+        testApp.createGUI();
         String regex = ";;;";
-        HistoryList historyList = new HistoryList(regex);
-        String question1 = "question1";
-        String question2 = "question2";
-        String question3 = "question3";
-        String answer1 = "answer1";
-        String answer2 = "answer2";
-        String answer3 = "answer3";
-        HistoryQuestion Q1 = new HistoryQuestion("1", question1, answer1);
-        HistoryQuestion Q2 = new HistoryQuestion("2", question2, answer2);
-        HistoryQuestion Q3= new HistoryQuestion("3", question3, answer3);
-        historyList.add(Q3);
-        historyList.add(Q2);
-        historyList.add(Q1);
-        assertTrue(3 == historyList.getComponentsNum());
+        HTTPRequestMaker httpRequestMaker = testApp.getRequestMaker();
+        HistoryListHandler historyList = new HistoryListHandler(regex, httpRequestMaker);
+        HistoryQuestionHandler Q1 = 
+            new HistoryQuestionHandler("1", httpRequestMaker);
+        HistoryQuestionHandler Q2 = 
+            new HistoryQuestionHandler("2", httpRequestMaker);
+        HistoryQuestionHandler Q3 = 
+            new HistoryQuestionHandler("3", httpRequestMaker);
+        historyList.add(Q3, false);
+        historyList.add(Q2, false);
+        historyList.add(Q1, false);
+        assertTrue(3 == historyList.getHistoryList().size());
         historyList.deleteSelected();
-        assertTrue(3 == historyList.getComponentsNum());
+        assertTrue(3 == historyList.getHistoryList().size());
+
+        // Close app
+        testApp.closeApp();
     }
 
     // Test deletion when deleting the last question
@@ -84,42 +99,71 @@ public class US5Test {
 
         String question1 = "question1";
         String answer1 = "answer1";
+        IQuestionHandler qHandler = new MockQuestionHandler();
+        IChatGPT chatGPT = new MockChatGPT();
+        IAudioHandler audioHandler = new MockAudioHandler();
+        AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
+        testApp.createGUI();
+        AppGUI appGUI = testApp.getAppGUI();
         String regex = ";;;";
-        HistoryList historyList = new HistoryList(regex);
+        HTTPRequestMaker httpRequestMaker = testApp.getRequestMaker();
+        httpRequestMaker.postRequest("1", question1, answer1);
+        HistoryListHandler historyList = new HistoryListHandler(regex, httpRequestMaker);
 
-        HistoryQuestion Q1 = new HistoryQuestion("1", question1, answer1);
-        Q1.changeState();
-        historyList.add(Q1);
-        assertTrue(1 == historyList.getComponentsNum());
+        HistoryQuestionHandler Q1 = 
+            new HistoryQuestionHandler("1", httpRequestMaker);
+        Q1.toggleSelected();
+        historyList.add(Q1, false);
+        assertTrue(1 == historyList.getHistoryList().size());
         historyList.deleteSelected();
-        assertTrue(0 == historyList.getComponentsNum());
-        assertTrue(historyList.getComponents()[0] instanceof JTextArea);
+        assertTrue(0 == historyList.getHistoryList().size());
+        HistoryListGUI historyListGUI = historyList.getHistoryListGUI();
+        assertTrue(historyListGUI.getComponents()[1] instanceof JTextArea);
+
+        // Close app
+        testApp.closeApp();
     }
 
     // Test deletion when deleting a question while there are multiple questions
     @Test
     void testDeleteSelectedMultiQuestions() throws IOException {
+        IQuestionHandler qHandler = new MockQuestionHandler();
+        IChatGPT chatGPT = new MockChatGPT();
+        IAudioHandler audioHandler = new MockAudioHandler();
+        AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
+        testApp.createGUI();
+        AppGUI appGUI = testApp.getAppGUI();
         String regex = ";;;";
-        HistoryList historyList = new HistoryList(regex);
+        HTTPRequestMaker httpRequestMaker = testApp.getRequestMaker();
+        HistoryListHandler historyList = new HistoryListHandler(regex, httpRequestMaker);
 
         String question1 = "What is 2+2?";
         String answer1 = "4";
         String question2 = "What is the date?";
         String answer2 = "05/14";
 
-        HistoryQuestion Q1 = new HistoryQuestion("1", question1, answer1);
-        Q1.changeState();
-        HistoryQuestion Q2 = new HistoryQuestion("2", question2, answer2);
-        Q2.changeState();
-        Q2.changeState();
-        historyList.add(Q1);
-        historyList.add(Q2);
-        assertTrue(2==historyList.getComponentsNum());
-        historyList.deleteSelected();
-        assertTrue(1 == historyList.getComponentsNum());
+        httpRequestMaker.postRequest("1", question1, answer1);
+        httpRequestMaker.postRequest("2", question2, answer2);
 
-        HistoryQuestion remainingQ = (HistoryQuestion) historyList.getComponent(1);
-        assertTrue(remainingQ.getQuestionText() == "What is the date?");
+        HistoryQuestionHandler Q1 = 
+            new HistoryQuestionHandler("1", httpRequestMaker);
+        Q1.toggleSelected();
+        HistoryQuestionHandler Q2 = 
+            new HistoryQuestionHandler("2", httpRequestMaker);
+        Q2.toggleSelected();
+        Q2.toggleSelected();
+        historyList.add(Q1, false);
+        historyList.add(Q2, false);
+        assertTrue(2==historyList.getHistoryList().size());
+        historyList.deleteSelected();
+        assertTrue(1 == historyList.getHistoryList().size());
+
+        HistoryQuestionHandler remainingQ = 
+            (HistoryQuestionHandler) historyList.getHistoryList().get(0);
+        assertTrue(remainingQ.getQuestion().equals(question2));
+
+        // Close app
+        testApp.closeApp();
     }
     
     // Test that delete button is visible on the GUI
@@ -128,9 +172,11 @@ public class US5Test {
         IQuestionHandler qHandler = new MockQuestionHandler();
         IChatGPT chatGPT = new MockChatGPT();
         IAudioHandler audioHandler = new MockAudioHandler();
-        AppFrame testFrame = new AppFrame(qHandler, chatGPT, audioHandler);
+        AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
+        testApp.createGUI();
+        AppGUI appGUI = testApp.getAppGUI();
         
-        assertTrue(testFrame.getDeleteButton().isVisible()); //test deleteSelected button is visible
-        testFrame.closeFrame();
+        assertTrue(appGUI.getDeleteButton().isVisible()); //test deleteSelected button is visible
+        testApp.closeApp();
     }
 }

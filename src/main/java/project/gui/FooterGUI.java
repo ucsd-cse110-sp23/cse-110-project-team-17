@@ -10,8 +10,7 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-public class Footer extends JPanel {
-
+public class FooterGUI extends JPanel {
     JButton askQuestion;
     JButton stopRecordingButton;
 
@@ -20,7 +19,7 @@ public class Footer extends JPanel {
 
     // Footer Constructor, sets format and adds the 
     // "Ask a Question" and "Stop Recording" buttons
-    public Footer() {
+    public FooterGUI() {
 
         // Sets format
         this.setPreferredSize(new Dimension(400, 60));

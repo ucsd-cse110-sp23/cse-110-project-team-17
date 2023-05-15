@@ -53,7 +53,9 @@ public class DS2_1Test {
         IQuestionHandler qHandler = new MockQuestionHandler();
         IChatGPT chatGPT = new MockChatGPT();
         IAudioHandler audioHandler = new MockAudioHandler();
-        AppFrame testFrame0 = new AppFrame(qHandler, chatGPT, audioHandler);
+        AppHandler testApp0 = new AppHandler(qHandler, chatGPT, audioHandler);
+        testApp0.createGUI();
+        AppGUI appGUI0 = testApp0.getAppGUI();
 
         // Set up expected values
         String questionString1 = "What is project/dummy_audio/TestRecording0?";
@@ -64,38 +66,40 @@ public class DS2_1Test {
         
         // Test the "Ask a Question" and "Stop Recording" buttons
         // Verify that the question and answer show up as expected in chat window
-        ChatList chatList0 = testFrame0.getChatList();
-        testFrame0.QuestionButtonHandler();
-        testFrame0.StopButtonHandler();
-        ChatBox chatquestion0 = (ChatBox)
-            chatList0.getComponents()[0];
-        ChatBox answer0 = (ChatBox)
-            chatList0.getComponents()[1];
+        ChatWindowGUI chatWindow0 = appGUI0.getChatWindow();
+        appGUI0.QuestionButtonHandler();
+        appGUI0.StopButtonHandler();
+        ChatBoxGUI chatquestion0 = (ChatBoxGUI)
+            chatWindow0.getComponents()[0];
+        ChatBoxGUI answer0 = (ChatBoxGUI)
+            chatWindow0.getComponents()[1];
         assertTrue(chatquestion0.getLabel().equals("Question"));
         assertTrue(answer0.getLabel().equals("Answer"));
         assertTrue(chatquestion0.getDialogueText().
             equals(questionString1));
         assertTrue(answer0.getDialogueText().
             equals(answer_part + questionString1));
-        testFrame0.closeFrame();
+        testApp0.closeApp();
 
         // Test the permanence of history
         // Verify that the question and answer from old session still show up
-        AppFrame testFrame = new AppFrame(qHandler, chatGPT, audioHandler);
-        HistoryList historyList = testFrame.getHistoryList();
-        HistoryQuestion question1 = 
-            (HistoryQuestion) historyList.getComponents()[0];
-        assertTrue(question1.getQuestionText().
+        AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
+        testApp.createGUI();
+        AppGUI appGUI = testApp.getAppGUI();
+        HistoryListHandler historyList = testApp.getHistoryList();
+        HistoryQuestionHandler question1 = 
+            (HistoryQuestionHandler) historyList.getHistoryList().get(0);
+        assertTrue(question1.getQuestion().
             equals(questionString1));
 
         // Test the "Select" button
         // Verify that the selected question1 and answer show up as expected in chat window
-        testFrame.SelectButtonHandler(question1);
-        ChatList chatList = testFrame.getChatList();
-        ChatBox chatQuestion = 
-            (ChatBox) chatList.getComponents()[0];
-        ChatBox chatAnswer = 
-            (ChatBox) chatList.getComponents()[1];
+        appGUI.SelectButtonHandler(question1.getHistoryQuestionGUI());
+        ChatWindowGUI chatWindow = appGUI.getChatWindow();
+        ChatBoxGUI chatQuestion = 
+            (ChatBoxGUI) chatWindow.getComponents()[0];
+        ChatBoxGUI chatAnswer = 
+            (ChatBoxGUI) chatWindow.getComponents()[1];
         assertTrue(chatQuestion.getLabel().equals("Question"));
         assertTrue(chatAnswer.getLabel().equals("Answer"));
         assertTrue(chatQuestion.getDialogueText().
@@ -106,87 +110,84 @@ public class DS2_1Test {
         // Add a second question
         // Test that the question and answer show up 
         // in history list and chat box as expected
-        testFrame.QuestionButtonHandler();
-        testFrame.StopButtonHandler();
-        ChatBox chatquestion2 = (ChatBox)
-            chatList.getComponents()[0];
-        ChatBox answer2 = (ChatBox)
-            chatList.getComponents()[1];
-        assertTrue(chatquestion2.getLabel().equals("Question"));
-        assertTrue(answer2.getLabel().equals("Answer"));
-        assertTrue(chatquestion2.getDialogueText().
+        appGUI.QuestionButtonHandler();
+        appGUI.StopButtonHandler();
+        ChatBoxGUI chatQuestion2 = 
+            (ChatBoxGUI) chatWindow.getComponents()[0];
+        ChatBoxGUI chatAnswer2 = 
+            (ChatBoxGUI) chatWindow.getComponents()[1];
+        assertTrue(chatQuestion2.getLabel().equals("Question"));
+        assertTrue(chatAnswer2.getLabel().equals("Answer"));
+        assertTrue(chatQuestion2.getDialogueText().
             equals(questionString2));
-        assertTrue(answer2.getDialogueText().
+        assertTrue(chatAnswer2.getDialogueText().
             equals(answer_part + questionString2));
-        HistoryQuestion question2 = 
-            (HistoryQuestion) historyList.getComponents()[1];
-        assertTrue(question2.getQuestionText().
+        HistoryQuestionHandler question2 = 
+            (HistoryQuestionHandler) historyList.getHistoryList().get(1);
+        assertTrue(question2.getQuestion().
             equals(questionString2));
 
         // Add a third question
         // Test that the question and answer show up 
         // in history list and chat box as expected
-        testFrame.QuestionButtonHandler();
-        testFrame.StopButtonHandler();
-        ChatBox chatquestion3 = (ChatBox)
-            chatList.getComponents()[0];
-        ChatBox answer3 = (ChatBox)
-            chatList.getComponents()[1];
-        assertTrue(chatquestion3.getLabel().equals("Question"));
-        assertTrue(answer3.getLabel().equals("Answer"));
-        assertTrue(chatquestion3.getDialogueText().
+        appGUI.QuestionButtonHandler();
+        appGUI.StopButtonHandler();
+        ChatBoxGUI chatQuestion3 = 
+            (ChatBoxGUI) chatWindow.getComponents()[0];
+        ChatBoxGUI chatAnswer3 = 
+            (ChatBoxGUI) chatWindow.getComponents()[1];
+        assertTrue(chatQuestion3.getLabel().equals("Question"));
+        assertTrue(chatAnswer3.getLabel().equals("Answer"));
+        assertTrue(chatQuestion3.getDialogueText().
             equals(questionString3));
-        assertTrue(answer3.getDialogueText().
+        assertTrue(chatAnswer3.getDialogueText().
             equals(answer_part + questionString3));
-        HistoryQuestion question3 = 
-            (HistoryQuestion) historyList.getComponents()[2];
-        assertTrue(question3.getQuestionText().
+        HistoryQuestionHandler question3 = 
+            (HistoryQuestionHandler) historyList.getHistoryList().get(2);
+        assertTrue(question3.getQuestion().
             equals(questionString3));
 
 
         // Add a fourth question
         // Test that the question and answer show up 
         // in history list and chat box as expected
-        testFrame.QuestionButtonHandler();
-        testFrame.StopButtonHandler();
-        ChatBox chatquestion4 = (ChatBox)
-            chatList.getComponents()[0];
-        ChatBox answer4 = (ChatBox)
-            chatList.getComponents()[1];
-        assertTrue(chatquestion4.getLabel().equals("Question"));
-        assertTrue(answer4.getLabel().equals("Answer"));
-        assertTrue(chatquestion4.getDialogueText().
+        appGUI.QuestionButtonHandler();
+        appGUI.StopButtonHandler();
+        ChatBoxGUI chatQuestion4 = 
+            (ChatBoxGUI) chatWindow.getComponents()[0];
+        ChatBoxGUI chatAnswer4 = 
+            (ChatBoxGUI) chatWindow.getComponents()[1];
+        assertTrue(chatQuestion4.getLabel().equals("Question"));
+        assertTrue(chatAnswer4.getLabel().equals("Answer"));
+        assertTrue(chatQuestion4.getDialogueText().
             equals(questionString4));
-        assertTrue(answer4.getDialogueText().
+        assertTrue(chatAnswer4.getDialogueText().
             equals(answer_part + questionString4));
-        HistoryQuestion question4 = 
-            (HistoryQuestion) historyList.getComponents()[3];
-        assertTrue(question4.getQuestionText().
+        HistoryQuestionHandler question4 = 
+            (HistoryQuestionHandler) historyList.getHistoryList().get(3);
+        assertTrue(question4.getQuestion().
             equals(questionString4));
 
         // Select the first question, then select the fourth question
         // Test deletion of fourth question - chat window should be empty
         // and history list should no longer have that question
-        testFrame.SelectButtonHandler(question1);
-        testFrame.SelectButtonHandler(question4);
-        testFrame.deleteSelectedHandler();
-        assertTrue(chatList.getComponents().length == 0);
-        assertTrue(historyList.getComponents().length == 3);
-        for (Component c : historyList.getComponents()) {
-            if (c instanceof HistoryQuestion) {
-                HistoryQuestion curr_question = (HistoryQuestion) c;
-                assertFalse(curr_question.getQuestionText().
-                    equals(questionString4));
-            }
+        appGUI.SelectButtonHandler(question1.getHistoryQuestionGUI());
+        appGUI.SelectButtonHandler(question4.getHistoryQuestionGUI());
+        appGUI.deleteSelectedHandler();
+        assertTrue(chatWindow.getComponents().length == 0);
+        assertTrue(historyList.getHistoryList().size() == 3);
+        for (HistoryQuestionHandler hqh : historyList.getHistoryList()) {
+            assertFalse(hqh.getQuestion().
+                equals(questionString4));
         }
 
         // Test clearing all questions
         // HistoryList should be reset to default
-        testFrame.clearAll();
-        assertTrue(historyList.getComponentsNum() == 0);
-        assertTrue(historyList.getComponents()[0] instanceof JTextArea);
+        appGUI.clearAllHandler();
+        assertTrue(historyList.getHistoryList().size() == 0);
+        assertTrue(historyList.getHistoryListGUI().getComponents()[1] instanceof JTextArea);
 
         // Close the test frame
-        testFrame.closeFrame();
+        testApp.closeApp();
     }
 }

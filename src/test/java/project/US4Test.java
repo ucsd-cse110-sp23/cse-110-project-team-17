@@ -48,27 +48,25 @@ public class US4Test {
         IQuestionHandler qHandler = new MockQuestionHandler();
         IChatGPT chatGPT = new MockChatGPT();
         IAudioHandler audioHandler = new MockAudioHandler();
-        AppFrame testFrame = new AppFrame(qHandler, chatGPT, audioHandler);
-        String regex = ";;;";
+        AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
+        testApp.createGUI();
+        AppGUI appGUI = testApp.getAppGUI();
 
         // Verify that all relevant HistoryList components (and ChatList) are
         // wiped
-        ChatList chatList = testFrame.getChatList();
-        HistoryList historyList = new HistoryList(regex);
-        testFrame.QuestionButtonHandler();
-        testFrame.StopButtonHandler();
-        ChatBox question1 = (ChatBox)
-            chatList.getComponents()[0];
-        ChatBox answer1 = (ChatBox)
-            chatList.getComponents()[1];
-        historyList.add(answer1);
-        historyList.add(question1);
-        assertTrue(!historyList.getEmpty());
-        historyList.removeEverything();
-        assertTrue(historyList.getEmpty());
-        assertTrue(0 == historyList.getComponentsNum());
+        ChatWindowGUI chatWindow = appGUI.getChatWindow();
+        HistoryListHandler historyList = testApp.getHistoryList();
+        appGUI.QuestionButtonHandler();
+        appGUI.StopButtonHandler();
+        assertTrue(!historyList.isEmpty());
+        assertTrue(!(chatWindow.getComponents().length == 0));
+        appGUI.clearAllHandler();
+        assertTrue(historyList.isEmpty());
+        assertTrue(0 == historyList.getHistoryList().size());
+        assertTrue(chatWindow.getComponents().length == 0);
+
 
         // Close test frame
-        testFrame.closeFrame();
+        testApp.closeApp();
     }
 }

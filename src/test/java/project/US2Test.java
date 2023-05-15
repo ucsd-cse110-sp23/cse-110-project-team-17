@@ -11,7 +11,7 @@ import javax.swing.JButton;
 import project.audio_handler.*;
 import project.chat_gpt.*;
 import project.question_handler.*;
-// import project.gui.*;
+import project.gui.*;
 
 import java.io.*;
 
@@ -49,11 +49,12 @@ public class US2Test {
         IQuestionHandler qHandler = new MockQuestionHandler();
         IChatGPT chatGPT = new MockChatGPT();
         IAudioHandler audioHandler = new MockAudioHandler();
-        AppFrame testFrame = new AppFrame(qHandler, chatGPT, audioHandler);
-        assertTrue(testFrame.getChatGPT() instanceof IChatGPT);
+        AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
+        testApp.createGUI();
+        assertTrue(testApp.getChatGPT() instanceof IChatGPT);
 
         // Close test frame
-        testFrame.closeFrame();
+        testApp.closeApp();
     }
 
     // Test that "Ask a Question" button exists
@@ -62,11 +63,13 @@ public class US2Test {
         IQuestionHandler qHandler = new MockQuestionHandler();
         IChatGPT chatGPT = new MockChatGPT();
         IAudioHandler audioHandler = new MockAudioHandler();
-        AppFrame testFrame = new AppFrame(qHandler, chatGPT, audioHandler);
-        assertTrue(testFrame.getAskButton() instanceof JButton);
+        AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
+        testApp.createGUI();
+        AppGUI appGUI = testApp.getAppGUI();
+        assertTrue(appGUI.getAskButton() instanceof JButton);
 
         // Close test frame
-        testFrame.closeFrame();
+        testApp.closeApp();
     }
 
     // Test that "Ask a Question" button toggles visibility
@@ -75,17 +78,19 @@ public class US2Test {
         IQuestionHandler qHandler = new MockQuestionHandler();
         IChatGPT chatGPT = new MockChatGPT();
         IAudioHandler audioHandler = new MockAudioHandler();
-        AppFrame testFrame = new AppFrame(qHandler, chatGPT, audioHandler);
-        JButton questionButton = testFrame.getAskButton();
-        JButton stopButton = testFrame.getStopButton();
+        AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
+        testApp.createGUI();
+        AppGUI appGUI = testApp.getAppGUI();
+        JButton questionButton = appGUI.getAskButton();
+        JButton stopButton = appGUI.getStopButton();
         assertTrue(questionButton.isVisible());
         assertFalse(stopButton.isVisible());
-        testFrame.QuestionButtonHandler();
+        appGUI.QuestionButtonHandler();
         assertFalse(questionButton.isVisible());
         assertTrue(stopButton.isVisible());
 
         // Close test frame
-        testFrame.closeFrame();
+        testApp.closeApp();
     }
 
     // Test that "Ask a Question" and "Stop Recording" buttons toggle
@@ -94,20 +99,22 @@ public class US2Test {
         IQuestionHandler qHandler = new MockQuestionHandler();
         IChatGPT chatGPT = new MockChatGPT();
         IAudioHandler audioHandler = new MockAudioHandler();
-        AppFrame testFrame = new AppFrame(qHandler, chatGPT, audioHandler);
-        JButton questionButton = testFrame.getAskButton();
-        JButton stopButton = testFrame.getStopButton();
+        AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
+        testApp.createGUI();
+        AppGUI appGUI = testApp.getAppGUI();
+        JButton questionButton = appGUI.getAskButton();
+        JButton stopButton = appGUI.getStopButton();
         assertTrue(questionButton.isVisible());
         assertFalse(stopButton.isVisible());
-        testFrame.QuestionButtonHandler();
+        appGUI.QuestionButtonHandler();
         assertFalse(questionButton.isVisible());
         assertTrue(stopButton.isVisible());
-        testFrame.StopButtonHandler();
+        appGUI.StopButtonHandler();
         assertTrue(questionButton.isVisible());
         assertFalse(stopButton.isVisible());
 
         // Close test frame
-        testFrame.closeFrame();
+        appGUI.closeFrame();
     }
 
     

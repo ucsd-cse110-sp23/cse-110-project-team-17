@@ -50,7 +50,9 @@ public class DS1_1Test {
         IQuestionHandler qHandler = new MockQuestionHandler();
         IChatGPT chatGPT = new MockChatGPT();
         IAudioHandler audioHandler = new MockAudioHandler();
-        AppFrame testFrame = new AppFrame(qHandler, chatGPT, audioHandler);
+        AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
+        testApp.createGUI();
+        AppGUI appGUI = testApp.getAppGUI();
 
         // Set up expected values
         String questionString1 = "What is project/dummy_audio/TestRecording0?";
@@ -59,14 +61,14 @@ public class DS1_1Test {
         
         // Test the "Ask a Question" and "Stop Recording" buttons
         // Verify that the question and answer show up as expected in chat window
-        ChatList chatList = testFrame.getChatList();
-        HistoryList historyList = testFrame.getHistoryList();
-        testFrame.QuestionButtonHandler();
-        testFrame.StopButtonHandler();
-        ChatBox chatquestion1 = (ChatBox)
-            chatList.getComponents()[0];
-        ChatBox answer1 = (ChatBox)
-            chatList.getComponents()[1];
+        ChatWindowGUI chatWindow = appGUI.getChatWindow();
+        HistoryListHandler historyList = testApp.getHistoryList();
+        appGUI.QuestionButtonHandler();
+        appGUI.StopButtonHandler();
+        ChatBoxGUI chatquestion1 = (ChatBoxGUI)
+            chatWindow.getComponents()[0];
+        ChatBoxGUI answer1 = (ChatBoxGUI)
+            chatWindow.getComponents()[1];
         assertTrue(chatquestion1.getLabel().equals("Question"));
         assertTrue(answer1.getLabel().equals("Answer"));
         assertTrue(chatquestion1.getDialogueText().
@@ -76,21 +78,21 @@ public class DS1_1Test {
         
         // Test the "Select" button
         // Verify that the selected question and answer show up as expected in chat window
-        testFrame.QuestionButtonHandler();
-        testFrame.StopButtonHandler();
-        HistoryQuestion question1 = 
-            (HistoryQuestion) historyList.getComponents()[0];
-        HistoryQuestion question2 = 
-            (HistoryQuestion) historyList.getComponents()[1];
-        assertTrue(question1.getQuestionText().
+        appGUI.QuestionButtonHandler();
+        appGUI.StopButtonHandler();
+        HistoryQuestionHandler question1 = 
+            (HistoryQuestionHandler) historyList.getHistoryList().get(0);
+        HistoryQuestionHandler question2 = 
+            (HistoryQuestionHandler) historyList.getHistoryList().get(1);
+        assertTrue(question1.getQuestion().
             equals(questionString1));
-        assertTrue(question2.getQuestionText().
+        assertTrue(question2.getQuestion().
             equals(questionString2));
-        testFrame.SelectButtonHandler(question1);
-        ChatBox chatQuestion = 
-            (ChatBox) chatList.getComponents()[0];
-        ChatBox chatAnswer = 
-            (ChatBox) chatList.getComponents()[1];
+        appGUI.SelectButtonHandler(question1.getHistoryQuestionGUI());
+        ChatBoxGUI chatQuestion = 
+            (ChatBoxGUI) chatWindow.getComponents()[0];
+        ChatBoxGUI chatAnswer = 
+            (ChatBoxGUI) chatWindow.getComponents()[1];
         assertTrue(chatQuestion.getLabel().equals("Question"));
         assertTrue(chatAnswer.getLabel().equals("Answer"));
         assertTrue(chatQuestion.getDialogueText().
@@ -99,6 +101,6 @@ public class DS1_1Test {
             equals(answer_part + questionString1));
         
         // Close test frame
-        testFrame.closeFrame();
+        testApp.closeApp();
     }
 }

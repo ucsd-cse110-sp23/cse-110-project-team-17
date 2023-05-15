@@ -8,12 +8,12 @@ import java.awt.GridLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-public class Header extends JPanel {
+public class HeaderGUI extends JPanel {
 
-Color backgroundColor = new Color(240, 248, 255);
-
+    Color backgroundColor = new Color(240, 248, 255);
+   
     // Header Constructor, sets up app title and sets format
-    public Header() {
+    public HeaderGUI() {
 
         // Sets format
         this.setPreferredSize(new Dimension(400, 60)); // Size of the header

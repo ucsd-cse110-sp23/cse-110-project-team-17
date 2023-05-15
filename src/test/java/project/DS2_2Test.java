@@ -4,14 +4,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.AfterAll;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import project.audio_handler.*;
 import project.chat_gpt.*;
 import project.question_handler.*;
 import project.gui.*;
 
-import java.awt.Component;
 
 import java.io.*;
 
@@ -53,7 +51,9 @@ public class DS2_2Test {
         IQuestionHandler qHandler = new MockQuestionHandler();
         IChatGPT chatGPT = new MockChatGPT();
         IAudioHandler audioHandler = new MockAudioHandler();
-        AppFrame testFrame = new AppFrame(qHandler, chatGPT, audioHandler);
+        AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
+        testApp.createGUI();
+        AppGUI appGUI = testApp.getAppGUI();
 
         // Set up expected values
         String questionString1 = "What is project/dummy_audio/TestRecording0?";
@@ -61,43 +61,43 @@ public class DS2_2Test {
         
         // Test the "Ask a Question" and "Stop Recording" buttons
         // Verify that the question and answer show up as expected in chat window
-        ChatList chatList = testFrame.getChatList();
-        testFrame.QuestionButtonHandler();
-        testFrame.StopButtonHandler();
-        ChatBox chatquestion = (ChatBox)
-            chatList.getComponents()[0];
-        ChatBox answer = (ChatBox)
-            chatList.getComponents()[1];
+        ChatWindowGUI chatWindow = appGUI.getChatWindow();
+        appGUI.QuestionButtonHandler();
+        appGUI.StopButtonHandler();
+        ChatBoxGUI chatquestion = (ChatBoxGUI)
+            chatWindow.getComponents()[0];
+        ChatBoxGUI answer = (ChatBoxGUI)
+            chatWindow.getComponents()[1];
         assertTrue(chatquestion.getLabel().equals("Question"));
         assertTrue(answer.getLabel().equals("Answer"));
         assertTrue(chatquestion.getDialogueText().
             equals(questionString1));
         assertTrue(answer.getDialogueText().
             equals(answer_part + questionString1));
-        HistoryList historyList = testFrame.getHistoryList();
-        HistoryQuestion question1 = 
-            (HistoryQuestion) historyList.getComponents()[0];
-        assertTrue(question1.getQuestionText().
+        HistoryListHandler historyList = testApp.getHistoryList();
+        HistoryQuestionHandler question1 = 
+            (HistoryQuestionHandler) historyList.getHistoryList().get(0);
+        assertTrue(question1.getQuestion().
             equals(questionString1));
 
         // Select first question
         // Test deletion of first question - chat window should be empty
         // and history list should be set to default
-        testFrame.SelectButtonHandler(question1);
-        testFrame.deleteSelectedHandler();
-        assertTrue(chatList.getComponents().length == 0);
-        assertTrue(historyList.getComponentsNum() == 0);
-        assertTrue(historyList.getComponents()[0] instanceof JTextArea);
+        appGUI.SelectButtonHandler(question1.getHistoryQuestionGUI());
+        appGUI.deleteSelectedHandler();
+        assertTrue(chatWindow.getComponents().length == 0);
+        assertTrue(historyList.getHistoryList().size() == 0);
+        assertTrue(historyList.getHistoryListGUI().getComponents()[1] instanceof JTextArea);
         
 
         // Test clearing all questions
         // HistoryList should still be set to the default
-        testFrame.clearAll();
-        assertTrue(historyList.getComponentsNum() == 0);
-        assertTrue(historyList.getComponents()[0] instanceof JTextArea);
+        appGUI.clearAllHandler();
+        assertTrue(historyList.getHistoryList().size() == 0);
+        assertTrue(historyList.getHistoryListGUI().getComponents()[1] instanceof JTextArea);
 
         // Close the test frame
-        testFrame.closeFrame();
+        testApp.closeApp();
     }
     
 }
