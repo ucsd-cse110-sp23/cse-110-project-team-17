@@ -27,13 +27,11 @@ public class LogInWindowGUI extends JPanel {
         this.setPreferredSize(new Dimension(400, 100));
         this.setBackground(backgroundColor);
 
-        this.username = new InputTextField("Username");
-        username.setPreferredSize(new Dimension(50, 30));
+        this.username = new InputTextField("Username: ");
         username.setFont(new Font("BrixSansBlack", Font.ITALIC, 10));
         this.add(username);
         
-        this.password = new InputTextField("Password");
-        password.setPreferredSize(new Dimension(50, 30));
+        this.password = new InputTextField("Password: ");
         password.setFont(new Font("BrixSansBlack", Font.ITALIC, 10));
         this.add(password);
         // Add ClearAll button
