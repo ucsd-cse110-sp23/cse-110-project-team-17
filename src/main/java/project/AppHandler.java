@@ -39,7 +39,7 @@ public class AppHandler {
         this.questionHandler = questionHandler;
         this.httpRequestMaker = new HTTPRequestMaker(URL, regex);
         this.historyListHandler = new HistoryListHandler(regex, httpRequestMaker);
-        this.loginWindowHandler = new LogInWindowHandler(httpRequestMaker);
+        this.loginWindowHandler = new LogInWindowHandler();
 
         // initialize server port and hostname
         final int SERVER_PORT = 8100;

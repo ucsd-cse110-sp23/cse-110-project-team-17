@@ -1,5 +1,6 @@
 package project;
 
+import java.awt.Component;
 import java.io.*;
 import java.util.*;
 
@@ -11,12 +12,25 @@ public class LogInWindowHandler {
     Map<String, String> users;
     HTTPRequestMaker httpRequestMaker;
 
-    // Constructor, initializes filepath and history list GUI component
-    public LogInWindowHandler(HTTPRequestMaker httpRequestMaker) {
-        this.httpRequestMaker = httpRequestMaker;
 
+    // Constructor, initializes filepath and history list GUI component
+    public LogInWindowHandler() {
         this.logInWindow = new LogInWindowGUI(this);
         users = new HashMap<String, String>();
+        try {
+            FileReader file = new FileReader("information.txt");
+            BufferedReader br = new BufferedReader(file);
+            String st;  
+            while ((st = br.readLine()) != null) {
+                String[] information = st.split(",");
+                users.put(information[0], information[1]);
+            }
+            br.close();
+            file.close();
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
     }
 
     // Create an account for new users
@@ -25,6 +39,16 @@ public class LogInWindowHandler {
             return false;
         }
         users.put(username, password);
+        try {
+            FileWriter file = new FileWriter("information.txt");
+            for(Map.Entry<String,String> entry : users.entrySet()) {
+                file.write(entry.getKey() + ',' + entry.getValue() + '\n');
+            }
+            file.close();
+          }
+        catch(Exception e) {
+            e.printStackTrace();
+        }
         return true;
     }
 

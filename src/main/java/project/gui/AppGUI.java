@@ -50,8 +50,10 @@ public class AppGUI extends JFrame {
         this.add(chatWindowGUI, BorderLayout.CENTER); // Add chat list in middle of footer and title
         this.add(logInWindowGUI, BorderLayout.CENTER);
 
-        //chatWindowGUI.setVisible(false);
-
+        chatWindowGUI.setVisible(false);
+        footer.setVisible(false);
+        historyWindowGUI.setVisible(false);
+        
         // Obtains buttons from GUI components for later use
         askQuestion = footer.getAskQuestion();
         stopRecordingButton = footer.getStopRecordingButton();
@@ -173,6 +175,8 @@ public class AppGUI extends JFrame {
             createAccount.setVisible(false);
             logIn.setVisible(false);
             logInWindowGUI.setVisible(false);
+            historyWindowGUI.setVisible(true);
+            footer.setVisible(true);
         }
         revalidate();
     }
