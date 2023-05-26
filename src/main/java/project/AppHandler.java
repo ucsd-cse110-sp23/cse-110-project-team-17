@@ -14,7 +14,7 @@ import java.util.concurrent.*;
 
 import java.io.IOException;
 
-public class AppHandler {
+public class AppHandler implements IAppHandler {
 
     IAudioHandler audioHandler;
     IChatGPT chatGPT;
@@ -71,9 +71,9 @@ public class AppHandler {
     }
 
     // Method to create and attach GUI app component
-    public void createGUI() {
+    public void createGUI(AppGUI appGUI) {
         // Create GUI object
-        this.appGUI = new AppGUI(this);
+        this.appGUI = appGUI;
         
         // Populate old list as necessary
         historyListHandler.populateOldHistory();
@@ -89,6 +89,11 @@ public class AppHandler {
     public void startRecording() {
         // Start recording
         audioHandler.startRecording();
+
+        // Deselect any selected questions
+        for (HistoryQuestionHandler hqh : historyListHandler.getHistoryList()) {
+            hqh.deselect();
+        }
     }
 
     // Method to stop recording and receive answer

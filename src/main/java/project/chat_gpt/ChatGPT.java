@@ -24,6 +24,14 @@ public class ChatGPT implements IChatGPT {
 
     // Method that uses ChatGPT to return an answer to the given prompt
     public String ask(String prompt) throws IOException, InterruptedException {
+
+        // If no prompt was received, display default message
+        if (prompt.equals("")) {
+            String default_msg = "Sorry, no audio was detected.";
+            return default_msg;
+        }
+
+
         int maxTokens = 100;
         String generatedText = "";
 

@@ -71,8 +71,8 @@ public class US3Test {
 
         // Create appframe
         AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
-        testApp.createGUI();
-        AppGUI appGUI = testApp.getAppGUI();
+        AppGUI appGUI = new AppGUI(testApp);
+        testApp.createGUI(appGUI);
 
         // Verify that on stopping and starting recording, the actual 
         // chat window displays the expected dialogue

@@ -54,8 +54,8 @@ public class DS2_1Test {
         IChatGPT chatGPT = new MockChatGPT();
         IAudioHandler audioHandler = new MockAudioHandler();
         AppHandler testApp0 = new AppHandler(qHandler, chatGPT, audioHandler);
-        testApp0.createGUI();
-        AppGUI appGUI0 = testApp0.getAppGUI();
+        AppGUI appGUI0 = new AppGUI(testApp0);
+        testApp0.createGUI(appGUI0);
 
         // Set up expected values
         String questionString1 = "What is project/dummy_audio/TestRecording0?";
@@ -84,8 +84,8 @@ public class DS2_1Test {
         // Test the permanence of history
         // Verify that the question and answer from old session still show up
         AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
-        testApp.createGUI();
-        AppGUI appGUI = testApp.getAppGUI();
+        AppGUI appGUI = new AppGUI(testApp);
+        testApp.createGUI(appGUI);
         HistoryListHandler historyList = testApp.getHistoryList();
         HistoryQuestionHandler question1 = 
             (HistoryQuestionHandler) historyList.getHistoryList().get(0);

@@ -50,7 +50,8 @@ public class US2Test {
         IChatGPT chatGPT = new MockChatGPT();
         IAudioHandler audioHandler = new MockAudioHandler();
         AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
-        testApp.createGUI();
+        AppGUI appGUI = new AppGUI(testApp);
+        testApp.createGUI(appGUI);
         assertTrue(testApp.getChatGPT() instanceof IChatGPT);
 
         // Close test frame
@@ -64,8 +65,8 @@ public class US2Test {
         IChatGPT chatGPT = new MockChatGPT();
         IAudioHandler audioHandler = new MockAudioHandler();
         AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
-        testApp.createGUI();
-        AppGUI appGUI = testApp.getAppGUI();
+        AppGUI appGUI = new AppGUI(testApp);
+        testApp.createGUI(appGUI);
         assertTrue(appGUI.getAskButton() instanceof JButton);
 
         // Close test frame
@@ -79,8 +80,8 @@ public class US2Test {
         IChatGPT chatGPT = new MockChatGPT();
         IAudioHandler audioHandler = new MockAudioHandler();
         AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
-        testApp.createGUI();
-        AppGUI appGUI = testApp.getAppGUI();
+        AppGUI appGUI = new AppGUI(testApp);
+        testApp.createGUI(appGUI);
         JButton questionButton = appGUI.getAskButton();
         JButton stopButton = appGUI.getStopButton();
         assertTrue(questionButton.isVisible());
@@ -100,8 +101,8 @@ public class US2Test {
         IChatGPT chatGPT = new MockChatGPT();
         IAudioHandler audioHandler = new MockAudioHandler();
         AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
-        testApp.createGUI();
-        AppGUI appGUI = testApp.getAppGUI();
+        AppGUI appGUI = new AppGUI(testApp);
+        testApp.createGUI(appGUI);
         JButton questionButton = appGUI.getAskButton();
         JButton stopButton = appGUI.getStopButton();
         assertTrue(questionButton.isVisible());
