@@ -1,6 +1,6 @@
 package project.gui;
 
-import project.AppHandler;
+import project.*;
 
 import java.awt.BorderLayout;
 import java.awt.event.MouseAdapter;
@@ -11,7 +11,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 
 public class AppGUI extends JFrame {
-    AppHandler appHandler;
+    IAppHandler appHandler;
     private HistoryWindowGUI historyWindowGUI;
     private HistoryListGUI historyListGUI;
     private ChatWindowGUI chatWindowGUI;
@@ -24,9 +24,14 @@ public class AppGUI extends JFrame {
     
 
     // Constructor, initializes GUI objects
-    public AppGUI(AppHandler appHandler) {
+    public AppGUI(IAppHandler appHandler) {
         this.appHandler = appHandler;
-        this.historyListGUI = appHandler.getHistoryList().getHistoryListGUI();
+        if (appHandler.getHistoryList() != null) {
+            this.historyListGUI = appHandler.getHistoryList().getHistoryListGUI();
+        }
+        else {
+            this.historyListGUI = new HistoryListGUI(null);
+        }
         this.historyWindowGUI = 
             new HistoryWindowGUI(historyListGUI);
         this.chatWindowGUI = new ChatWindowGUI();

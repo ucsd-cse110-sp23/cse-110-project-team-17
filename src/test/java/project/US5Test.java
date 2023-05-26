@@ -53,7 +53,8 @@ public class US5Test {
         IChatGPT chatGPT = new MockChatGPT();
         IAudioHandler audioHandler = new MockAudioHandler();
         AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
-        testApp.createGUI();
+        AppGUI appGUI = new AppGUI(testApp);
+        testApp.createGUI(appGUI);
         String regex = ";;;";
         HTTPRequestMaker httpRequestMaker = testApp.getRequestMaker();
         HistoryListHandler historyList = new HistoryListHandler(regex, httpRequestMaker);
@@ -72,7 +73,8 @@ public class US5Test {
         IChatGPT chatGPT = new MockChatGPT();
         IAudioHandler audioHandler = new MockAudioHandler();
         AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
-        testApp.createGUI();
+        AppGUI appGUI = new AppGUI(testApp);
+        testApp.createGUI(appGUI);
         String regex = ";;;";
         HTTPRequestMaker httpRequestMaker = testApp.getRequestMaker();
         HistoryListHandler historyList = new HistoryListHandler(regex, httpRequestMaker);
@@ -103,8 +105,8 @@ public class US5Test {
         IChatGPT chatGPT = new MockChatGPT();
         IAudioHandler audioHandler = new MockAudioHandler();
         AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
-        testApp.createGUI();
-        AppGUI appGUI = testApp.getAppGUI();
+        AppGUI appGUI = new AppGUI(testApp);
+        testApp.createGUI(appGUI);
         String regex = ";;;";
         HTTPRequestMaker httpRequestMaker = testApp.getRequestMaker();
         httpRequestMaker.postRequest("1", question1, answer1);
@@ -131,8 +133,8 @@ public class US5Test {
         IChatGPT chatGPT = new MockChatGPT();
         IAudioHandler audioHandler = new MockAudioHandler();
         AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
-        testApp.createGUI();
-        AppGUI appGUI = testApp.getAppGUI();
+        AppGUI appGUI = new AppGUI(testApp);
+        testApp.createGUI(appGUI);
         String regex = ";;;";
         HTTPRequestMaker httpRequestMaker = testApp.getRequestMaker();
         HistoryListHandler historyList = new HistoryListHandler(regex, httpRequestMaker);
@@ -173,8 +175,8 @@ public class US5Test {
         IChatGPT chatGPT = new MockChatGPT();
         IAudioHandler audioHandler = new MockAudioHandler();
         AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
-        testApp.createGUI();
-        AppGUI appGUI = testApp.getAppGUI();
+        AppGUI appGUI = new AppGUI(testApp);
+        testApp.createGUI(appGUI);
         
         assertTrue(appGUI.getDeleteButton().isVisible()); //test deleteSelected button is visible
         testApp.closeApp();

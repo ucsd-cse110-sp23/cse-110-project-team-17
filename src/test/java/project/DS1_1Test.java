@@ -51,8 +51,8 @@ public class DS1_1Test {
         IChatGPT chatGPT = new MockChatGPT();
         IAudioHandler audioHandler = new MockAudioHandler();
         AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
-        testApp.createGUI();
-        AppGUI appGUI = testApp.getAppGUI();
+        AppGUI appGUI = new AppGUI(testApp);
+        testApp.createGUI(appGUI);
 
         // Set up expected values
         String questionString1 = "What is project/dummy_audio/TestRecording0?";

@@ -50,8 +50,8 @@ public class US1Test {
         IAudioHandler audioHandler = new MockAudioHandler();
 
         AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
-        testApp.createGUI();
-        AppGUI appGUI = testApp.getAppGUI();
+        AppGUI appGUI = new AppGUI(testApp);
+        testApp.createGUI(appGUI);
         HistoryListGUI historyListGUI = appGUI.getHistoryList();
         assertTrue(historyListGUI.getComponents()[1] 
             instanceof JTextArea);
@@ -73,8 +73,8 @@ public class US1Test {
         IChatGPT chatGPT = new MockChatGPT();
         IAudioHandler audioHandler = new MockAudioHandler();
         AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
-        testApp.createGUI();
-        AppGUI appGUI = testApp.getAppGUI();
+        AppGUI appGUI = new AppGUI(testApp);
+        testApp.createGUI(appGUI);
 
         // Confirm that HistoryQuestion components correspond to 
         // expected question values
@@ -117,7 +117,8 @@ public class US1Test {
         IChatGPT chatGPT = new MockChatGPT();
         IAudioHandler audioHandler = new MockAudioHandler();
         AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
-        testApp.createGUI();
+        AppGUI appGUI = new AppGUI(testApp);
+        testApp.createGUI(appGUI);
         HistoryListHandler historyList = testApp.getHistoryList();
         assertTrue(historyList.getHistoryList().size() == 0);
 

@@ -69,8 +69,8 @@ public class US6Test {
         IAudioHandler audioHandler = new MockAudioHandler();
         IAudioHandler audioHandlerTest = new MockAudioHandler();
         AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
-        testApp.createGUI();
-        AppGUI appGUI = testApp.getAppGUI();
+        AppGUI appGUI = new AppGUI(testApp);
+        testApp.createGUI(appGUI);
         
         // Use second mock audio handler to obtain expected question
         audioHandlerTest.startRecording();
