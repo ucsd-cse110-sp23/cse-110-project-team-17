@@ -19,8 +19,8 @@ public class AppGUI extends JFrame {
     private FooterGUI footer;
     private JButton askQuestion;
     private JButton stopRecordingButton;
-    private JButton clearAllButton;
-    private JButton deleteSelected;
+    private JButton createAccount;
+    private JButton logIn;
     
 
     // Constructor, initializes GUI objects
@@ -50,8 +50,8 @@ public class AppGUI extends JFrame {
         // Obtains buttons from GUI components for later use
         askQuestion = footer.getAskQuestion();
         stopRecordingButton = footer.getStopRecordingButton();
-        clearAllButton = historyWindowGUI.getHistoryHeader().getClearAll();
-        deleteSelected = historyWindowGUI.getHistoryHeader().getdeleteSelected();
+        createAccount = historyWindowGUI.getHistoryHeader().getCreateAccount();
+        logIn = historyWindowGUI.getHistoryHeader().getlogIn();
 
 
         // Adds listeners to the added buttons
@@ -76,7 +76,7 @@ public class AppGUI extends JFrame {
                 }
             }
         );
-        clearAllButton.addMouseListener(
+        createAccount.addMouseListener(
             new MouseAdapter() {
                 @Override
                 public void mousePressed(MouseEvent e) {
@@ -84,7 +84,7 @@ public class AppGUI extends JFrame {
                 }
             }
         );
-        deleteSelected.addMouseListener(
+        logIn.addMouseListener(
             new MouseAdapter() {
                 @Override
                 public void mousePressed(MouseEvent e) {
@@ -203,12 +203,12 @@ public class AppGUI extends JFrame {
 
     // Method to get "Clear All" button
     public JButton getClearButton() {
-        return clearAllButton;
+        return createAccount;
     }
 
     // Method to get "Delete Selected" button
     public JButton getDeleteButton() {
-        return deleteSelected;
+        return logIn;
     }
 
     // Method to get visibility of "Stop Recording" button

@@ -12,8 +12,8 @@ import javax.swing.JPanel;
 
 public class HistoryHeaderGUI extends JPanel {
     Color gray = new Color(218, 229, 234);
-    JButton clearAll;
-    JButton deleteSelected;
+    JButton createAccount;
+    JButton logIn;
 
     // HistoryHeader constructor, adds the "Clear All" and "Delete Selected"
     // buttons, as well as sets format
@@ -36,28 +36,28 @@ public class HistoryHeaderGUI extends JPanel {
         this.add(Box.createRigidArea(new Dimension(120, 30)));
 
         // Add ClearAll button
-        clearAll = new JButton();
-        clearAll.setText("Clear All");
-        clearAll.setPreferredSize(new Dimension(80, 30));
-        clearAll.setFont(new Font("BrixSansBlack", Font.ITALIC, 10));
-        this.add(clearAll);
+        createAccount = new JButton();
+        createAccount.setText("Create Account");
+        createAccount.setPreferredSize(new Dimension(80, 30));
+        createAccount.setFont(new Font("BrixSansBlack", Font.ITALIC, 10));
+        this.add(createAccount);
 
         // Add deleteSelected button
-        deleteSelected = new JButton();
-        deleteSelected.setText("Delete Selected");
-        deleteSelected.setPreferredSize(new Dimension(80, 30));
-        deleteSelected.setFont(new Font("BrixSansBlack", Font.ITALIC, 10));
-        this.add(deleteSelected);
+        logIn = new JButton();
+        logIn.setText("Log In");
+        logIn.setPreferredSize(new Dimension(80, 30));
+        logIn.setFont(new Font("BrixSansBlack", Font.ITALIC, 10));
+        this.add(logIn);
     }
 
 
-    // Return "Clear All" button
-    public JButton getClearAll() {
-        return this.clearAll;
+    // Return "Create Account" button
+    public JButton getCreateAccount() {
+        return this.createAccount;
     }
 
-    // Return "Delete Selected" button
-    public JButton getdeleteSelected() {
-        return this.deleteSelected;
+    // Return "Log In" button
+    public JButton getlogIn() {
+        return this.logIn;
     }
 }
