@@ -15,6 +15,7 @@ public class AppGUI extends JFrame {
     private HistoryWindowGUI historyWindowGUI;
     private HistoryListGUI historyListGUI;
     private ChatWindowGUI chatWindowGUI;
+    private LogInWindowGUI logInWindowGUI;
     private HeaderGUI header;
     private FooterGUI footer;
     private JButton askQuestion;
@@ -30,6 +31,7 @@ public class AppGUI extends JFrame {
         this.historyWindowGUI = 
             new HistoryWindowGUI(historyListGUI);
         this.chatWindowGUI = new ChatWindowGUI();
+        this.logInWindowGUI = appHandler.getLogInWindowHandler().getLogInWindowGUI();
         
         // Creates GUI components
         this.header = new HeaderGUI();
@@ -46,12 +48,15 @@ public class AppGUI extends JFrame {
         this.add(footer, BorderLayout.SOUTH); // Add footer on bottom of the screen
         this.add(historyWindowGUI, BorderLayout.WEST); // Add history list in left of screen
         this.add(chatWindowGUI, BorderLayout.CENTER); // Add chat list in middle of footer and title
+        this.add(logInWindowGUI, BorderLayout.CENTER);
+
+        //chatWindowGUI.setVisible(false);
 
         // Obtains buttons from GUI components for later use
         askQuestion = footer.getAskQuestion();
         stopRecordingButton = footer.getStopRecordingButton();
-        createAccount = historyWindowGUI.getHistoryHeader().getCreateAccount();
-        logIn = historyWindowGUI.getHistoryHeader().getlogIn();
+        createAccount = logInWindowGUI.getCreateAccount();
+        logIn = logInWindowGUI.getlogIn();
 
 
         // Adds listeners to the added buttons
@@ -80,7 +85,7 @@ public class AppGUI extends JFrame {
             new MouseAdapter() {
                 @Override
                 public void mousePressed(MouseEvent e) {
-                    clearAllHandler();
+                    createAccount();
                 }
             }
         );
@@ -88,7 +93,7 @@ public class AppGUI extends JFrame {
             new MouseAdapter() {
                 @Override
                 public void mousePressed(MouseEvent e) {
-                    deleteSelectedHandler();
+                    logIn();
                 }
             }
         );
@@ -150,24 +155,25 @@ public class AppGUI extends JFrame {
         revalidate(); // Updates the frame
     }
 
-    // Method to clear all history from GUI
-    public void clearAllHandler() {
-
-        // Use handler to clear everything
-        appHandler.clearAll();
-
-        // Clears chat window and update frame
-        clearChat();
+    public void createAccount() {
+        String username = logInWindowGUI.getUserName();
+        String password = logInWindowGUI.getPassword();
+        boolean valid = appHandler.getLogInWindowHandler().createAccount(username, password);
+        if (valid) {
+            logIn();
+        }
         revalidate();
     }
 
-    // Method to delete selected button, if any
-    public void deleteSelectedHandler() {
-        // Use app handler function to delete selected
-        appHandler.deleteSelected();
-
-        // Clear chat window and update frame
-        clearChat();
+    public void logIn() {
+        String username = logInWindowGUI.getUserName();
+        String password = logInWindowGUI.getPassword();
+        boolean verify = appHandler.getLogInWindowHandler().verifyPassword(username, password);
+        if (verify) {
+            createAccount.setVisible(false);
+            logIn.setVisible(false);
+            logInWindowGUI.setVisible(false);
+        }
         revalidate();
     }
 
