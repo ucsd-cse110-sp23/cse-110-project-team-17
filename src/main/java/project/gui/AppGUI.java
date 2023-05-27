@@ -1,6 +1,7 @@
 package project.gui;
 
 import project.AppHandler;
+import project.LogInWindowHandler;
 
 import java.awt.BorderLayout;
 import java.awt.event.MouseAdapter;
@@ -199,6 +200,10 @@ public class AppGUI extends JFrame {
     // Method to get HistoryListGUI object
     public HistoryListGUI getHistoryList() {
         return historyListGUI;
+    }
+
+    public LogInWindowGUI getLoginWindow() {
+        return logInWindowGUI;
     }
 
     // Method to get "Ask a Question" button

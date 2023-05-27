@@ -18,7 +18,7 @@ public class LogInWindowHandler {
         this.logInWindow = new LogInWindowGUI(this);
         users = new HashMap<String, String>();
         try {
-            FileReader file = new FileReader("information.txt");
+            FileReader file = new FileReader("../cse-110-project-team-17/src/main/java/project/information.txt");
             BufferedReader br = new BufferedReader(file);
             String st;  
             while ((st = br.readLine()) != null) {
@@ -40,7 +40,7 @@ public class LogInWindowHandler {
         }
         users.put(username, password);
         try {
-            FileWriter file = new FileWriter("information.txt");
+            FileWriter file = new FileWriter("../cse-110-project-team-17/src/main/java/project/information.txt");
             for(Map.Entry<String,String> entry : users.entrySet()) {
                 file.write(entry.getKey() + ',' + entry.getValue() + '\n');
             }
