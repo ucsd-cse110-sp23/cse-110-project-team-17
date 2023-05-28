@@ -38,6 +38,9 @@ public class LogInWindowHandler {
         if (verifyUsername(username)) {
             return false;
         }
+        if (username.equals("") || password.equals("")) {
+            return false;
+        }
         users.put(username, password);
         try {
             File filePath = new File("project/information.txt");

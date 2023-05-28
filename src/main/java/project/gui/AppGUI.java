@@ -53,10 +53,9 @@ public class AppGUI extends JFrame {
         this.add(header, BorderLayout.NORTH); // Add title bar on top of the screen
         this.add(footer, BorderLayout.SOUTH); // Add footer on bottom of the screen
         this.add(historyWindowGUI, BorderLayout.WEST); // Add history list in left of screen
-        this.add(chatWindowGUI, BorderLayout.CENTER); // Add chat list in middle of footer and title
         this.add(logInWindowGUI, BorderLayout.CENTER);
 
-        chatWindowGUI.setVisible(false);
+        // chatWindowGUI.setVisible(false);
         footer.setVisible(false);
         historyWindowGUI.setVisible(false);
         
@@ -223,6 +222,10 @@ public class AppGUI extends JFrame {
             logInWindowGUI.setVisible(false);
             historyWindowGUI.setVisible(true);
             footer.setVisible(true);
+            remove(logInWindowGUI);
+            
+            this.add(chatWindowGUI, BorderLayout.CENTER); // Add chat list in middle of footer and title
+            chatWindowGUI.setVisible(true);
         }
         revalidate();
     }
