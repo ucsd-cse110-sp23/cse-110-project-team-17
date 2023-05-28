@@ -55,6 +55,7 @@ public class LogInWindowHandler {
         //     e.printStackTrace();
         // }
         DBCreate.createUser(username, password);
+        dbMap = DBCreate.readUserInformation();
         return true;
     }
 

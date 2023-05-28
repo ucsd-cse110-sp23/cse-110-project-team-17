@@ -207,9 +207,10 @@ public class AppGUI extends JFrame {
         String password = logInWindowGUI.getPassword();
         boolean valid = appHandler.getLogInWindowHandler().createAccount(username, password);
         if (valid) {
+            revalidate();
             logIn();
+            revalidate();
         }
-        revalidate();
     }
 
     public void logIn() {
