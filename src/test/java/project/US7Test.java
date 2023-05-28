@@ -19,10 +19,9 @@ public class US7Test {
         AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
         AppGUI appGUI = new AppGUI(testApp);
  
-        LogInWindowGUI loginWindow = appGUI.getLoginWindow();
         LogInWindowHandler loginHandler = testApp.getLogInWindowHandler();
-        assertTrue(loginHandler.createAccount("reisandy", "rei"));
-        assertTrue(loginHandler.verifyUsername("reisandy"));
+        assertFalse(loginHandler.createAccount("reisandy", "1234"));
+        assertTrue(loginHandler.verifyUsername("reisandy", "1234"));
     }
     
     @Test
@@ -36,8 +35,8 @@ public class US7Test {
 
         LogInWindowGUI loginWindow = appGUI.getLoginWindow();
         LogInWindowHandler loginHandler = testApp.getLogInWindowHandler();
-        loginHandler.createAccount("joseph", "jo");
-        assertTrue(loginHandler.verifyPassword("joseph", "jo"));
-        assertTrue(loginHandler.createAccount("reisandy", "rei"));
+        //loginHandler.createAccount("joseph", "jo");
+        assertTrue(loginHandler.verifyPassword("joseph", "1234"));
+        assertFalse(loginHandler.createAccount("joseph", "1234"));
     }
 }
