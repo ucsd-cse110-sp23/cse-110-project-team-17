@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 public class AppGUI extends JFrame {
     IAppHandler appHandler;
@@ -124,6 +125,24 @@ public class AppGUI extends JFrame {
         );
     }
 
+
+    // private static void createUI(final JFrame frame){  
+    //     JPanel panel = new JPanel();
+    //     LayoutManager layout = new FlowLayout();  
+    //     panel.setLayout(layout);       
+    //     JButton button = new JButton("Click Me!");
+    //     button.addActionListener(new ActionListener() {
+    //        @Override
+    //        public void actionPerformed(ActionEvent e) {
+    //           JOptionPane.showMessageDialog(frame, "Welcome to Swing!");
+    //        }
+    //     });
+  
+    //     panel.add(button);
+    //     frame.getContentPane().add(panel, BorderLayout.CENTER);    
+    //  }  
+
+
     // Method to handle starting the recording to ask a question
     public void QuestionButtonHandler() {
         // Start recording
@@ -210,6 +229,9 @@ public class AppGUI extends JFrame {
             revalidate();
             logIn();
             revalidate();
+        }
+        else {
+            JOptionPane.showMessageDialog(null, "Accounts already existed");
         }
     }
 
