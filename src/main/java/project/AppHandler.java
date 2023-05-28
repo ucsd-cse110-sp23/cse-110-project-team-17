@@ -25,6 +25,7 @@ public class AppHandler implements IAppHandler {
     HTTPRequestMaker httpRequestMaker;
     public final String URL = "http://localhost:8100/";
     AppGUI appGUI;
+    LogInWindowHandler loginWindowHandler;
 
 
     // Constructor, initializes handlers and adds listeners
@@ -38,6 +39,7 @@ public class AppHandler implements IAppHandler {
         this.questionHandler = questionHandler;
         this.httpRequestMaker = new HTTPRequestMaker(URL, regex);
         this.historyListHandler = new HistoryListHandler(regex, httpRequestMaker);
+        this.loginWindowHandler = new LogInWindowHandler();
 
         // initialize server port and hostname
         final int SERVER_PORT = 8100;
@@ -70,6 +72,7 @@ public class AppHandler implements IAppHandler {
         System.out.println("Server started on port " + SERVER_PORT);
     }
 
+
     // Method to create and attach GUI app component
     public void createGUI(AppGUI appGUI) {
         // Create GUI object
@@ -83,6 +86,11 @@ public class AppHandler implements IAppHandler {
     // Method to return HistoryListHandler element
     public HistoryListHandler getHistoryList() {
         return this.historyListHandler;
+    }
+
+    // Method to return LogInWIndow Handler element
+    public LogInWindowHandler getLogInWindowHandler() {
+        return this.loginWindowHandler;
     }
 
     // Method to start recording to get question

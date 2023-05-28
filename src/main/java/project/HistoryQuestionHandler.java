@@ -22,6 +22,7 @@ public class HistoryQuestionHandler {
         this.selected = false;
     }
 
+
     // Method to update data if needed
     public void updateData() {
         String[] chat_data = httpRequestMaker.getRequest(index);
@@ -66,7 +67,6 @@ public class HistoryQuestionHandler {
     public boolean isSelected() {
         return selected;
     }
-
 
     // Method to get associated HistoryQuestionGUI object
     public HistoryQuestionGUI getHistoryQuestionGUI() {

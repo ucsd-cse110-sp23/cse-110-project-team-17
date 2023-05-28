@@ -49,4 +49,7 @@ public interface IAppHandler {
 
     // Method to get HTTPRequestMaker object
     public HTTPRequestMaker getRequestMaker();
+
+    // Method to get LogInWindow 
+    public LogInWindowHandler getLogInWindowHandler();
 }

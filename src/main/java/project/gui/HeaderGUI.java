@@ -22,7 +22,7 @@ public class HeaderGUI extends JPanel {
         this.setLayout(layout);
         
         // Add main title
-        JLabel titleText = new JLabel("SayIt"); // Text of the header
+        JLabel titleText = new JLabel("SayIt Assistant 2"); // Text of the header
         titleText.setPreferredSize(new Dimension(200, 60));
         titleText.setFont(new Font("BrixSansBlack", Font.ITALIC, 20));
         titleText.setHorizontalAlignment(JLabel.CENTER); // Align the text to the center

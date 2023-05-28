@@ -73,4 +73,8 @@ public class MockAppHandler implements IAppHandler {
     public HTTPRequestMaker getRequestMaker() {
         return null;
     }
+
+    public LogInWindowHandler getLogInWindowHandler() {
+        return null;
+    }
 }

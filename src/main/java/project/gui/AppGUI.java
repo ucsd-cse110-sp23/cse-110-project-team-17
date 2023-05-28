@@ -1,6 +1,5 @@
 package project.gui;
-
-import project.*;
+import project.IAppHandler;
 
 import java.awt.BorderLayout;
 import java.awt.event.MouseAdapter;
@@ -15,10 +14,13 @@ public class AppGUI extends JFrame {
     private HistoryWindowGUI historyWindowGUI;
     private HistoryListGUI historyListGUI;
     private ChatWindowGUI chatWindowGUI;
+    private LogInWindowGUI logInWindowGUI;
     private HeaderGUI header;
     private FooterGUI footer;
     private JButton askQuestion;
     private JButton stopRecordingButton;
+    private JButton createAccount;
+    private JButton logIn;
     private JButton clearAllButton;
     private JButton deleteSelected;
     
@@ -35,6 +37,7 @@ public class AppGUI extends JFrame {
         this.historyWindowGUI = 
             new HistoryWindowGUI(historyListGUI);
         this.chatWindowGUI = new ChatWindowGUI();
+        this.logInWindowGUI = appHandler.getLogInWindowHandler().getLogInWindowGUI();
         
         // Creates GUI components
         this.header = new HeaderGUI();
@@ -51,12 +54,19 @@ public class AppGUI extends JFrame {
         this.add(footer, BorderLayout.SOUTH); // Add footer on bottom of the screen
         this.add(historyWindowGUI, BorderLayout.WEST); // Add history list in left of screen
         this.add(chatWindowGUI, BorderLayout.CENTER); // Add chat list in middle of footer and title
+        this.add(logInWindowGUI, BorderLayout.CENTER);
 
+        chatWindowGUI.setVisible(false);
+        footer.setVisible(false);
+        historyWindowGUI.setVisible(false);
+        
         // Obtains buttons from GUI components for later use
         askQuestion = footer.getAskQuestion();
         stopRecordingButton = footer.getStopRecordingButton();
         clearAllButton = historyWindowGUI.getHistoryHeader().getClearAll();
         deleteSelected = historyWindowGUI.getHistoryHeader().getdeleteSelected();
+        createAccount = logInWindowGUI.getCreateAccount();
+        logIn = logInWindowGUI.getlogIn();
 
 
         // Adds listeners to the added buttons
@@ -78,6 +88,22 @@ public class AppGUI extends JFrame {
                 @Override
                 public void mousePressed(MouseEvent e) {
                     StopButtonHandler();
+                }
+            }
+        );
+        createAccount.addMouseListener(
+            new MouseAdapter() {
+                @Override
+                public void mousePressed(MouseEvent e) {
+                    createAccount();
+                }
+            }
+        );
+        logIn.addMouseListener(
+            new MouseAdapter() {
+                @Override
+                public void mousePressed(MouseEvent e) {
+                    logIn();
                 }
             }
         );
@@ -146,6 +172,7 @@ public class AppGUI extends JFrame {
         );
     }
 
+
     // Method to add listener to select button of given history question
     public void SelectButtonHandler(HistoryQuestionGUI historyQuestionGUI) {
 
@@ -176,6 +203,30 @@ public class AppGUI extends JFrame {
         revalidate();
     }
 
+    public void createAccount() {
+        String username = logInWindowGUI.getUserName();
+        String password = logInWindowGUI.getPassword();
+        boolean valid = appHandler.getLogInWindowHandler().createAccount(username, password);
+        if (valid) {
+            logIn();
+        }
+        revalidate();
+    }
+
+    public void logIn() {
+        String username = logInWindowGUI.getUserName();
+        String password = logInWindowGUI.getPassword();
+        boolean verify = appHandler.getLogInWindowHandler().verifyPassword(username, password);
+        if (verify) {
+            createAccount.setVisible(false);
+            logIn.setVisible(false);
+            logInWindowGUI.setVisible(false);
+            historyWindowGUI.setVisible(true);
+            footer.setVisible(true);
+        }
+        revalidate();
+    }
+
     // Method to get HeaderGUI object
     public HeaderGUI getHeader() {
         return header;
@@ -196,6 +247,18 @@ public class AppGUI extends JFrame {
         return historyListGUI;
     }
 
+    public LogInWindowGUI getLoginWindow() {
+        return logInWindowGUI;
+    }
+
+    public JButton getClearButton() {
+        return clearAllButton;
+    }
+
+    public JButton getDeleteButton() {
+        return deleteSelected;
+    }
+
     // Method to get "Ask a Question" button
     public JButton getAskButton() {
         return askQuestion;
@@ -207,14 +270,14 @@ public class AppGUI extends JFrame {
     }
 
     // Method to get "Clear All" button
-    public JButton getClearButton() {
-        return clearAllButton;
-    }
+    // public JButton getClearButton() {
+    //     return createAccount;
+    // }
 
     // Method to get "Delete Selected" button
-    public JButton getDeleteButton() {
-        return deleteSelected;
-    }
+    // public JButton getDeleteButton() {
+    //     return logIn;
+    // }
 
     // Method to get visibility of "Stop Recording" button
     public boolean getStopButtonVisibility() {
