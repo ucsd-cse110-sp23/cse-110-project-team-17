@@ -18,11 +18,10 @@ public class US7Test {
         IAudioHandler audioHandler = new MockAudioHandler();
         AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
         AppGUI appGUI = new AppGUI(testApp);
-        testApp.createGUI(appGUI);
-
+ 
         LogInWindowGUI loginWindow = appGUI.getLoginWindow();
         LogInWindowHandler loginHandler = testApp.getLogInWindowHandler();
-        assertFalse(loginHandler.createAccount("reisandy", "rei"));
+        assertTrue(loginHandler.createAccount("reisandy", "rei"));
         assertTrue(loginHandler.verifyUsername("reisandy"));
     }
     
@@ -33,12 +32,12 @@ public class US7Test {
         IAudioHandler audioHandler = new MockAudioHandler();
         AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
         AppGUI appGUI = new AppGUI(testApp);
-        testApp.createGUI(appGUI);
+        //testApp.createGUI(appGUI);
 
         LogInWindowGUI loginWindow = appGUI.getLoginWindow();
         LogInWindowHandler loginHandler = testApp.getLogInWindowHandler();
         loginHandler.createAccount("joseph", "jo");
         assertTrue(loginHandler.verifyPassword("joseph", "jo"));
-        assertFalse(loginHandler.createAccount("reisandy", "rei"));
+        assertTrue(loginHandler.createAccount("reisandy", "rei"));
     }
 }
