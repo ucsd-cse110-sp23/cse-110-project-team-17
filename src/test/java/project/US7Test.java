@@ -8,7 +8,6 @@ import project.chat_gpt.*;
 import project.question_handler.*;
 import project.gui.*;
 
-import java.io.*;
 
 public class US7Test {
     @Test
