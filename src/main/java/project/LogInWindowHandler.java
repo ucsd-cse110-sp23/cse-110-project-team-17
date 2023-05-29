@@ -1,12 +1,10 @@
 package project;
 
 import java.util.*;
-
 import project.gui.LogInWindowGUI;
 
 public class LogInWindowHandler {
     LogInWindowGUI logInWindow;
-    //Vector<HistoryQuestionHandler> historyList;
     Map<String, String> dbMap;
     HTTPRequestMaker httpRequestMaker;
 
@@ -14,22 +12,6 @@ public class LogInWindowHandler {
     public LogInWindowHandler() {
         this.logInWindow = new LogInWindowGUI(this);
         this.dbMap = DBCreate.readUserInformation();
-        // users = new HashMap<String, String>();
-        // try {
-        //     FileReader file = new FileReader("project/information.txt");
-        //     BufferedReader br = new BufferedReader(file);
-        //     String st;  
-        //     while ((st = br.readLine()) != null) {
-        //         String[] information = st.split(",");
-        //         //System.out.println();
-        //         users.put(information[0], information[1]);
-        //     }
-        //     br.close();
-        //     //file.close();
-        // }
-        // catch(Exception e) {
-        //     e.printStackTrace();
-        // }
     }
 
     // Create an account for new users
@@ -40,20 +22,6 @@ public class LogInWindowHandler {
         if (username.equals("") || password.equals("")) {
             return false;
         }
-        // users.put(username, password);
-        // try {
-        //     File filePath = new File("project/information.txt");
-        //     FileWriter file = new FileWriter(filePath);
-        //     for(Map.Entry<String,String> entry : users.entrySet()) {
-        //         file.write(entry.getKey() + ',' + entry.getValue() + '\n');
-        //         //file.flush();
-        //     }
-        //     //file.flush();
-        //     file.close();
-        //   }
-        // catch(Exception e) {
-        //     e.printStackTrace();
-        // }
         DBCreate.createUser(username, password);
         dbMap = DBCreate.readUserInformation();
         return true;

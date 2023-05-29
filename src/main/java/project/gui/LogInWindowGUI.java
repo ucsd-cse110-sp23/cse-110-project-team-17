@@ -2,15 +2,12 @@ package project.gui;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
-import java.awt.LayoutManager;
 
 import javax.swing.JPanel;
 import project.LogInWindowHandler;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 
 public class LogInWindowGUI extends JPanel {
     Color backgroundColor = new Color(240, 248, 255);
@@ -51,18 +48,6 @@ public class LogInWindowGUI extends JPanel {
         logIn.setFont(new Font("BrixSansBlack", Font.ITALIC, 10));
         this.add(logIn);
     }
-
-    // private static void createWindow() {    
-    //     JFrame frame = new JFrame("Swing Tester");
-    //     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-  
-    //     createUI(frame);
-    //     frame.setSize(560, 200);      
-    //     frame.setLocationRelativeTo(null);  
-    //     frame.setVisible(true);
-    //  }
-  
-     
 
     public String getUserName() {
         return username.getInput();
