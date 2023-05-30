@@ -1,4 +1,4 @@
-package project;
+package project.handler;
 
 import java.io.*;
 import java.util.*;
@@ -7,7 +7,8 @@ import java.util.Vector;
 
 import java.util.regex.*;
 
-import project.gui.HistoryListGUI;
+import project.gui.*;
+import project.*;
 
 public class HistoryListHandler {
     Boolean empty;

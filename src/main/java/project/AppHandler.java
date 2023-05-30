@@ -4,6 +4,7 @@ import project.audio_handler.*;
 import project.chat_gpt.*;
 import project.question_handler.*;
 import project.gui.*;
+import project.handler.*;
 
 import com.sun.net.httpserver.*;
 
@@ -26,6 +27,7 @@ public class AppHandler implements IAppHandler {
     public final String URL = "http://localhost:8100/";
     AppGUI appGUI;
     LogInWindowHandler loginWindowHandler;
+    AutomaticLogInHandler alHandler;
 
 
     // Constructor, initializes handlers and adds listeners
@@ -40,6 +42,7 @@ public class AppHandler implements IAppHandler {
         this.httpRequestMaker = new HTTPRequestMaker(URL, regex);
         this.historyListHandler = new HistoryListHandler(regex, httpRequestMaker);
         this.loginWindowHandler = new LogInWindowHandler();
+        this.alHandler = new AutomaticLogInHandler();
 
         // initialize server port and hostname
         final int SERVER_PORT = 8100;
@@ -197,6 +200,39 @@ public class AppHandler implements IAppHandler {
     // Method to display a propmt and answer in chat window
     public void display(String question, String answer) {
         appGUI.display(question, answer);
+    }
+
+    // Method that determines whether or not you can autologin on this computer
+    public boolean autoLogin() {
+        String[] login_info = this.alHandler.getLogInInfo();
+        if (login_info.length != 2) {
+            return false;
+        }
+        String username = login_info[0];
+        String password = login_info[1];
+        if (username.equals("") || password.equals("")) {
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+
+    // Method to handle logging in
+    public boolean LogIn(String username, String password) {
+
+        boolean verify = getLogInWindowHandler().verifyPassword(username, password);
+        if (verify) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    // Method to get automatic login handler
+    public AutomaticLogInHandler getAutomaticLogInHandler() {
+        return this.alHandler;
     }
 
     // Method to clear chat window
