@@ -56,7 +56,6 @@ public class US9Test {
         IChatGPT chatGPT = new MockChatGPT();
         IAudioHandler audioHandler = new MockAudioHandler();
         AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
-        AppGUI appGUI = new AppGUI(testApp);
  
         LogInWindowHandler loginHandler = testApp.getLogInWindowHandler();
         assertTrue(loginHandler.verifyUsername("reisandy", "1234"));
@@ -71,11 +70,9 @@ public class US9Test {
         IChatGPT chatGPT = new MockChatGPT();
         IAudioHandler audioHandler = new MockAudioHandler();
         AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
-        AppGUI appGUI = new AppGUI(testApp);
  
         LogInWindowHandler loginHandler = testApp.getLogInWindowHandler();
         assertTrue(loginHandler.verifyUsername("reisandy", "1234"));
-        AutomaticLogInHandler alHandler = testApp.getAutomaticLogInHandler();
         assertTrue(!testApp.autoLogin());
     }
 }
