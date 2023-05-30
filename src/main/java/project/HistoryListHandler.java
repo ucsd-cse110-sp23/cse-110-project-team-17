@@ -5,6 +5,8 @@ import java.util.*;
 
 import java.util.Vector;
 
+import java.util.regex.*;
+
 import project.gui.HistoryListGUI;
 
 public class HistoryListHandler {
@@ -182,16 +184,18 @@ public class HistoryListHandler {
                     // Parse line and create HistoryQuestion
                     String[] question_parts = csv_scanner.nextLine().split(regex);
                     String index_str = question_parts[0];
-                    int index = Integer.parseInt(question_parts[0]);
-                    String question = question_parts[1];
-                    String answer = question_parts[2];
-                    if (index > max) {
-                        max = index;
-                    }
-                    httpRequestMaker.postRequest(index_str, question, answer);
-                    HistoryQuestionHandler historyQuestion = 
-                        new HistoryQuestionHandler(index_str, httpRequestMaker);
-                    add(historyQuestion, true);
+                    if (isInteger(index_str)) {
+                        int index = Integer.parseInt(index_str);
+                        String question = question_parts[1];
+                        String answer = question_parts[2];
+                        if (index > max) {
+                            max = index;
+                        }
+                        httpRequestMaker.postRequest(index_str, question, answer);
+                        HistoryQuestionHandler historyQuestion = 
+                            new HistoryQuestionHandler(index_str, httpRequestMaker);
+                        add(historyQuestion, true);
+                    }   
                 }
                 csv_scanner.close();
                 if (max != -1) {
@@ -207,5 +211,14 @@ public class HistoryListHandler {
     // Method to get associated HistoryList GUI object
     public HistoryListGUI getHistoryListGUI() {
         return this.historyListGUI;
+    }
+        
+    // Helper variable to determine if a string is an integer or not
+    private boolean isInteger(String numString) {
+        if (numString.equals("")) {
+            return false;
+        }
+        String numRegex = "[0-9]+[\\.]?[0-9]*";
+        return Pattern.matches(numRegex, numString);
     }
 }

@@ -8,6 +8,7 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 public class AppGUI extends JFrame {
     IAppHandler appHandler;
@@ -53,10 +54,9 @@ public class AppGUI extends JFrame {
         this.add(header, BorderLayout.NORTH); // Add title bar on top of the screen
         this.add(footer, BorderLayout.SOUTH); // Add footer on bottom of the screen
         this.add(historyWindowGUI, BorderLayout.WEST); // Add history list in left of screen
-        this.add(chatWindowGUI, BorderLayout.CENTER); // Add chat list in middle of footer and title
         this.add(logInWindowGUI, BorderLayout.CENTER);
 
-        chatWindowGUI.setVisible(false);
+        // chatWindowGUI.setVisible(false);
         footer.setVisible(false);
         historyWindowGUI.setVisible(false);
         
@@ -124,6 +124,24 @@ public class AppGUI extends JFrame {
             }
         );
     }
+
+
+    // private static void createUI(final JFrame frame){  
+    //     JPanel panel = new JPanel();
+    //     LayoutManager layout = new FlowLayout();  
+    //     panel.setLayout(layout);       
+    //     JButton button = new JButton("Click Me!");
+    //     button.addActionListener(new ActionListener() {
+    //        @Override
+    //        public void actionPerformed(ActionEvent e) {
+    //           JOptionPane.showMessageDialog(frame, "Welcome to Swing!");
+    //        }
+    //     });
+  
+    //     panel.add(button);
+    //     frame.getContentPane().add(panel, BorderLayout.CENTER);    
+    //  }  
+
 
     // Method to handle starting the recording to ask a question
     public void QuestionButtonHandler() {
@@ -208,9 +226,13 @@ public class AppGUI extends JFrame {
         String password = logInWindowGUI.getPassword();
         boolean valid = appHandler.getLogInWindowHandler().createAccount(username, password);
         if (valid) {
+            revalidate();
             logIn();
+            revalidate();
         }
-        revalidate();
+        else {
+            JOptionPane.showMessageDialog(null, "Accounts already existed");
+        }
     }
 
     public void logIn() {
@@ -223,6 +245,10 @@ public class AppGUI extends JFrame {
             logInWindowGUI.setVisible(false);
             historyWindowGUI.setVisible(true);
             footer.setVisible(true);
+            remove(logInWindowGUI);
+            
+            this.add(chatWindowGUI, BorderLayout.CENTER); // Add chat list in middle of footer and title
+            chatWindowGUI.setVisible(true);
         }
         revalidate();
     }
