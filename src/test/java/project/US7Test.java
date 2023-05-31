@@ -7,7 +7,6 @@ import project.audio_handler.*;
 import project.chat_gpt.*;
 import project.question_handler.*;
 import project.gui.*;
-import project.handler.*;
 
 
 public class US7Test {

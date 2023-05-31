@@ -2,7 +2,6 @@ package project;
 
 import project.chat_gpt.*;
 import project.gui.*;
-import project.handler.*;
 
 public interface IAppHandler {
     
@@ -30,17 +29,8 @@ public interface IAppHandler {
     // Method to add listeners to select buttons from old history questions
     public void oldHistoryHandler();
 
-    // Method to display a prompt and answer in chat window
+    // Method to display a propmt and answer in chat window
     public void display(String question, String answer);
-
-    // Method to log in, returning true if it works and false if it doesn't
-    public boolean LogIn(String username, String password);
-
-    // Method to return automatic login handler
-    public AutomaticLogInHandler getAutomaticLogInHandler();
-
-    // Method to check whether or not we automatically login
-    public boolean autoLogin();
 
     // Method to clear chat window
     public void clearChat();

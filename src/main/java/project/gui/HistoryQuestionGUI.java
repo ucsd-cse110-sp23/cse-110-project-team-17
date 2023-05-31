@@ -11,7 +11,6 @@ import javax.swing.JTextField;
 import javax.swing.JPanel;
 
 import project.*;
-import project.handler.*;
 
 public class HistoryQuestionGUI extends JPanel {
 

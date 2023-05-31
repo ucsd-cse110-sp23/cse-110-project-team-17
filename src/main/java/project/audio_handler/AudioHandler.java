@@ -30,23 +30,15 @@ public class AudioHandler implements IAudioHandler {
     // Helper method to record audio and convert to .wav file
     private void startRecordingHelper() {
         try {
-            String audio_folder_path = "project/audio";
-            String dir_path = "src/main/java";
-            File potential_dir = new File(dir_path);
-            if (potential_dir.isDirectory()) {
-                audio_folder_path = dir_path + "/" + audio_folder_path;
-            }
-            File audio_dir = new File(audio_folder_path);
-            System.out.println(System.getProperty("user.dir"));
+            File audio_dir = new File("project/audio");
             if (!(audio_dir.isDirectory())) {
-                System.out.println("Made directory.");
                 audio_dir.mkdir();
             }
-            filename = audio_folder_path + "/Recording" + count + ".wav";
+            filename = "project/audio/Recording" + count + ".wav";
             File wavFile = new File(filename);
             while (wavFile.isFile()) {
                 count++;
-                filename = audio_folder_path + "/Recording" + count + ".wav";
+                filename = "project/audio/Recording" + count + ".wav";
                 wavFile = new File(filename);
             }
             count++;

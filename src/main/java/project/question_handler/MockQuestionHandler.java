@@ -14,9 +14,4 @@ public class MockQuestionHandler implements IQuestionHandler {
         String prompt = "What is " + question + "?";
         return prompt;
     }
-
-    public String[] getCommand(String prompt) {
-        String[] command = {"test"};
-        return command;
-    }
 }

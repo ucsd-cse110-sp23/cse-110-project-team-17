@@ -2,7 +2,6 @@ package project;
 
 import project.chat_gpt.*;
 import project.gui.*;
-import project.handler.*;
 
 public class MockAppHandler implements IAppHandler {
     AppGUI appGUI;
@@ -45,21 +44,6 @@ public class MockAppHandler implements IAppHandler {
     // Method to display a propmt and answer in chat window
     public void display(String question, String answer) {
         appGUI.display(question, answer);
-    }
-
-    // Dummy method to substitute for logging in
-    public boolean LogIn(String username, String password) {
-        return false;
-    }
-
-    // Dummy method to substitute for determining if you can autologin
-    public boolean autoLogin() {
-        return false;
-    }
-
-    // Method to get Automatic Login Handler object (null)
-    public AutomaticLogInHandler getAutomaticLogInHandler() {
-        return null;
     }
 
     // Method to clear chat window

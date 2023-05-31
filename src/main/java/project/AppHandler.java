@@ -4,7 +4,6 @@ import project.audio_handler.*;
 import project.chat_gpt.*;
 import project.question_handler.*;
 import project.gui.*;
-import project.handler.*;
 
 import com.sun.net.httpserver.*;
 
@@ -27,7 +26,6 @@ public class AppHandler implements IAppHandler {
     public final String URL = "http://localhost:8100/";
     AppGUI appGUI;
     LogInWindowHandler loginWindowHandler;
-    AutomaticLogInHandler alHandler;
 
 
     // Constructor, initializes handlers and adds listeners
@@ -42,7 +40,6 @@ public class AppHandler implements IAppHandler {
         this.httpRequestMaker = new HTTPRequestMaker(URL, regex);
         this.historyListHandler = new HistoryListHandler(regex, httpRequestMaker);
         this.loginWindowHandler = new LogInWindowHandler();
-        this.alHandler = new AutomaticLogInHandler();
 
         // initialize server port and hostname
         final int SERVER_PORT = 8100;
@@ -118,58 +115,41 @@ public class AppHandler implements IAppHandler {
 
         // Initialize prompt and answer variables
         String prompt = "";
-        String[] command;
         String chat_gpt_answer = "";
-
-        HistoryQuestionHandler historyQuestion;
 
         // Get prompt from filename
         try {
             prompt = questionHandler.getQuestion(filename);
-            command = questionHandler.getCommand(prompt);
         }
         catch (IOException io_e) {
             throw new RuntimeException("An IO Exception happened while getting question.");
         }
 
-        switch (command[0]) {
-            case "Question":
-                // Get answer from prompt
-                try {
-                    chat_gpt_answer = chatGPT.ask(prompt);
-                }
-                catch (IOException io_e) {
-                    throw new RuntimeException("An IO Exception happened on click.");
-                }
-                catch (InterruptedException int_e) {
-                    throw new RuntimeException("An Interruption Exception happened on click.");
-                }
+        // Get answer from prompt
+        try {
+            chat_gpt_answer = chatGPT.ask(prompt);
+        }
+        catch (IOException io_e) {
+            throw new RuntimeException("An IO Exception happened on click.");
+        }
+        catch (InterruptedException int_e) {
+            throw new RuntimeException("An Interruption Exception happened on click.");
+        }
 
-                // Post (Index, question + answer) as a pair to HTTP server
-                // via "POST" request
-                httpRequestMaker.postRequest(count_str, prompt, chat_gpt_answer);
+        // Post (Index, question + answer) as a pair to HTTP server
+        // via "POST" request
+        httpRequestMaker.postRequest(count_str, prompt, chat_gpt_answer);
 
-                // Create new HistoryQuestion and add to prompt
-                historyQuestion = 
-                    new HistoryQuestionHandler(count_str, httpRequestMaker);
-                historyListHandler.add(historyQuestion, false); // Add new task to list
+        // Create new HistoryQuestion and add to prompt
+        HistoryQuestionHandler historyQuestion = 
+            new HistoryQuestionHandler(count_str, httpRequestMaker);
+        historyListHandler.add(historyQuestion, false); // Add new task to list
 
-                // Make the created history question selectable in history list
-                appGUI.makeSelectable(historyQuestion.getHistoryQuestionGUI());
+        // Make the created history question selectable in history list
+        appGUI.makeSelectable(historyQuestion.getHistoryQuestionGUI());
 
-                // Display the new history question in chat window
-                display(prompt, chat_gpt_answer);
-
-                break;
-            case "Delete":
-                //call delete
-                deleteSelected();
-                break;
-            case "Clear":
-                //call clear, maybe check say clear all?
-                clearAll();
-                break;
-            }
+        // Display the new history question in chat window
+        display(prompt, chat_gpt_answer);
     }
 
     // Method to handle selecting a history button
@@ -217,39 +197,6 @@ public class AppHandler implements IAppHandler {
     // Method to display a propmt and answer in chat window
     public void display(String question, String answer) {
         appGUI.display(question, answer);
-    }
-
-    // Method that determines whether or not you can autologin on this computer
-    public boolean autoLogin() {
-        String[] login_info = this.alHandler.getLogInInfo();
-        if (login_info.length != 2) {
-            return false;
-        }
-        String username = login_info[0];
-        String password = login_info[1];
-        if (username.equals("") || password.equals("")) {
-            return false;
-        }
-        else {
-            return true;
-        }
-    }
-
-    // Method to handle logging in
-    public boolean LogIn(String username, String password) {
-
-        boolean verify = getLogInWindowHandler().verifyPassword(username, password);
-        if (verify) {
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
-
-    // Method to get automatic login handler
-    public AutomaticLogInHandler getAutomaticLogInHandler() {
-        return this.alHandler;
     }
 
     // Method to clear chat window

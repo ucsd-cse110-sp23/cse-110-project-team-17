@@ -6,7 +6,7 @@ import java.awt.Font;
 import java.awt.GridLayout;
 
 import javax.swing.JPanel;
-import project.handler.LogInWindowHandler;
+import project.LogInWindowHandler;
 import javax.swing.JButton;
 
 public class LogInWindowGUI extends JPanel {

@@ -166,9 +166,4 @@ public class QuestionHandler implements IQuestionHandler {
         connection.disconnect();
         return result;
     }
-
-    public String[] getCommand (String prompt) {
-        String[] command = prompt.split(" ");
-        return command;
-    }
 }
