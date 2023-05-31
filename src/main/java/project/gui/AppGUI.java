@@ -131,7 +131,6 @@ public class AppGUI extends JFrame {
                 }
             }
         );
-        */
         acceptButton.addMouseListener(
             new MouseAdapter() {
                 @Override
