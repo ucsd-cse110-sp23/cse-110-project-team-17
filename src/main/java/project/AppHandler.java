@@ -2,8 +2,9 @@ package project;
 
 import project.audio_handler.*;
 import project.chat_gpt.*;
+import project.question_handler.*;
 import project.gui.*;
-import project.input_handler.*;
+import project.handler.*;
 
 import com.sun.net.httpserver.*;
 
@@ -18,7 +19,7 @@ public class AppHandler implements IAppHandler {
 
     IAudioHandler audioHandler;
     IChatGPT chatGPT;
-    IInputHandler questionHandler;
+    IQuestionHandler questionHandler;
     private HttpServer server;
     private String regex = ";;;";
     HistoryListHandler historyListHandler;
@@ -26,11 +27,12 @@ public class AppHandler implements IAppHandler {
     public final String URL = "http://localhost:8100/";
     AppGUI appGUI;
     LogInWindowHandler loginWindowHandler;
+    AutomaticLogInHandler alHandler;
 
 
     // Constructor, initializes handlers and adds listeners
     // Also creates associated app GUI object
-    public AppHandler(IInputHandler questionHandler, 
+    public AppHandler(IQuestionHandler questionHandler, 
             IChatGPT chatGPT, IAudioHandler audioHandler) {
         
         // Initialize handlers
@@ -40,6 +42,7 @@ public class AppHandler implements IAppHandler {
         this.httpRequestMaker = new HTTPRequestMaker(URL, regex);
         this.historyListHandler = new HistoryListHandler(regex, httpRequestMaker);
         this.loginWindowHandler = new LogInWindowHandler();
+        this.alHandler = new AutomaticLogInHandler();
 
         // initialize server port and hostname
         final int SERVER_PORT = 8100;
@@ -93,18 +96,18 @@ public class AppHandler implements IAppHandler {
         return this.loginWindowHandler;
     }
 
-    // Method to start recording input
+    // Method to start recording to get question
     public void startRecording() {
         // Start recording
         audioHandler.startRecording();
 
         // Deselect any selected questions
-        for (HistoryPromptHandler hqh : historyListHandler.getHistoryList()) {
+        for (HistoryQuestionHandler hqh : historyListHandler.getHistoryList()) {
             hqh.deselect();
         }
     }
 
-    // Method to stop recording and receive response
+    // Method to stop recording and receive answer
     public void stopRecording() {
 
         // Get index from HistoryList variable
@@ -115,45 +118,62 @@ public class AppHandler implements IAppHandler {
 
         // Initialize prompt and answer variables
         String prompt = "";
+        String[] command;
         String chat_gpt_answer = "";
+
+        HistoryQuestionHandler historyQuestion;
 
         // Get prompt from filename
         try {
-            prompt = questionHandler.getInput(filename);
+            prompt = questionHandler.getQuestion(filename);
+            command = questionHandler.getCommand(prompt);
         }
         catch (IOException io_e) {
             throw new RuntimeException("An IO Exception happened while getting question.");
         }
 
-        // Get answer from prompt
-        try {
-            chat_gpt_answer = chatGPT.ask(prompt);
-        }
-        catch (IOException io_e) {
-            throw new RuntimeException("An IO Exception happened on click.");
-        }
-        catch (InterruptedException int_e) {
-            throw new RuntimeException("An Interruption Exception happened on click.");
-        }
+        switch (command[0]) {
+            case "Question":
+                // Get answer from prompt
+                try {
+                    chat_gpt_answer = chatGPT.ask(prompt);
+                }
+                catch (IOException io_e) {
+                    throw new RuntimeException("An IO Exception happened on click.");
+                }
+                catch (InterruptedException int_e) {
+                    throw new RuntimeException("An Interruption Exception happened on click.");
+                }
 
-        // Post (Index, question + answer) as a pair to HTTP server
-        // via "POST" request
-        httpRequestMaker.postRequest(count_str, prompt, chat_gpt_answer);
+                // Post (Index, question + answer) as a pair to HTTP server
+                // via "POST" request
+                httpRequestMaker.postRequest(count_str, prompt, chat_gpt_answer);
 
-        // Create new HistoryQuestion and add to prompt
-        HistoryPromptHandler historyPrompt = 
-            new HistoryPromptHandler(count_str, httpRequestMaker);
-        historyListHandler.add(historyPrompt, false); // Add new task to list
+                // Create new HistoryQuestion and add to prompt
+                historyQuestion = 
+                    new HistoryQuestionHandler(count_str, httpRequestMaker);
+                historyListHandler.add(historyQuestion, false); // Add new task to list
 
-        // Make the created history question selectable in history list
-        appGUI.makeSelectable(historyPrompt.getHistoryQuestionGUI());
+                // Make the created history question selectable in history list
+                appGUI.makeSelectable(historyQuestion.getHistoryQuestionGUI());
 
-        // Display the new history question in chat window
-        display(prompt, chat_gpt_answer);
+                // Display the new history question in chat window
+                display(prompt, chat_gpt_answer);
+
+                break;
+            case "Delete":
+                //call delete
+                deleteSelected();
+                break;
+            case "Clear":
+                //call clear, maybe check say clear all?
+                clearAll();
+                break;
+            }
     }
 
     // Method to handle selecting a history button
-    public void selectQuestion(HistoryPromptHandler historyQuestionHandler) {
+    public void selectQuestion(HistoryQuestionHandler historyQuestionHandler) {
         // Obtain current state of question
         boolean selected = historyQuestionHandler.isSelected();
 
@@ -164,7 +184,7 @@ public class AppHandler implements IAppHandler {
         }
         // If selecting
         else {
-            for (HistoryPromptHandler hqh : historyListHandler.getHistoryList()) {
+            for (HistoryQuestionHandler hqh : historyListHandler.getHistoryList()) {
                 hqh.deselect();
             }
             historyQuestionHandler.select();
@@ -189,7 +209,7 @@ public class AppHandler implements IAppHandler {
     // Method to add listeners to select buttons from old history questions
     public void oldHistoryHandler() {
         // For all history questions
-        for (HistoryPromptHandler hqh : historyListHandler.getHistoryList()) {
+        for (HistoryQuestionHandler hqh : historyListHandler.getHistoryList()) {
             appGUI.makeSelectable(hqh.getHistoryQuestionGUI());
         }
     }
@@ -197,6 +217,39 @@ public class AppHandler implements IAppHandler {
     // Method to display a propmt and answer in chat window
     public void display(String question, String answer) {
         appGUI.display(question, answer);
+    }
+
+    // Method that determines whether or not you can autologin on this computer
+    public boolean autoLogin() {
+        String[] login_info = this.alHandler.getLogInInfo();
+        if (login_info.length != 2) {
+            return false;
+        }
+        String username = login_info[0];
+        String password = login_info[1];
+        if (username.equals("") || password.equals("")) {
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+
+    // Method to handle logging in
+    public boolean LogIn(String username, String password) {
+
+        boolean verify = getLogInWindowHandler().verifyPassword(username, password);
+        if (verify) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    // Method to get automatic login handler
+    public AutomaticLogInHandler getAutomaticLogInHandler() {
+        return this.alHandler;
     }
 
     // Method to clear chat window
@@ -227,33 +280,5 @@ public class AppHandler implements IAppHandler {
     // Method to get HTTPRequestMaker object
     public HTTPRequestMaker getRequestMaker() {
         return httpRequestMaker;
-    }
-
-
-    @Override
-    public void askQuestion() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'askQuestion'");
-    }
-
-
-    @Override
-    public void setupEmail() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'setupEmail'");
-    }
-
-
-    @Override
-    public void createEmail() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'createEmail'");
-    }
-
-
-    @Override
-    public void sendEmail() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'sendEmail'");
     }
 }

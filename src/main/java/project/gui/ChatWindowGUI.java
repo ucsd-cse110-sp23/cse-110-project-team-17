@@ -34,9 +34,14 @@ public class ChatWindowGUI extends JPanel {
     }
 
     public void displayQuestion(String question, String answer) {
+        this.setVisible(true);
         ChatBoxGUI questionBox = new ChatBoxGUI("Question", question);
         ChatBoxGUI answerBox = new ChatBoxGUI("Answer", answer);
-        add(questionBox);
-        add(answerBox);
+        questionBox.setVisible(true);
+        answerBox.setVisible(true);
+        this.add(questionBox);
+        this.add(answerBox);
+        repaint();
+        revalidate();
     }
 }
