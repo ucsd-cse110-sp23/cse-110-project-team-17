@@ -16,6 +16,7 @@ public class AppGUI extends JFrame {
     private HistoryListGUI historyListGUI;
     private ChatWindowGUI chatWindowGUI;
     private LogInWindowGUI logInWindowGUI;
+    private AutomaticLogInGUI alGUI;
     private HeaderGUI header;
     private FooterGUI footer;
     private JButton askQuestion;
@@ -24,6 +25,8 @@ public class AppGUI extends JFrame {
     private JButton logIn;
     private JButton clearAllButton;
     private JButton deleteSelected;
+    private JButton acceptButton;
+    private JButton denyButton;
     
 
     // Constructor, initializes GUI objects
@@ -39,6 +42,8 @@ public class AppGUI extends JFrame {
             new HistoryWindowGUI(historyListGUI);
         this.chatWindowGUI = new ChatWindowGUI();
         this.logInWindowGUI = appHandler.getLogInWindowHandler().getLogInWindowGUI();
+        this.alGUI = new AutomaticLogInGUI();
+        this.alGUI.register(appHandler.getAutomaticLogInHandler());
         
         // Creates GUI components
         this.header = new HeaderGUI();
@@ -54,11 +59,9 @@ public class AppGUI extends JFrame {
         this.add(header, BorderLayout.NORTH); // Add title bar on top of the screen
         this.add(footer, BorderLayout.SOUTH); // Add footer on bottom of the screen
         this.add(historyWindowGUI, BorderLayout.WEST); // Add history list in left of screen
-        this.add(logInWindowGUI, BorderLayout.CENTER);
 
-        // chatWindowGUI.setVisible(false);
-        footer.setVisible(false);
-        historyWindowGUI.setVisible(false);
+        // Start login process
+        beginLogIn();
         
         // Obtains buttons from GUI components for later use
         askQuestion = footer.getAskQuestion();
@@ -67,6 +70,8 @@ public class AppGUI extends JFrame {
         deleteSelected = historyWindowGUI.getHistoryHeader().getdeleteSelected();
         createAccount = logInWindowGUI.getCreateAccount();
         logIn = logInWindowGUI.getlogIn();
+        acceptButton = this.alGUI.getAcceptButton();
+        denyButton = this.alGUI.getDenyButton();
 
 
         // Adds listeners to the added buttons
@@ -95,7 +100,7 @@ public class AppGUI extends JFrame {
             new MouseAdapter() {
                 @Override
                 public void mousePressed(MouseEvent e) {
-                    createAccount();
+                    createAccountHandler();
                 }
             }
         );
@@ -103,7 +108,7 @@ public class AppGUI extends JFrame {
             new MouseAdapter() {
                 @Override
                 public void mousePressed(MouseEvent e) {
-                    logIn();
+                    logInHandler();
                 }
             }
         );
@@ -123,6 +128,23 @@ public class AppGUI extends JFrame {
                 }
             }
         );
+        acceptButton.addMouseListener(
+            new MouseAdapter() {
+                @Override
+                public void mousePressed(MouseEvent e) {
+                    acceptButtonHandler();
+                }
+            }
+        );
+        denyButton.addMouseListener(
+            new MouseAdapter() {
+                @Override
+                public void mousePressed(MouseEvent e) {
+                    denyButtonHandler();
+                }
+            }
+        );
+        
     }
 
 
@@ -221,13 +243,31 @@ public class AppGUI extends JFrame {
         revalidate();
     }
 
-    public void createAccount() {
+    public void beginLogIn() {
+
+        boolean autoLogin = appHandler.autoLogin();
+
+        if (autoLogin) {
+            showApp();
+        }
+        else {
+            this.add(logInWindowGUI, BorderLayout.CENTER);
+            // chatWindowGUI.setVisible(false);
+            footer.setVisible(false);
+            historyWindowGUI.setVisible(false);
+            alGUI.setVisible(false);
+            chatWindowGUI.setVisible(false);
+        }
+    }
+
+    // Method to handle creating account
+    public void createAccountHandler() {
         String username = logInWindowGUI.getUserName();
         String password = logInWindowGUI.getPassword();
         boolean valid = appHandler.getLogInWindowHandler().createAccount(username, password);
         if (valid) {
             revalidate();
-            logIn();
+            logInHandler();
             revalidate();
         }
         else {
@@ -235,22 +275,54 @@ public class AppGUI extends JFrame {
         }
     }
 
-    public void logIn() {
+    // Method to handle logging in
+    public void logInHandler() {
         String username = logInWindowGUI.getUserName();
         String password = logInWindowGUI.getPassword();
-        boolean verify = appHandler.getLogInWindowHandler().verifyPassword(username, password);
+        boolean verify = appHandler.LogIn(username, password);
         if (verify) {
             createAccount.setVisible(false);
             logIn.setVisible(false);
             logInWindowGUI.setVisible(false);
-            historyWindowGUI.setVisible(true);
-            footer.setVisible(true);
             remove(logInWindowGUI);
-            
-            this.add(chatWindowGUI, BorderLayout.CENTER); // Add chat list in middle of footer and title
-            chatWindowGUI.setVisible(true);
+
+            askAutoLoginHandler(username, password);
         }
         revalidate();
+    }
+
+    // Method to display automatic login popup
+    public void askAutoLoginHandler(String username, String password) {
+        this.alGUI.setUsername(username);
+        this.alGUI.setPassword(password);
+        this.add(this.alGUI, BorderLayout.CENTER);
+        this.alGUI.setVisible(true);
+        revalidate();
+    }
+
+    // Method to handle accepting automatic login
+    public void acceptButtonHandler() {
+        this.alGUI.notifyObservers();
+        acceptButton.setVisible(false);
+        denyButton.setVisible(false);
+        remove(alGUI);
+        showApp();
+    }
+
+    // Method to handle denying automatic login
+    public void denyButtonHandler() {
+        remove(alGUI);
+        acceptButton.setVisible(false);
+        denyButton.setVisible(false);
+        showApp();
+    }
+
+    // Helper method to show the actual app window after logging in
+    private void showApp() {
+        historyWindowGUI.setVisible(true);
+        footer.setVisible(true);
+        this.add(chatWindowGUI, BorderLayout.CENTER); // Add chat list in middle of footer and title
+        chatWindowGUI.setVisible(true);
     }
 
     // Method to get HeaderGUI object

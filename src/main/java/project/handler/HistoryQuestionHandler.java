@@ -1,6 +1,8 @@
-package project;
+package project.handler;
 
 import project.gui.HistoryQuestionGUI;
+
+import project.*;
 
 public class HistoryQuestionHandler {
     String index;

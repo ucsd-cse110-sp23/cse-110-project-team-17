@@ -1,7 +1,8 @@
-package project;
+package project.handler;
 
 import java.util.*;
 import project.gui.LogInWindowGUI;
+import project.*;
 
 public class LogInWindowHandler {
     LogInWindowGUI logInWindow;
