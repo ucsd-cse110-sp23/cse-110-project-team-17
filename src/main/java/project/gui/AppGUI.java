@@ -66,8 +66,8 @@ public class AppGUI extends JFrame {
         // Obtains buttons from GUI components for later use
         askQuestion = footer.getAskQuestion();
         stopRecordingButton = footer.getStopRecordingButton();
-        clearAllButton = historyWindowGUI.getHistoryHeader().getClearAll();
-        deleteSelected = historyWindowGUI.getHistoryHeader().getdeleteSelected();
+        //clearAllButton = historyWindowGUI.getHistoryHeader().getClearAll();
+        //deleteSelected = historyWindowGUI.getHistoryHeader().getdeleteSelected();
         createAccount = logInWindowGUI.getCreateAccount();
         logIn = logInWindowGUI.getlogIn();
         acceptButton = this.alGUI.getAcceptButton();
@@ -112,6 +112,7 @@ public class AppGUI extends JFrame {
                 }
             }
         );
+        /* 
         clearAllButton.addMouseListener(
             new MouseAdapter() {
                 @Override
@@ -120,6 +121,8 @@ public class AppGUI extends JFrame {
                 }
             }
         );
+        */
+        /* 
         deleteSelected.addMouseListener(
             new MouseAdapter() {
                 @Override
@@ -128,6 +131,7 @@ public class AppGUI extends JFrame {
                 }
             }
         );
+        */
         acceptButton.addMouseListener(
             new MouseAdapter() {
                 @Override

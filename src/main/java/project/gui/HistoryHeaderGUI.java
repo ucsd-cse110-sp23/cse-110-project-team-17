@@ -36,18 +36,23 @@ public class HistoryHeaderGUI extends JPanel {
         this.add(Box.createRigidArea(new Dimension(120, 30)));
 
         // Add ClearAll button
+
+        /* 
         clearAll = new JButton();
         clearAll.setText("Clear All");
         clearAll.setPreferredSize(new Dimension(80, 30));
         clearAll.setFont(new Font("BrixSansBlack", Font.ITALIC, 10));
         this.add(clearAll);
+        */
 
         // Add deleteSelected button
+        /*
         deleteSelected = new JButton();
         deleteSelected.setText("Delete Selected");
         deleteSelected.setPreferredSize(new Dimension(80, 30));
         deleteSelected.setFont(new Font("BrixSansBlack", Font.ITALIC, 10));
         this.add(deleteSelected);
+        */
     }
 
 

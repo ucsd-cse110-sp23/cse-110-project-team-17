@@ -164,11 +164,49 @@ public class AppHandler implements IAppHandler {
             case "Delete":
                 //call delete
                 deleteSelected();
+
+                // Post (Index, question + answer) as a pair to HTTP server
+                // via "POST" request
+                int count_str_updated = Integer.parseInt(count_str) -1;
+                httpRequestMaker.postRequest(String.valueOf(count_str_updated), prompt, "Deleted");
+
+                // Create new HistoryQuestion and add to prompt
+                historyQuestion = 
+                    new HistoryQuestionHandler(String.valueOf(count_str_updated), httpRequestMaker);
+                historyListHandler.add(historyQuestion, false); // Add new task to list
+
+                // Make the created history question selectable in history list
+                appGUI.makeSelectable(historyQuestion.getHistoryQuestionGUI());
+
+                // Display the new history question in chat window
+                display(prompt, chat_gpt_answer);
+
+
                 break;
             case "Clear":
-                //call clear, maybe check say clear all?
+                //call clear
                 clearAll();
+
+                // Post (Index, question + answer) as a pair to HTTP server
+                // via "POST" request
+                httpRequestMaker.postRequest("0", prompt, "Deleted");
+
+                // Create new HistoryQuestion and add to prompt
+                historyQuestion = 
+                    new HistoryQuestionHandler("0", httpRequestMaker);
+                historyListHandler.add(historyQuestion, false); // Add new task to list
+
+                // Make the created history question selectable in history list
+                appGUI.makeSelectable(historyQuestion.getHistoryQuestionGUI());
+
+                // Display the new history question in chat window
+                display(prompt, chat_gpt_answer);
                 break;
+
+            default:
+                display(prompt, "Unable to parse command");
+                break;
+
             }
     }
 
