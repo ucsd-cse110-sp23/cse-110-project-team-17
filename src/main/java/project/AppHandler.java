@@ -204,7 +204,7 @@ public class AppHandler implements IAppHandler {
                 break;
 
             default:
-                display(prompt, "Unable to parse command");
+                display(prompt, "Unable to parse command, available commands are Question, Delete, and Clear");
                 break;
 
             }

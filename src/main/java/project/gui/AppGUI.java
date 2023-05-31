@@ -112,7 +112,8 @@ public class AppGUI extends JFrame {
                 }
             }
         );
-        /* 
+
+        /*
         clearAllButton.addMouseListener(
             new MouseAdapter() {
                 @Override
@@ -121,8 +122,7 @@ public class AppGUI extends JFrame {
                 }
             }
         );
-        */
-        /* 
+
         deleteSelected.addMouseListener(
             new MouseAdapter() {
                 @Override
@@ -131,6 +131,7 @@ public class AppGUI extends JFrame {
                 }
             }
         );
+        */
         acceptButton.addMouseListener(
             new MouseAdapter() {
                 @Override
