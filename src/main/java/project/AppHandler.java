@@ -101,10 +101,12 @@ public class AppHandler implements IAppHandler {
         // Start recording
         audioHandler.startRecording();
 
+        /* 
         // Deselect any selected questions
         for (HistoryQuestionHandler hqh : historyListHandler.getHistoryList()) {
             hqh.deselect();
         }
+        */
     }
 
     // Method to stop recording and receive answer
@@ -118,7 +120,7 @@ public class AppHandler implements IAppHandler {
 
         // Initialize prompt and answer variables
         String prompt = "";
-        String[] command;
+        String command;
         String chat_gpt_answer = "";
 
         HistoryQuestionHandler historyQuestion;
@@ -132,7 +134,7 @@ public class AppHandler implements IAppHandler {
             throw new RuntimeException("An IO Exception happened while getting question.");
         }
 
-        switch (command[0]) {
+        switch (command) {
             case "Question":
                 // Get answer from prompt
                 try {

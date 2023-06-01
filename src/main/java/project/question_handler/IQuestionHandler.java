@@ -7,5 +7,5 @@ public interface IQuestionHandler {
     public String getQuestion(String filename) throws IOException;
 
     //Method to discrimiate voice command
-    public String[] getCommand(String prompt) throws IOException;
+    public String getCommand(String prompt) throws IOException;
 }

@@ -9,6 +9,9 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import org.json.JSONObject;
+
+import ch.qos.logback.core.joran.conditional.ElseAction;
+
 import org.json.JSONException;
 
 public class QuestionHandler implements IQuestionHandler {
@@ -167,8 +170,18 @@ public class QuestionHandler implements IQuestionHandler {
         return result;
     }
 
-    public String[] getCommand (String prompt) {
-        String[] command = prompt.split(" ");
-        return command;
+    public String getCommand (String prompt) {
+        String cmd = prompt.substring(0, 8);
+        if ( cmd.equals("Question")) {
+            return cmd;
+        }
+        else if (cmd.substring(0, 6).equals("Delete")) {
+            return cmd.substring(0,6);
+        }
+        else if (cmd.substring(0, 5).equals("Clear")) {
+            return cmd.substring(0, 5);
+        }
+        else 
+            return "invalid";
     }
 }
