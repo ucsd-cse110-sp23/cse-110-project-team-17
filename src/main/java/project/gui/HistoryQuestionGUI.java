@@ -8,6 +8,9 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+
+import com.sun.security.auth.PrincipalComparator;
+
 import javax.swing.JPanel;
 
 import project.*;
@@ -44,11 +47,11 @@ public class HistoryQuestionGUI extends JPanel {
         this.add(index); // add index label to task
 
         // Creates question JTextField
-        question = new JTextField("Question: "); // create task name text field
+        question = new JTextField("Prompt: "); // create task name text field
         question.setPreferredSize(new Dimension(300, 160));
         question.setBackground(gray); // set background color of text field
         question.setEditable(false);
-        question.setText("Question: " + question_str);
+        question.setText("Prompt: " + question_str);
         this.add(question); // Adds question text field to HistoryQuestion
     
         // Creates Select JButton

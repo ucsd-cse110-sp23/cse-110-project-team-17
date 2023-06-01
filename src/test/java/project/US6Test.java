@@ -13,6 +13,8 @@ import project.chat_gpt.*;
 import project.question_handler.*;
 import project.gui.*;
 
+import project.handler.*;
+
 import java.io.*;
 
 public class US6Test {
@@ -55,7 +57,7 @@ public class US6Test {
 
         // Verify that expected question is equal to actual question
         String filename_first = filename.split("[.]")[0];
-        String expected_question = "What is " + filename_first + "?";
+        String expected_question = "Question: What is " + filename_first + "?";
         assertEquals(question, expected_question);
     }
 
@@ -77,26 +79,21 @@ public class US6Test {
         String filename = audioHandlerTest.stopRecording();
         String question = qHandler.getQuestion(filename);
         String filename_first = filename.split("[.]")[0];
-        String expected_question = "What is " + filename_first + "?";
+        String expected_question = "Question: What is " + filename_first + "?";
         assertEquals(question, expected_question);
 
         // Use chatGPT handler to obtain expected answer
         String answer_part = chatGPT.ask(expected_question);
         
-        // Verify that expected question and answer are actually displayed
-        // in the chat window
-        ChatWindowGUI chatWindow = appGUI.getChatWindow();
-        appGUI.QuestionButtonHandler();
-        appGUI.StopButtonHandler();
-        ChatBoxGUI question1 = (ChatBoxGUI)
-            chatWindow.getComponents()[0];
-        ChatBoxGUI answer1 = (ChatBoxGUI)
-            chatWindow.getComponents()[1];
-        assertTrue(question1.getLabel().equals("Question"));
-        assertTrue(answer1.getLabel().equals("Answer"));
-        assertTrue(question1.getDialogueText().
+        // Verify that expected question and answer are actually added
+        // to prompt history
+        HistoryListHandler historyList = testApp.getHistoryList();
+        testApp.startRecording();
+        testApp.stopRecording();
+        HistoryQuestionHandler question1 = historyList.getHistoryList().get(0);
+        assertTrue(question1.getQuestion().
             equals(expected_question));
-        assertTrue(answer1.getDialogueText().
+        assertTrue(question1.getAnswer().
             equals(answer_part));
 
         // Close test frame

@@ -19,7 +19,7 @@ public class AppGUI extends JFrame {
     private AutomaticLogInGUI alGUI;
     private HeaderGUI header;
     private FooterGUI footer;
-    private JButton askQuestion;
+    private JButton startButton;
     private JButton stopRecordingButton;
     private JButton createAccount;
     private JButton logIn;
@@ -64,10 +64,10 @@ public class AppGUI extends JFrame {
         beginLogIn();
         
         // Obtains buttons from GUI components for later use
-        askQuestion = footer.getAskQuestion();
+        startButton = footer.getAskQuestion();
         stopRecordingButton = footer.getStopRecordingButton();
-        clearAllButton = historyWindowGUI.getHistoryHeader().getClearAll();
-        deleteSelected = historyWindowGUI.getHistoryHeader().getdeleteSelected();
+        //clearAllButton = historyWindowGUI.getHistoryHeader().getClearAll();
+        //deleteSelected = historyWindowGUI.getHistoryHeader().getdeleteSelected();
         createAccount = logInWindowGUI.getCreateAccount();
         logIn = logInWindowGUI.getlogIn();
         acceptButton = this.alGUI.getAcceptButton();
@@ -80,7 +80,7 @@ public class AppGUI extends JFrame {
 
     // Method to add listeners to core buttons, using helper handler methods
     public void addListeners() {
-        askQuestion.addMouseListener(
+        startButton.addMouseListener(
             new MouseAdapter() {
                 @Override
                 public void mousePressed(MouseEvent e) {
@@ -112,6 +112,8 @@ public class AppGUI extends JFrame {
                 }
             }
         );
+
+        /*
         clearAllButton.addMouseListener(
             new MouseAdapter() {
                 @Override
@@ -120,6 +122,7 @@ public class AppGUI extends JFrame {
                 }
             }
         );
+
         deleteSelected.addMouseListener(
             new MouseAdapter() {
                 @Override
@@ -128,6 +131,7 @@ public class AppGUI extends JFrame {
                 }
             }
         );
+        */
         acceptButton.addMouseListener(
             new MouseAdapter() {
                 @Override
@@ -171,7 +175,7 @@ public class AppGUI extends JFrame {
         appHandler.startRecording();
 
         // Toggles visibility of the footer buttons and updates frame
-        askQuestion.setVisible(false);
+        startButton.setVisible(false);
         stopRecordingButton.setVisible(true);
         clearChat();
         repaint();
@@ -184,7 +188,7 @@ public class AppGUI extends JFrame {
 
         // Toggle footer button visibility
         stopRecordingButton.setVisible(false);
-        askQuestion.setVisible(true);
+        startButton.setVisible(true);
     }
 
     // Method to display the given question and answer
@@ -357,9 +361,9 @@ public class AppGUI extends JFrame {
         return deleteSelected;
     }
 
-    // Method to get "Ask a Question" button
-    public JButton getAskButton() {
-        return askQuestion;
+    // Method to get "Start" button
+    public JButton getStartButton() {
+        return startButton;
     }
 
     // Method to get "Stop Recording" button
@@ -383,8 +387,8 @@ public class AppGUI extends JFrame {
     }
 
     // Method to get visibility of "Ask a Question" button
-    public boolean getAskButtonVisibility() {
-        return askQuestion.isVisible();
+    public boolean getStartButtonVisibility() {
+        return startButton.isVisible();
     }
 
     // Method to close frame

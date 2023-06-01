@@ -65,8 +65,8 @@ public class US1Test {
     @Test
     void testHistoryStory() {
         // Set expected values
-        String questionString1 = "What is project/dummy_audio/TestRecording0?";
-        String questionString2 = "What is project/dummy_audio/TestRecording1?";
+        String questionString1 = "Question: What is project/dummy_audio/Question0?";
+        String questionString2 = "Question: What is project/dummy_audio/Question1?";
         String answer_part = "Mock answer to the following prompt: ";
 
         // Create mock handlers and appframe
@@ -80,33 +80,27 @@ public class US1Test {
         // Confirm that HistoryQuestion components correspond to 
         // expected question values
         HistoryListHandler historyList = testApp.getHistoryList();
-        appGUI.QuestionButtonHandler();
-        appGUI.StopButtonHandler();
-        appGUI.QuestionButtonHandler();
-        appGUI.StopButtonHandler();
+        testApp.startRecording();
+        testApp.stopRecording();
+        testApp.startRecording();
+        testApp.stopRecording();
         HistoryQuestionHandler question1 = 
             (HistoryQuestionHandler) historyList.getHistoryList().get(0);
         HistoryQuestionHandler question2 = 
             (HistoryQuestionHandler) historyList.getHistoryList().get(1);
         assertTrue(question1.getQuestion().
             equals(questionString1));
+        assertTrue(question1.getAnswer().
+            equals(answer_part + questionString1));
         assertTrue(question2.getQuestion().
             equals(questionString2));
+        assertTrue(question2.getAnswer().
+            equals(answer_part + questionString2));
         
         // Confirm that select button works as expected 
         // (i.e., chat window displays the correct question)
-        appGUI.SelectButtonHandler(question1.getHistoryQuestionGUI());
-        ChatWindowGUI chatWindow = appGUI.getChatWindow();
-        ChatBoxGUI chatQuestion = 
-            (ChatBoxGUI) chatWindow.getComponents()[0];
-        ChatBoxGUI chatAnswer = 
-            (ChatBoxGUI) chatWindow.getComponents()[1];
-        assertEquals(chatQuestion.getLabel(), ("Question"));
-        assertEquals(chatAnswer.getLabel(), ("Answer"));
-        assertEquals(chatQuestion.getDialogueText(), 
-            (questionString1));
-        assertEquals(chatAnswer.getDialogueText(), 
-            (answer_part + questionString1));
+        testApp.selectQuestion(question1);
+        assertTrue(question1.isSelected());
 
         // Close test frame
         testApp.closeApp();

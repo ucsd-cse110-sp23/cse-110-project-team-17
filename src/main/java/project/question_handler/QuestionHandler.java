@@ -9,6 +9,8 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import org.json.JSONObject;
+
+
 import org.json.JSONException;
 
 public class QuestionHandler implements IQuestionHandler {
@@ -165,5 +167,30 @@ public class QuestionHandler implements IQuestionHandler {
         // Disconnect connection
         connection.disconnect();
         return result;
+    }
+
+    public String getCommand(String prompt) {
+
+        String cmd = "";
+
+        if (prompt.length() >= 8) {
+            cmd = prompt.substring(0, 8);
+            if (cmd.toUpperCase().equals("QUESTION")) {
+                return "Question";
+            }
+        }
+        if (prompt.length() >= 6) {
+            cmd = prompt.substring(0, 6);
+            if (cmd.toUpperCase().equals("DELETE")) {
+                return "Delete";
+            }
+        }
+        if (prompt.length() >= 5) {
+            cmd = prompt.substring(0, 5);
+            if (cmd.toUpperCase().equals("CLEAR")) {
+                return "Clear";
+            }
+        }
+        return "invalid";
     }
 }

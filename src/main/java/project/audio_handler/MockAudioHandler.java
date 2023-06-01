@@ -8,10 +8,10 @@ public class MockAudioHandler implements IAudioHandler {
     public MockAudioHandler() {
         count = 3;
         options = new String[4];
-        options[0] = "project/dummy_audio/TestRecording0.wav";
-        options[1] = "project/dummy_audio/TestRecording1.wav";
-        options[2] = "project/dummy_audio/TestRecording2.wav";
-        options[3] = "project/dummy_audio/TestRecording3.wav";
+        options[0] = "project/dummy_audio/Question0.wav";
+        options[1] = "project/dummy_audio/Question1.wav";
+        options[2] = "project/dummy_audio/Question2.wav";
+        options[3] = "project/dummy_audio/Question3.wav";
     }
 
     // Method to mimic starting a new recording, switches which 

@@ -14,8 +14,6 @@ import project.handler.*;
 
 import java.io.*;
 
-import javax.swing.JTextArea;
-
 public class DS2_2Test {
 // Delete history.csv file (fresh start)
     @BeforeEach
@@ -57,45 +55,37 @@ public class DS2_2Test {
         testApp.createGUI(appGUI);
 
         // Set up expected values
-        String questionString1 = "What is project/dummy_audio/TestRecording0?";
+        String questionString1 = "Question: What is project/dummy_audio/Question0?";
         String answer_part = "Mock answer to the following prompt: ";
         
         // Test the "Ask a Question" and "Stop Recording" buttons
         // Verify that the question and answer show up as expected in chat window
-        ChatWindowGUI chatWindow = appGUI.getChatWindow();
-        appGUI.QuestionButtonHandler();
-        appGUI.StopButtonHandler();
-        ChatBoxGUI chatquestion = (ChatBoxGUI)
-            chatWindow.getComponents()[0];
-        ChatBoxGUI answer = (ChatBoxGUI)
-            chatWindow.getComponents()[1];
-        assertTrue(chatquestion.getLabel().equals("Question"));
-        assertTrue(answer.getLabel().equals("Answer"));
-        assertTrue(chatquestion.getDialogueText().
-            equals(questionString1));
-        assertTrue(answer.getDialogueText().
-            equals(answer_part + questionString1));
         HistoryListHandler historyList = testApp.getHistoryList();
-        HistoryQuestionHandler question1 = 
-            (HistoryQuestionHandler) historyList.getHistoryList().get(0);
+        testApp.startRecording();
+        testApp.stopRecording();
+        HistoryQuestionHandler question1 = historyList.getHistoryList().get(0);
         assertTrue(question1.getQuestion().
             equals(questionString1));
+        assertTrue(question1.getAnswer().
+            equals(answer_part + questionString1));
+        
+        // Deselect first question
+        testApp.selectQuestion(question1);
+        assertTrue(!question1.isSelected());
 
         // Select first question
         // Test deletion of first question - chat window should be empty
         // and history list should be set to default
-        appGUI.SelectButtonHandler(question1.getHistoryQuestionGUI());
-        appGUI.deleteSelectedHandler();
-        assertTrue(chatWindow.getComponents().length == 0);
+        testApp.selectQuestion(question1);
+        assertTrue(question1.isSelected());
+        testApp.deleteSelected();
         assertTrue(historyList.getHistoryList().size() == 0);
-        assertTrue(historyList.getHistoryListGUI().getComponents()[1] instanceof JTextArea);
         
 
         // Test clearing all questions
         // HistoryList should still be set to the default
-        appGUI.clearAllHandler();
+        testApp.clearAll();
         assertTrue(historyList.getHistoryList().size() == 0);
-        assertTrue(historyList.getHistoryListGUI().getComponents()[1] instanceof JTextArea);
 
         // Close the test frame
         testApp.closeApp();

@@ -101,58 +101,126 @@ public class AppHandler implements IAppHandler {
         // Start recording
         audioHandler.startRecording();
 
+        /* 
         // Deselect any selected questions
         for (HistoryQuestionHandler hqh : historyListHandler.getHistoryList()) {
             hqh.deselect();
         }
+        */
     }
 
     // Method to stop recording and receive answer
     public void stopRecording() {
 
-        // Get index from HistoryList variable
-        String count_str = (historyListHandler.getCount());
+        // Initialize prompt and command variables
+        String prompt = "";
+        String command;
         
         // Stop recording and get filename of audio file
         String filename = audioHandler.stopRecording();
 
-        // Initialize prompt and answer variables
-        String prompt = "";
-        String chat_gpt_answer = "";
-
         // Get prompt from filename
         try {
             prompt = questionHandler.getQuestion(filename);
+            command = questionHandler.getCommand(prompt);
         }
         catch (IOException io_e) {
             throw new RuntimeException("An IO Exception happened while getting question.");
         }
 
-        // Get answer from prompt
-        try {
-            chat_gpt_answer = chatGPT.ask(prompt);
+        handleCommand(prompt, command);
+    }
+
+    // Helper method to handle cases for each prompt
+    public void handleCommand(String prompt, String command) {
+
+        // Get index from HistoryList variable
+        String count_str = (historyListHandler.getCount());
+
+        // Initialize answer variable
+        String chat_gpt_answer = "";
+
+        // Initialize history question
+        HistoryQuestionHandler historyQuestion;
+
+        switch (command) {
+            case "Question":
+                // Get answer from prompt
+                try {
+                    chat_gpt_answer = chatGPT.ask(prompt);
+                }
+                catch (IOException io_e) {
+                    throw new RuntimeException("An IO Exception happened on click.");
+                }
+                catch (InterruptedException int_e) {
+                    throw new RuntimeException("An Interruption Exception happened on click.");
+                }
+
+                // Post (Index, question + answer) as a pair to HTTP server
+                // via "POST" request
+                httpRequestMaker.postRequest(count_str, prompt, chat_gpt_answer);
+
+                // Create new HistoryQuestion and add to prompt
+                historyQuestion = 
+                    new HistoryQuestionHandler(count_str, httpRequestMaker);
+                historyListHandler.add(historyQuestion, false); // Add new task to list
+
+                // Make the created history question selectable in history list
+                appGUI.makeSelectable(historyQuestion.getHistoryQuestionGUI());
+
+                selectQuestion(historyQuestion);
+
+                // Display the new history question in chat window
+                display(prompt, chat_gpt_answer);
+
+                break;
+            case "Delete":
+                //call delete
+                deleteSelected();
+
+                // Post (Index, question + answer) as a pair to HTTP server
+                // via "POST" request
+                // int count_str_updated = Integer.parseInt(count_str) -1;
+                // httpRequestMaker.postRequest(String.valueOf(count_str_updated), prompt, "Deleted");
+
+                // Create new HistoryQuestion and add to prompt
+                // historyQuestion = 
+                //     new HistoryQuestionHandler(String.valueOf(count_str_updated), httpRequestMaker);
+                // historyListHandler.add(historyQuestion, false); // Add new task to list
+
+                // Make the created history question selectable in history list
+                // appGUI.makeSelectable(historyQuestion.getHistoryQuestionGUI());
+
+                // Display the new history question in chat window
+                // display(prompt, chat_gpt_answer);
+
+
+                break;
+            case "Clear":
+                //call clear
+                clearAll();
+
+                // Post (Index, question + answer) as a pair to HTTP server
+                // via "POST" request
+                // httpRequestMaker.postRequest("0", prompt, "Deleted");
+
+                // Create new HistoryQuestion and add to prompt
+                // historyQuestion = 
+                //     new HistoryQuestionHandler("0", httpRequestMaker);
+                // historyListHandler.add(historyQuestion, false); // Add new task to list
+
+                // Make the created history question selectable in history list
+                // appGUI.makeSelectable(historyQuestion.getHistoryQuestionGUI());
+
+                // Display the new history question in chat window
+                // display(prompt, chat_gpt_answer);
+                break;
+
+            default:
+                display(prompt, "Unable to parse command, available commands are Question, Delete, and Clear");
+                break;
+
         }
-        catch (IOException io_e) {
-            throw new RuntimeException("An IO Exception happened on click.");
-        }
-        catch (InterruptedException int_e) {
-            throw new RuntimeException("An Interruption Exception happened on click.");
-        }
-
-        // Post (Index, question + answer) as a pair to HTTP server
-        // via "POST" request
-        httpRequestMaker.postRequest(count_str, prompt, chat_gpt_answer);
-
-        // Create new HistoryQuestion and add to prompt
-        HistoryQuestionHandler historyQuestion = 
-            new HistoryQuestionHandler(count_str, httpRequestMaker);
-        historyListHandler.add(historyQuestion, false); // Add new task to list
-
-        // Make the created history question selectable in history list
-        appGUI.makeSelectable(historyQuestion.getHistoryQuestionGUI());
-
-        // Display the new history question in chat window
-        display(prompt, chat_gpt_answer);
     }
 
     // Method to handle selecting a history button

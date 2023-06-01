@@ -8,7 +8,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import project.audio_handler.*;
 import project.chat_gpt.*;
 import project.question_handler.*;
-import project.gui.*;
 import project.handler.*;
 
 import java.io.File;
@@ -62,6 +61,7 @@ public class US9Test {
         AutomaticLogInHandler alHandler = testApp.getAutomaticLogInHandler();
         alHandler.update("reisandy", "1234");
         assertTrue(testApp.autoLogin());
+        testApp.stopServer();
     }
 
     @Test
@@ -74,5 +74,6 @@ public class US9Test {
         LogInWindowHandler loginHandler = testApp.getLogInWindowHandler();
         assertTrue(loginHandler.verifyUsername("reisandy", "1234"));
         assertTrue(!testApp.autoLogin());
+        testApp.stopServer();
     }
 }

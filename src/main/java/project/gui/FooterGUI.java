@@ -28,7 +28,7 @@ public class FooterGUI extends JPanel {
         this.setLayout(layout);
 
         // Adds "Ask a Question" button
-        askQuestion = new JButton("Ask a Question"); // add task button
+        askQuestion = new JButton("Start"); // add task button
         askQuestion.setFont(new Font("Sans-serif", Font.ITALIC, 10)); // set font
         this.add(askQuestion); // add to footer
 
