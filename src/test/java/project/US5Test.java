@@ -168,18 +168,4 @@ public class US5Test {
         // Close app
         testApp.closeApp();
     }
-    
-    // Test that delete button is visible on the GUI
-    @Test
-    void test_deleteButtonGUI() throws IOException {
-        IQuestionHandler qHandler = new MockQuestionHandler();
-        IChatGPT chatGPT = new MockChatGPT();
-        IAudioHandler audioHandler = new MockAudioHandler();
-        AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
-        AppGUI appGUI = new AppGUI(testApp);
-        testApp.createGUI(appGUI);
-        
-        assertTrue(appGUI.getDeleteButton().isVisible()); //test deleteSelected button is visible
-        testApp.closeApp();
-    }
 }

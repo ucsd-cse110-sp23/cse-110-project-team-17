@@ -11,12 +11,32 @@ public class MockQuestionHandler implements IQuestionHandler {
     // filename without the extension
     public String getQuestion(String filename) throws IOException {
         String question = filename.split("[.]")[0];
-        String prompt = "What is " + question + "?";
+        String prompt = "Question: What is " + question + "?";
         return prompt;
     }
 
     public String getCommand(String prompt) {
-        String command = "test";
-        return command;
+
+        String cmd = "";
+
+        if (prompt.length() >= 8) {
+            cmd = prompt.substring(0, 8);
+            if (cmd.toUpperCase().equals("QUESTION")) {
+                return cmd;
+            }
+        }
+        if (prompt.length() >= 6) {
+            cmd = prompt.substring(0, 6);
+            if (cmd.toUpperCase().equals("DELETE")) {
+                return cmd;
+            }
+        }
+        if (prompt.length() >= 5) {
+            cmd = prompt.substring(0, 5);
+            if (cmd.toUpperCase().equals("CLEAR")) {
+                return cmd;
+            }
+        }
+        return "invalid";
     }
 }

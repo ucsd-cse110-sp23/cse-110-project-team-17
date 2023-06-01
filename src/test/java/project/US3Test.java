@@ -11,6 +11,8 @@ import project.audio_handler.*;
 import project.chat_gpt.*;
 import project.question_handler.*;
 import project.gui.*;
+import project.handler.HistoryListHandler;
+import project.handler.HistoryQuestionHandler;
 
 import java.io.*;
 
@@ -67,7 +69,7 @@ public class US3Test {
         audioHandler2.startRecording();
         String filename = audioHandler2.stopRecording();
         String filename_first = filename.split("[.]")[0];
-        String expected_question = "What is " + filename_first + "?";
+        String expected_question = "Question: What is " + filename_first + "?";
 
         // Create appframe
         AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
@@ -76,20 +78,12 @@ public class US3Test {
 
         // Verify that on stopping and starting recording, the actual 
         // chat window displays the expected dialogue
-        appGUI.QuestionButtonHandler();
-        appGUI.StopButtonHandler();
-        ChatWindowGUI chatWindow = appGUI.getChatWindow();
-        ChatBoxGUI question1 = (ChatBoxGUI)
-            chatWindow.getComponents()[0];
-        ChatBoxGUI answer1 = (ChatBoxGUI)
-            chatWindow.getComponents()[1];
-        assertTrue(question1.getLabel().equals("Question"));
-        assertTrue(answer1.getLabel().equals("Answer"));
-        assertTrue(question1.getDialogueText().
+        testApp.startRecording();
+        testApp.stopRecording();
+        HistoryListHandler historyList = testApp.getHistoryList();
+        HistoryQuestionHandler question = historyList.getHistoryList().get(0);
+        assertTrue(question.getQuestion().
             equals(expected_question));
-        String answer_part = chatGPT.ask(expected_question);
-        assertTrue(answer1.getDialogueText().
-            equals(answer_part));
 
         // Close test frame
         testApp.closeApp();

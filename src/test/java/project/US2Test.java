@@ -58,7 +58,7 @@ public class US2Test {
         testApp.closeApp();
     }
 
-    // Test that "Ask a Question" button exists
+    // Test that "Start" button exists
     @Test 
     void testNewQuestionButton() {
         IQuestionHandler qHandler = new MockQuestionHandler();
@@ -67,13 +67,13 @@ public class US2Test {
         AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
         AppGUI appGUI = new AppGUI(testApp);
         testApp.createGUI(appGUI);
-        assertTrue(appGUI.getAskButton() instanceof JButton);
+        assertTrue(appGUI.getStartButton() instanceof JButton);
 
         // Close test frame
         testApp.closeApp();
     }
 
-    // Test that "Ask a Question" button toggles visibility
+    // Test that "Start" button toggles visibility
     @Test 
     void testQuestionButtonToggle() {
         IQuestionHandler qHandler = new MockQuestionHandler();
@@ -82,19 +82,19 @@ public class US2Test {
         AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
         AppGUI appGUI = new AppGUI(testApp);
         testApp.createGUI(appGUI);
-        JButton questionButton = appGUI.getAskButton();
+        JButton startButton = appGUI.getStartButton();
         JButton stopButton = appGUI.getStopButton();
-        assertTrue(questionButton.isVisible());
+        assertTrue(startButton.isVisible());
         assertFalse(stopButton.isVisible());
         appGUI.QuestionButtonHandler();
-        assertFalse(questionButton.isVisible());
+        assertFalse(startButton.isVisible());
         assertTrue(stopButton.isVisible());
 
         // Close test frame
         testApp.closeApp();
     }
 
-    // Test that "Ask a Question" and "Stop Recording" buttons toggle
+    // Test that "Start" and "Stop Recording" buttons toggle
     @Test
     void testStory() {
         IQuestionHandler qHandler = new MockQuestionHandler();
@@ -103,15 +103,15 @@ public class US2Test {
         AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
         AppGUI appGUI = new AppGUI(testApp);
         testApp.createGUI(appGUI);
-        JButton questionButton = appGUI.getAskButton();
+        JButton startButton = appGUI.getStartButton();
         JButton stopButton = appGUI.getStopButton();
-        assertTrue(questionButton.isVisible());
+        assertTrue(startButton.isVisible());
         assertFalse(stopButton.isVisible());
         appGUI.QuestionButtonHandler();
-        assertFalse(questionButton.isVisible());
+        assertFalse(startButton.isVisible());
         assertTrue(stopButton.isVisible());
         appGUI.StopButtonHandler();
-        assertTrue(questionButton.isVisible());
+        assertTrue(startButton.isVisible());
         assertFalse(stopButton.isVisible());
 
         // Close test frame

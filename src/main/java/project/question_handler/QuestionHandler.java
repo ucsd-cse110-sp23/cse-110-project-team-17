@@ -10,7 +10,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import org.json.JSONObject;
 
-import ch.qos.logback.core.joran.conditional.ElseAction;
 
 import org.json.JSONException;
 
@@ -170,18 +169,28 @@ public class QuestionHandler implements IQuestionHandler {
         return result;
     }
 
-    public String getCommand (String prompt) {
-        String cmd = prompt.substring(0, 8);
-        if ( cmd.equals("Question")) {
-            return cmd;
+    public String getCommand(String prompt) {
+
+        String cmd = "";
+
+        if (prompt.length() >= 8) {
+            cmd = prompt.substring(0, 8);
+            if (cmd.toUpperCase().equals("QUESTION")) {
+                return "Question";
+            }
         }
-        else if (cmd.substring(0, 6).equals("Delete")) {
-            return cmd.substring(0,6);
+        if (prompt.length() >= 6) {
+            cmd = prompt.substring(0, 6);
+            if (cmd.toUpperCase().equals("DELETE")) {
+                return "Delete";
+            }
         }
-        else if (cmd.substring(0, 5).equals("Clear")) {
-            return cmd.substring(0, 5);
+        if (prompt.length() >= 5) {
+            cmd = prompt.substring(0, 5);
+            if (cmd.toUpperCase().equals("CLEAR")) {
+                return "Clear";
+            }
         }
-        else 
-            return "invalid";
+        return "invalid";
     }
 }

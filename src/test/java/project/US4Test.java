@@ -55,16 +55,13 @@ public class US4Test {
 
         // Verify that all relevant HistoryList components (and ChatList) are
         // wiped
-        ChatWindowGUI chatWindow = appGUI.getChatWindow();
         HistoryListHandler historyList = testApp.getHistoryList();
-        appGUI.QuestionButtonHandler();
-        appGUI.StopButtonHandler();
+        testApp.startRecording();
+        testApp.stopRecording();
         assertTrue(!historyList.isEmpty());
-        assertTrue(!(chatWindow.getComponents().length == 0));
-        appGUI.clearAllHandler();
+        testApp.clearAll();
         assertTrue(historyList.isEmpty());
         assertTrue(0 == historyList.getHistoryList().size());
-        assertTrue(chatWindow.getComponents().length == 0);
 
 
         // Close test frame
