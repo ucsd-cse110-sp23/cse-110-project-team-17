@@ -22,7 +22,7 @@ public class InputTextField extends JPanel{
         this.setLayout(new BorderLayout()); // set layout of task
 
         index = new JLabel(label); // create index label
-        index.setPreferredSize(new Dimension(100, 20)); // set size of index label
+        index.setPreferredSize(new Dimension(120, 20)); // set size of index label
         index.setHorizontalAlignment(JLabel.CENTER); // set alignment of index label
         this.add(index, BorderLayout.WEST); // add index label to task
 

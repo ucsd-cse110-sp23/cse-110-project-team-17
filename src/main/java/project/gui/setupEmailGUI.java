@@ -53,7 +53,7 @@ public class setupEmailGUI extends JPanel {
         this.add(emailAddress);
 
         // Email Address Password textbox
-        this.emailPassword = new InputTextField("Email Address Password: ");
+        this.emailPassword = new InputTextField("Email Password: ");
         emailPassword.setFont(new Font("BrixSansBlack", Font.ITALIC, 10));
         this.add(emailPassword);
         
