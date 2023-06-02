@@ -62,4 +62,7 @@ public interface IAppHandler {
 
     // Method to get LogInWindow 
     public LogInWindowHandler getLogInWindowHandler();
+
+    // Method to get EmailSetUpWindow
+    public setupEmailHandler getSetupEmailHandler();
 }

@@ -148,4 +148,29 @@ public class DBCreate {
             }
         }
     }
+
+    // Method to setup user's email information
+    public static void addEmailInformation(String firstName, String lastName, String userName,
+                                            String emailAddress, String SMTPHost, String TLSPort,
+                                            String emailPassword) {
+        String uri = "mongodb+srv://josephyeh0903:josephycxyeh0903@cluster0.ytb32ia.mongodb.net/?retryWrites=true&w=majority";
+        try (MongoClient mongoClient = MongoClients.create(uri)) {
+            MongoDatabase accountDB = mongoClient.getDatabase("UserAccounts");
+            MongoCollection<Document> emailCollection = accountDB.getCollection("emailAccounts");
+            //MongoCollection<Document> accountCollection = accountDB.getCollection("Accounts");
+
+            //Bson filter = eq("username_id", userName);
+            //Document usernameDoc = accountCollection.find(filter).first();
+            Document emailAccount = new Document("emailAccount_id", new ObjectId());
+            emailAccount.append("firstname_id", firstName)
+                        .append("lastName_id", lastName)
+                        .append("username_id", userName)
+                        .append("emailAddress_id", emailAddress)
+                        .append("SMTPHost_id", SMTPHost)
+                        .append("TLSPort_id", TLSPort)
+                        .append("emailPassword_id", emailPassword);
+
+            emailCollection.insertOne(emailAccount);
+        }
+    }
 }
