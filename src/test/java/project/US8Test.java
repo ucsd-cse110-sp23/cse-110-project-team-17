@@ -169,7 +169,6 @@ public class US8Test {
         String questionString1 = "Question: What is project/dummy_audio/Question0?";
         String questionString2 = "Question: What is project/dummy_audio/Question1?";
         String questionString3 = "Question: What is project/dummy_audio/Question2?";
-        String questionString4 = "Question: What is project/dummy_audio/Question3?";
         String answer_part = "Mock answer to the following prompt: ";
 
         // Create mock handlers and appframe
