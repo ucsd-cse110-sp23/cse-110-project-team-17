@@ -265,6 +265,14 @@ public class AppGUI extends JFrame {
         }
     }
 
+    public void beginSetupEmail() {
+        this.add(setupEmail, BorderLayout.CENTER);
+        footer.setVisible(false);
+        historyWindowGUI.setVisible(false);
+        alGUI.setVisible(false);
+        chatWindowGUI.setVisible(false);
+    }
+
     // Method to handle creating account
     public void createAccountHandler() {
         String username = logInWindowGUI.getUserName();

@@ -230,7 +230,7 @@ public class AppHandler implements IAppHandler {
     }
 
     public void setupEmail() {
-        appGUI.getSetupEmailGUI().setVisible(true);
+        appGUI.beginSetupEmail();
     }
     // Method to handle selecting a history button
     public void selectQuestion(HistoryQuestionHandler historyQuestionHandler) {

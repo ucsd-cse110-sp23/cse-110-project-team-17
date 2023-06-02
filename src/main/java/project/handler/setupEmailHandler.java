@@ -35,5 +35,4 @@ public class setupEmailHandler {
     public setupEmailGUI getsetupEmailWindowGUI() {
         return this.setupEmail;
     }
-
 }
