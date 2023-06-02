@@ -14,6 +14,7 @@ import java.io.File;
 
 public class US9Test {
 
+    // Wipe all account histories before
     @BeforeEach
     void wipeAccountsBefore() {
         String filename = "project/accounts.csv";
@@ -27,6 +28,7 @@ public class US9Test {
         DBCreate.wipeDB();
     }
 
+    // Wipe all account histories after
     @AfterAll
     static void wipeAccountsAfter() {
         String filename = "project/accounts.csv";
@@ -59,6 +61,7 @@ public class US9Test {
         AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
  
         LogInWindowHandler loginHandler = testApp.getLogInWindowHandler();
+        loginHandler.createAccount("reisandy", "1234");
         assertTrue(loginHandler.verifyUsername("reisandy", "1234"));
         AutomaticLogInHandler alHandler = testApp.getAutomaticLogInHandler();
         alHandler.update("reisandy", "1234");
@@ -74,6 +77,7 @@ public class US9Test {
         AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
  
         LogInWindowHandler loginHandler = testApp.getLogInWindowHandler();
+        loginHandler.createAccount("reisandy", "1234");
         assertTrue(loginHandler.verifyUsername("reisandy", "1234"));
         assertTrue(!testApp.autoLogin());
         testApp.stopServer();
