@@ -111,6 +111,7 @@ public class US1Test {
         testApp.closeApp();
     }
 
+    // Test that default history list values are set to empty / 0 as appropriate
     @Test
     void testingHistoryListParameters() {
         IQuestionHandler qHandler = new MockQuestionHandler();
