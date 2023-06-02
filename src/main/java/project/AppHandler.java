@@ -80,10 +80,6 @@ public class AppHandler implements IAppHandler {
     public void createGUI(AppGUI appGUI) {
         // Create GUI object
         this.appGUI = appGUI;
-        
-        // Populate old list as necessary
-        historyListHandler.populateOldHistory();
-        oldHistoryHandler();
     }
 
     // Method to return HistoryListHandler element
@@ -270,7 +266,8 @@ public class AppHandler implements IAppHandler {
         appGUI.display(question, answer);
     }
 
-    // Method that determines whether or not you can autologin on this computer
+    // Method that automatically logs in if possible
+    // and returns whether or not you can autologin on this computer
     public boolean autoLogin() {
         String[] login_info = this.alHandler.getLogInInfo();
         if (login_info.length != 2) {
@@ -282,15 +279,24 @@ public class AppHandler implements IAppHandler {
             return false;
         }
         else {
+            historyListHandler.setUsername(username);
+            // Populate old list as necessary
+            historyListHandler.populateOldHistory();
+            oldHistoryHandler();
             return true;
         }
     }
 
-    // Method to handle logging in
+    // Method that logs in if possible and returns whether or not
+    // the login attempt was valid
     public boolean LogIn(String username, String password) {
 
         boolean verify = getLogInWindowHandler().verifyPassword(username, password);
         if (verify) {
+            historyListHandler.setUsername(username);
+            // Populate old list as necessary
+            historyListHandler.populateOldHistory();
+            oldHistoryHandler();
             return true;
         }
         else {

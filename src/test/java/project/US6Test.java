@@ -19,30 +19,32 @@ import java.io.*;
 
 public class US6Test {
 
-    // Delete history.csv file (fresh start)
+    // Wipe all account histories before
     @BeforeEach
-    void cleanHistory() {
-        String filename = "project/history.csv";
+    void wipeAccountsBefore() {
+        String filename = "project/accounts.csv";
         String dir_path = "src/main/java";
         File potential_dir = new File(dir_path);
         if (potential_dir.isDirectory()) {
             filename = dir_path + "/" + filename;
         }
-        File historyFile = new File(filename);
-        historyFile.delete();
+        File accountFile = new File(filename);
+        accountFile.delete();
+        DBCreate.wipeDB();
     }
 
-    // Delete history.csv file (once at end of all tests)
+    // Wipe all account histories after
     @AfterAll
-    static void cleanUp() {
-        String filename = "project/history.csv";
+    static void wipeAccountsAfter() {
+        String filename = "project/accounts.csv";
         String dir_path = "src/main/java";
         File potential_dir = new File(dir_path);
         if (potential_dir.isDirectory()) {
             filename = dir_path + "/" + filename;
         }
-        File historyFile = new File(filename);
-        historyFile.delete();
+        File accountFile = new File(filename);
+        accountFile.delete();
+        DBCreate.wipeDB();
     }
 
     // Test that "Ask a Question" button works as expected
@@ -73,6 +75,9 @@ public class US6Test {
         AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
         AppGUI appGUI = new AppGUI(testApp);
         testApp.createGUI(appGUI);
+        LogInWindowHandler logInHandler = testApp.getLogInWindowHandler();
+        logInHandler.createAccount("username", "password");
+        testApp.LogIn("username", "password");
         
         // Use second mock audio handler to obtain expected question
         audioHandlerTest.startRecording();

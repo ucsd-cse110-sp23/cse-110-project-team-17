@@ -21,6 +21,7 @@ public class HistoryListHandler {
     HistoryListGUI historyListGUI;
     Vector<HistoryQuestionHandler> historyList;
     HTTPRequestMaker httpRequestMaker;
+    String username;
 
     // Constructor, initializes filepath and history list GUI component
     public HistoryListHandler(String regex, HTTPRequestMaker httpRequestMaker) {
@@ -44,10 +45,15 @@ public class HistoryListHandler {
             filename = dir_path + "/" + filename;
             path = dir_path + "/" + path;
         }
+        username = "";
     }
 
     // Method to add a HistoryQuestionHandler to the list
     public void add(HistoryQuestionHandler historyQuestionHandler, boolean old) {
+        if (username.equals("")) {
+            System.out.println("No username given.");
+            return;
+        }
         historyListGUI.removeDefault();
         historyList.add(historyQuestionHandler);
         historyListGUI.add(historyQuestionHandler.getHistoryQuestionGUI());
@@ -55,22 +61,18 @@ public class HistoryListHandler {
             toggleEmpty();
         }
         if (!old) {
-            // Write the question data to history.csv
-            String index = historyQuestionHandler.getIndex();
-            String question = historyQuestionHandler.getQuestion();
-            String answer = historyQuestionHandler.getAnswer();
-            try {
-                File csv_file = new File(filename);
-                FileWriter csv_writer = new FileWriter(csv_file, true);
-                csv_writer.write(index + regex + question + regex + answer + "\n");
-                csv_writer.close();
-            }
-            catch (IOException ioe) {
-                throw new RuntimeException("IO Exception in csv writer.");
-            }
+            // Add the prompt data to database
+            String promptString = historyQuestionHandler.getString(regex);
+            DBCreate.addPromptDB(username, promptString);
         }
         count++;
         questions++;
+    }
+
+
+    // Method to set username
+    public void setUsername(String username) {
+        this.username = username;
     }
 
 
@@ -99,44 +101,16 @@ public class HistoryListHandler {
     // Method to delete selected history question (if any) in
     // history list
     public void deleteSelected() {
+        if (username.equals("")) {
+            System.out.println("No username given.");
+            return;
+        }
         for (int i = 0; i < historyList.size(); i++) {
             HistoryQuestionHandler hqh = historyList.get(i);
             if (hqh.isSelected()) {
+                String removalString = hqh.getString(regex);
                 String removal_index = hqh.getIndex();
-
-                // Set up filepath for history.csv updates
-                String temp_file_path = path + "/temphistory.csv";
-                File tempHistory = new File(temp_file_path);
-                File historyFile = new File(filename);
-
-                if (historyFile.isFile()) {
-
-                    // Iterate through history.csv line by line, storing 
-                    // each line that is not the one to be deleted in temphistory.csv
-                    try {
-                        Scanner csv_scanner = new Scanner(historyFile);
-                        FileWriter csv_writer = new FileWriter(tempHistory, true);
-                        while (csv_scanner.hasNextLine()) {
-                            String next_line = csv_scanner.nextLine();
-                            String[] question_parts = next_line.split(regex);
-                            if (!(removal_index.equals(question_parts[0]))) {
-                                csv_writer.write(next_line + "\n");
-                            }
-                        }
-                        csv_scanner.close();
-                        csv_writer.close();
-                    }
-                    catch (FileNotFoundException fnfe) {
-                        throw new RuntimeException("File not found for scanning.");
-                    }
-                    catch (IOException ioe) {
-                        throw new RuntimeException("IO Exception during scanning.");
-                    }
-                }
-
-                // Clean up files
-                historyFile.delete();
-                tempHistory.renameTo(historyFile);
+                DBCreate.deleteQuestionDB(username, removalString);
 
                 // Actually delete the question and remove default as needed
                 historyListGUI.deleteSelected(hqh.getHistoryQuestionGUI());
@@ -153,9 +127,12 @@ public class HistoryListHandler {
 
     // Method to remove everything from history list
     public void removeEverything() {
+        if (username.equals("")) {
+            System.out.println("No username given.");
+            return;
+        }
         questions = 0;
-        File historyFile = new File(filename);
-        historyFile.delete();
+        DBCreate.clearAllDB(username);
         setDefault();
         empty = true;
         for (int i = 0; i < historyList.size(); i++) {
@@ -174,37 +151,34 @@ public class HistoryListHandler {
 
     // Method to populate HistoryList using contents of history.csv
     public void populateOldHistory() {
-        // Initializes history.csv File
-        File historyFile = new File(filename);
-        if (historyFile.isFile()) {
-            try {
-                // Create Scanner to read file
-                Scanner csv_scanner = new Scanner(historyFile);
-                int max = -1;
-                while (csv_scanner.hasNextLine()) {
-                    // Parse line and create HistoryQuestion
-                    String[] question_parts = csv_scanner.nextLine().split(regex);
-                    String index_str = question_parts[0];
-                    if (isInteger(index_str)) {
-                        int index = Integer.parseInt(index_str);
-                        String question = question_parts[1];
-                        String answer = question_parts[2];
-                        if (index > max) {
-                            max = index;
-                        }
-                        httpRequestMaker.postRequest(index_str, question, answer);
-                        HistoryQuestionHandler historyQuestion = 
-                            new HistoryQuestionHandler(index_str, httpRequestMaker);
-                        add(historyQuestion, true);
-                    }   
-                }
-                csv_scanner.close();
-                if (max != -1) {
-                    count = max + 1;
-                }
+        if (username.equals("")) {
+            System.out.println("No username given.");
+            return;
+        }
+        
+        ArrayList<String> historyArrayList = DBCreate.getHistoryListDB(username);
+
+        if (!(historyArrayList == null || historyArrayList.size() == 0)) {
+            int max = -1;
+            for (int i = 0; i < historyArrayList.size(); i++) {
+                // Parse line and create HistoryQuestion
+                String[] question_parts = historyArrayList.get(i).split(regex);
+                String index_str = question_parts[0];
+                if (isInteger(index_str)) {
+                    int index = Integer.parseInt(index_str);
+                    String question = question_parts[1];
+                    String answer = question_parts[2];
+                    if (index > max) {
+                        max = index;
+                    }
+                    httpRequestMaker.postRequest(index_str, question, answer);
+                    HistoryQuestionHandler historyQuestion = 
+                        new HistoryQuestionHandler(index_str, httpRequestMaker);
+                    add(historyQuestion, true);
+                }   
             }
-            catch (FileNotFoundException fnfe) {
-                throw new RuntimeException("File not found for scanning.");
+            if (max != -1) {
+                count = max + 1;
             }
         }
     }

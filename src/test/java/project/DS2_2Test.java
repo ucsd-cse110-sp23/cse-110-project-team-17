@@ -15,33 +15,33 @@ import project.handler.*;
 import java.io.*;
 
 public class DS2_2Test {
-// Delete history.csv file (fresh start)
+
+    // Wipe all account histories before
     @BeforeEach
-    void cleanHistory() {
-        String filename = "project/history.csv";
+    void wipeAccountsBefore() {
+        String filename = "project/accounts.csv";
         String dir_path = "src/main/java";
         File potential_dir = new File(dir_path);
         if (potential_dir.isDirectory()) {
             filename = dir_path + "/" + filename;
         }
-        System.out.println(System.getProperty("user.dir"));
-        System.out.println(filename);
-        File historyFile = new File(filename);
-        historyFile.delete();
-        System.out.println("Nuked history file.");
+        File accountFile = new File(filename);
+        accountFile.delete();
+        DBCreate.wipeDB();
     }
 
-    // Delete history.csv file (once at end of all tests)
+    // Wipe all account histories after
     @AfterAll
-    static void cleanUp() {
-        String filename = "project/history.csv";
+    static void wipeAccountsAfter() {
+        String filename = "project/accounts.csv";
         String dir_path = "src/main/java";
         File potential_dir = new File(dir_path);
         if (potential_dir.isDirectory()) {
             filename = dir_path + "/" + filename;
         }
-        File historyFile = new File(filename);
-        historyFile.delete();
+        File accountFile = new File(filename);
+        accountFile.delete();
+        DBCreate.wipeDB();
     }
 
     @Test
@@ -53,6 +53,9 @@ public class DS2_2Test {
         AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
         AppGUI appGUI = new AppGUI(testApp);
         testApp.createGUI(appGUI);
+        LogInWindowHandler logInHandler = testApp.getLogInWindowHandler();
+        logInHandler.createAccount("username", "password");
+        testApp.LogIn("username", "password");
 
         // Set up expected values
         String questionString1 = "Question: What is project/dummy_audio/Question0?";

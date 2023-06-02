@@ -11,37 +11,38 @@ import project.audio_handler.*;
 import project.chat_gpt.*;
 import project.question_handler.*;
 import project.gui.*;
-import project.handler.HistoryListHandler;
-import project.handler.HistoryQuestionHandler;
+import project.handler.*;
 
 import java.io.*;
 
 public class US3Test {
 
-    // Delete history.csv file (fresh start)
+    // Wipe all account histories before
     @BeforeEach
-    void cleanHistory() {
-        String filename = "project/history.csv";
+    void wipeAccountsBefore() {
+        String filename = "project/accounts.csv";
         String dir_path = "src/main/java";
         File potential_dir = new File(dir_path);
         if (potential_dir.isDirectory()) {
             filename = dir_path + "/" + filename;
         }
-        File historyFile = new File(filename);
-        historyFile.delete();
+        File accountFile = new File(filename);
+        accountFile.delete();
+        DBCreate.wipeDB();
     }
 
-    // Delete history.csv file (once at end of all tests)
+    // Wipe all account histories after
     @AfterAll
-    static void cleanUp() {
-        String filename = "project/history.csv";
+    static void wipeAccountsAfter() {
+        String filename = "project/accounts.csv";
         String dir_path = "src/main/java";
         File potential_dir = new File(dir_path);
         if (potential_dir.isDirectory()) {
             filename = dir_path + "/" + filename;
         }
-        File historyFile = new File(filename);
-        historyFile.delete();
+        File accountFile = new File(filename);
+        accountFile.delete();
+        DBCreate.wipeDB();
     }
 
     // Test that recording audio creates two separate files
@@ -75,6 +76,9 @@ public class US3Test {
         AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
         AppGUI appGUI = new AppGUI(testApp);
         testApp.createGUI(appGUI);
+        LogInWindowHandler logInHandler = testApp.getLogInWindowHandler();
+        logInHandler.createAccount("username", "password");
+        testApp.LogIn("username", "password");
 
         // Verify that on stopping and starting recording, the actual 
         // chat window displays the expected dialogue

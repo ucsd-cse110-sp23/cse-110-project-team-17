@@ -74,4 +74,14 @@ public class HistoryQuestionHandler {
     public HistoryQuestionGUI getHistoryQuestionGUI() {
         return historyQuestionGUI;
     }
+
+    // Method to get history question as one string, 
+    // separated by regex
+    public String getString(String regex) {
+        String index = this.getIndex();
+        String prompt = this.getQuestion();
+        String answer = this.getAnswer();
+        String fullString = index + regex + prompt + regex + answer;
+        return fullString;
+    }
 }

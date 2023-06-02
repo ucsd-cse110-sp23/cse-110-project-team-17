@@ -18,33 +18,32 @@ import project.handler.*;
 
 public class US5Test {
 
-    // Delete history.csv file (fresh start)
+    // Wipe all account histories before
     @BeforeEach
-    void cleanHistory() {
-        String filename = "project/history.csv";
+    void wipeAccountsBefore() {
+        String filename = "project/accounts.csv";
         String dir_path = "src/main/java";
         File potential_dir = new File(dir_path);
         if (potential_dir.isDirectory()) {
             filename = dir_path + "/" + filename;
         }
-        System.out.println(System.getProperty("user.dir"));
-        System.out.println(filename);
-        File historyFile = new File(filename);
-        historyFile.delete();
-        System.out.println("Nuked history file.");
+        File accountFile = new File(filename);
+        accountFile.delete();
+        DBCreate.wipeDB();
     }
 
-    // Delete history.csv file (once at end of all tests)
+    // Wipe all account histories after
     @AfterAll
-    static void cleanUp() {
-        String filename = "project/history.csv";
+    static void wipeAccountsAfter() {
+        String filename = "project/accounts.csv";
         String dir_path = "src/main/java";
         File potential_dir = new File(dir_path);
         if (potential_dir.isDirectory()) {
             filename = dir_path + "/" + filename;
         }
-        File historyFile = new File(filename);
-        historyFile.delete();
+        File accountFile = new File(filename);
+        accountFile.delete();
+        DBCreate.wipeDB();
     }
 
     // Test deletion when history list is empty
@@ -56,9 +55,10 @@ public class US5Test {
         AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
         AppGUI appGUI = new AppGUI(testApp);
         testApp.createGUI(appGUI);
-        String regex = ";;;";
-        HTTPRequestMaker httpRequestMaker = testApp.getRequestMaker();
-        HistoryListHandler historyList = new HistoryListHandler(regex, httpRequestMaker);
+        LogInWindowHandler logInHandler = testApp.getLogInWindowHandler();
+        logInHandler.createAccount("username", "password");
+        testApp.LogIn("username", "password");
+        HistoryListHandler historyList = testApp.getHistoryList();
         assertTrue(0 == historyList.getHistoryList().size());
         historyList.deleteSelected();
         assertTrue(0 == historyList.getHistoryList().size());
@@ -76,9 +76,11 @@ public class US5Test {
         AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
         AppGUI appGUI = new AppGUI(testApp);
         testApp.createGUI(appGUI);
-        String regex = ";;;";
+        LogInWindowHandler logInHandler = testApp.getLogInWindowHandler();
+        logInHandler.createAccount("username", "password");
+        testApp.LogIn("username", "password");
         HTTPRequestMaker httpRequestMaker = testApp.getRequestMaker();
-        HistoryListHandler historyList = new HistoryListHandler(regex, httpRequestMaker);
+        HistoryListHandler historyList = testApp.getHistoryList();
         HistoryQuestionHandler Q1 = 
             new HistoryQuestionHandler("1", httpRequestMaker);
         HistoryQuestionHandler Q2 = 
@@ -108,10 +110,12 @@ public class US5Test {
         AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
         AppGUI appGUI = new AppGUI(testApp);
         testApp.createGUI(appGUI);
-        String regex = ";;;";
+        LogInWindowHandler logInHandler = testApp.getLogInWindowHandler();
+        logInHandler.createAccount("username", "password");
+        testApp.LogIn("username", "password");
         HTTPRequestMaker httpRequestMaker = testApp.getRequestMaker();
         httpRequestMaker.postRequest("1", question1, answer1);
-        HistoryListHandler historyList = new HistoryListHandler(regex, httpRequestMaker);
+        HistoryListHandler historyList = testApp.getHistoryList();
 
         HistoryQuestionHandler Q1 = 
             new HistoryQuestionHandler("1", httpRequestMaker);
@@ -136,9 +140,11 @@ public class US5Test {
         AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
         AppGUI appGUI = new AppGUI(testApp);
         testApp.createGUI(appGUI);
-        String regex = ";;;";
+        LogInWindowHandler logInHandler = testApp.getLogInWindowHandler();
+        logInHandler.createAccount("username", "password");
+        testApp.LogIn("username", "password");
         HTTPRequestMaker httpRequestMaker = testApp.getRequestMaker();
-        HistoryListHandler historyList = new HistoryListHandler(regex, httpRequestMaker);
+        HistoryListHandler historyList = testApp.getHistoryList();
 
         String question1 = "What is 2+2?";
         String answer1 = "4";
