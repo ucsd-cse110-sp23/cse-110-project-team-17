@@ -24,6 +24,7 @@ public class US9Test {
         }
         File accountFile = new File(filename);
         accountFile.delete();
+        DBCreate.wipeDB();
     }
 
     @AfterAll
@@ -36,6 +37,7 @@ public class US9Test {
         }
         File accountFile = new File(filename);
         accountFile.delete();
+        DBCreate.wipeDB();
     }
 
     @Test
