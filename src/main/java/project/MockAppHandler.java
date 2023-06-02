@@ -93,4 +93,8 @@ public class MockAppHandler implements IAppHandler {
     public LogInWindowHandler getLogInWindowHandler() {
         return null;
     }
+
+    public setupEmailHandler getSetupEmailHandler() {
+        return null;
+    }
 }
