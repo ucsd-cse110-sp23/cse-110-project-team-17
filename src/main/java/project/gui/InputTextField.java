@@ -36,4 +36,8 @@ public class InputTextField extends JPanel{
     public String getInput() {
         return inputBox.getText();
     }
+
+    public void setInput(String word) {
+        inputBox.setText(word);
+    }
 }

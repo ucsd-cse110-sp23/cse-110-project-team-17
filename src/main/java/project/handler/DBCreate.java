@@ -173,4 +173,39 @@ public class DBCreate {
             emailCollection.insertOne(emailAccount);
         }
     }
+
+    public static ArrayList<String[]> readEmailInformation() {
+        String uri = "mongodb+srv://josephyeh0903:josephycxyeh0903@cluster0.ytb32ia.mongodb.net/?retryWrites=true&w=majority";
+        try (MongoClient mongoClient = MongoClients.create(uri)) {
+            MongoDatabase accountDB = mongoClient.getDatabase("UserAccounts");
+            MongoCollection<Document> emailCollection = accountDB.getCollection("emailAccounts");
+
+            MongoCursor<Document> cursor = emailCollection.find().cursor();
+            String[] emailInformation = new String[7];
+            ArrayList<String[]> allEmails = new ArrayList<>();
+            
+            while (cursor.hasNext()) {
+                String jsonString = cursor.next().toJson();
+                JSONObject obj = new JSONObject(jsonString);
+                
+                String firstNameString = obj.get("firstname_id").toString();
+                String lastNameString = obj.get("lastName_id").toString();
+                String userNameString = obj.get("username_id").toString();
+                String emailAddressString = obj.get("emailAddress_id").toString();
+                String emailPasswordString = obj.get("emailPassword_id").toString();
+                String SMTPHostString = obj.get("SMTPHost_id").toString();
+                String TLSPortString = obj.get("TLSPort_id").toString();
+
+                emailInformation[0] = firstNameString;
+                emailInformation[1] = lastNameString;
+                emailInformation[2] = userNameString;
+                emailInformation[3] = emailAddressString;
+                emailInformation[6] = emailPasswordString;
+                emailInformation[4] = SMTPHostString;
+                emailInformation[5] = TLSPortString;
+                allEmails.add(emailInformation);
+            }
+            return allEmails;
+        }
+    }
 }

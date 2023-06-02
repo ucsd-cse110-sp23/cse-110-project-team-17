@@ -30,6 +30,8 @@ public class setupEmailHandler {
         String TLSPort = setupEmail.getTLSPort();
         DBCreate.addEmailInformation(firstName, lastName, userName, emailAddress, SMTPHost, TLSPort, emailPassword);
     }
+
+    
     
     // Method to get associated LogInWindow GUI object
     public setupEmailGUI getsetupEmailWindowGUI() {

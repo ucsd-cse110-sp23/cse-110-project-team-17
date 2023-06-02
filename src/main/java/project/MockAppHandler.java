@@ -97,4 +97,9 @@ public class MockAppHandler implements IAppHandler {
     public setupEmailHandler getSetupEmailHandler() {
         return null;
     }
+
+    public String[] sampleEmailInfo() {
+        String[] test = {"firstname", "lastname", "username", "emailaddress", "SMTPHost", "TLSPort", "emailpassword"};
+        return test;
+    }
 }
