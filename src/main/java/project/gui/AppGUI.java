@@ -159,13 +159,13 @@ public class AppGUI extends JFrame {
     public void saveButtonHandler() {
         appHandler.getSetupEmailHandler().addEmailInfo();
         this.setupEmail.setVisible(false);
-        revalidate();
+        //revalidate();
         showApp();
     }
 
     // Method to handle canceling the user's setup email information
     public void cancelButtonHandler() {
-        revalidate();
+        //revalidate();
         this.setupEmail.setVisible(false);
         showApp();
     }

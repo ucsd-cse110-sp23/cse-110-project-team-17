@@ -24,12 +24,23 @@ public class DBCreate {
             MongoDatabase accountDB = mongoClient.getDatabase("UserAccounts");
             MongoCollection<Document> accountCollection = accountDB.getCollection("Accounts");
             Document historyList = new Document();
+            Document emailInfo = new Document();
 
             Document userAccount = new Document("account_id", new ObjectId());
+
+            emailInfo.put("firstname_id", "");
+            emailInfo.put("lastName_id", "");
+            emailInfo.put("username_id", "");
+            emailInfo.put("displayName_id", "");
+            emailInfo.put("emailAddress_id", "");
+            emailInfo.put("SMTPHost_id", "");
+            emailInfo.put("TLSPort_id", "");
+            emailInfo.put("emailPassword_id", "");
+
             userAccount.append("username_id", username)
                         .append("password_id", password)
-                        .append("historyList", historyList);
-
+                        .append("historyList", historyList)
+                        .append("emailInfo", emailInfo);
 
             accountCollection.insertOne(userAccount);
         }
@@ -152,25 +163,36 @@ public class DBCreate {
     // Method to setup user's email information
     public static void addEmailInformation(String firstName, String lastName, String userName,
                                             String emailAddress, String SMTPHost, String TLSPort,
-                                            String emailPassword) {
+                                            String emailPassword, String displayName) {
         String uri = "mongodb+srv://josephyeh0903:josephycxyeh0903@cluster0.ytb32ia.mongodb.net/?retryWrites=true&w=majority";
         try (MongoClient mongoClient = MongoClients.create(uri)) {
             MongoDatabase accountDB = mongoClient.getDatabase("UserAccounts");
             MongoCollection<Document> emailCollection = accountDB.getCollection("emailAccounts");
-            //MongoCollection<Document> accountCollection = accountDB.getCollection("Accounts");
+            MongoCollection<Document> accountCollection = accountDB.getCollection("Accounts");
+            
+            //Document emailAccount = new Document("emailInfo", new ObjectId());
+            // emailAccount.append("firstname_id", firstName)
+            //             .append("lastName_id", lastName)
+            //             .append("username_id", userName)
+            //             .append("emailAddress_id", emailAddress)
+            //             .append("SMTPHost_id", SMTPHost)
+            //             .append("TLSPort_id", TLSPort)
+            //             .append("emailPassword_id", emailPassword);
 
-            //Bson filter = eq("username_id", userName);
-            //Document usernameDoc = accountCollection.find(filter).first();
-            Document emailAccount = new Document("emailAccount_id", new ObjectId());
-            emailAccount.append("firstname_id", firstName)
-                        .append("lastName_id", lastName)
-                        .append("username_id", userName)
-                        .append("emailAddress_id", emailAddress)
-                        .append("SMTPHost_id", SMTPHost)
-                        .append("TLSPort_id", TLSPort)
-                        .append("emailPassword_id", emailPassword);
+            Bson filter = eq("username_id", userName);
+            Document user = accountCollection.find(filter).first();
+            Document emailDocument = (Document) user.get("emailInfo");
 
-            emailCollection.insertOne(emailAccount);
+            emailDocument.put("firstname_id", firstName);
+            emailDocument.put("lastName_id", lastName);
+            emailDocument.put("username_id", userName);
+            emailDocument.put("displayName_id", displayName);
+            emailDocument.put("emailAddress_id", emailAddress);
+            emailDocument.put("SMTPHost_id", SMTPHost);
+            emailDocument.put("TLSPort_id", TLSPort);
+            emailDocument.put("emailPassword_id", emailPassword);
+
+            emailCollection.insertOne(emailDocument);
         }
     }
 

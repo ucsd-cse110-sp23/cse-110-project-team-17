@@ -28,11 +28,10 @@ public class setupEmailHandler {
         String emailPassword = setupEmail.getEmailPassword();
         String SMTPHost = setupEmail.getSMTPHost();
         String TLSPort = setupEmail.getTLSPort();
-        DBCreate.addEmailInformation(firstName, lastName, userName, emailAddress, SMTPHost, TLSPort, emailPassword);
+        String displayName = setupEmail.getDisplayName();
+        DBCreate.addEmailInformation(firstName, lastName, userName, emailAddress, SMTPHost, TLSPort, emailPassword, displayName);
     }
 
-    
-    
     // Method to get associated LogInWindow GUI object
     public setupEmailGUI getsetupEmailWindowGUI() {
         return this.setupEmail;

@@ -21,6 +21,7 @@ public class setupEmailGUI extends JPanel {
     InputTextField SMTPHost;
     InputTextField TLSPort;
     InputTextField emailPassword;
+    InputTextField displayName;
 
     // ChatWindow constructor, sets format
     public setupEmailGUI(setupEmailHandler handler) {
@@ -67,6 +68,11 @@ public class setupEmailGUI extends JPanel {
         TLSPort.setFont(new Font("BrixSansBlack", Font.ITALIC, 10));
         this.add(TLSPort);
 
+        // displayName textbox
+        this.displayName = new InputTextField("Display Name: ");
+        displayName.setFont(new Font("BrixSansBlack", Font.ITALIC, 10));
+        this.add(displayName);
+
         // Add ClearAll button
         save = new JButton();
         save.setText("Save");
@@ -110,6 +116,10 @@ public class setupEmailGUI extends JPanel {
         return emailPassword.getInput();
     }
 
+    public String getDisplayName() {
+        return displayName.getInput();
+    }
+
     // Return "Create Account" button
     public JButton getSaveButton() {
         return this.save;
@@ -119,4 +129,5 @@ public class setupEmailGUI extends JPanel {
     public JButton getCancelButton() {
         return this.cancel;
     }
+
 }
