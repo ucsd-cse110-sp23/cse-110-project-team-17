@@ -174,8 +174,8 @@ public class AppHandler implements IAppHandler {
 
                 // Display the new history question in chat window
                 display(prompt, chat_gpt_answer);
-
                 break;
+                
             case "Delete":
                 //call delete
                 deleteSelected();
@@ -220,7 +220,36 @@ public class AppHandler implements IAppHandler {
             
             case "Setup email":
                 setupEmail();
-                break;    
+                break; 
+                
+            case "Create email":
+                try {
+                    chat_gpt_answer = chatGPT.ask(prompt);
+                }
+                catch (IOException io_e) {
+                    throw new RuntimeException("An IO Exception happened on click.");
+                }
+                catch (InterruptedException int_e) {
+                    throw new RuntimeException("An Interruption Exception happened on click.");
+                }
+
+                // Post (Index, question + answer) as a pair to HTTP server
+                // via "POST" request
+                httpRequestMaker.postRequest(count_str, prompt, chat_gpt_answer);
+
+                // Create new HistoryQuestion and add to prompt
+                historyQuestion = 
+                    new HistoryQuestionHandler(count_str, httpRequestMaker);
+                historyListHandler.add(historyQuestion, false); // Add new task to list
+
+                // Make the created history question selectable in history list
+                appGUI.makeSelectable(historyQuestion.getHistoryQuestionGUI());
+
+                selectQuestion(historyQuestion);
+
+                // Display the new history question in chat window
+                display(prompt, chat_gpt_answer);
+                break;
 
             default:
                 display(prompt, "Unable to parse command, available commands are Question, Delete, and Clear");
@@ -232,6 +261,7 @@ public class AppHandler implements IAppHandler {
     public void setupEmail() {
         appGUI.beginSetupEmail();
     }
+
     // Method to handle selecting a history button
     public void selectQuestion(HistoryQuestionHandler historyQuestionHandler) {
         // Obtain current state of question

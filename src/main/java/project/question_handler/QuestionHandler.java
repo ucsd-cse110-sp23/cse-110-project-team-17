@@ -196,6 +196,9 @@ public class QuestionHandler implements IQuestionHandler {
             if (cmd.toUpperCase().equals("SET UP EMAIL")) {
                 return "Setup email";
             }
+            else if (cmd.toUpperCase().equals("CREATE EMAIL")) {
+                return "Create email";
+            }
         }
         return "invalid";
     }
