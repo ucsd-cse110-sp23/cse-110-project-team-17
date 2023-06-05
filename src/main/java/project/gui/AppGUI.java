@@ -161,6 +161,7 @@ public class AppGUI extends JFrame {
         this.setupEmail.setVisible(false);
         //revalidate();
         showApp();
+        revalidate();
     }
 
     // Method to handle canceling the user's setup email information
@@ -168,6 +169,7 @@ public class AppGUI extends JFrame {
         //revalidate();
         this.setupEmail.setVisible(false);
         showApp();
+        revalidate();
     }
 
     // Method to handle starting the recording to ask a question

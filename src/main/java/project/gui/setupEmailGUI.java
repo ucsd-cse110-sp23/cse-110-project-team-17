@@ -43,10 +43,10 @@ public class setupEmailGUI extends JPanel {
         lastName.setFont(new Font("BrixSansBlack", Font.ITALIC, 10));
         this.add(lastName);        
 
-        // Username textbox
-        this.username = new InputTextField("Username: ");
-        username.setFont(new Font("BrixSansBlack", Font.ITALIC, 10));
-        this.add(username);
+        // // Username textbox
+        // this.username = new InputTextField("Username: ");
+        // username.setFont(new Font("BrixSansBlack", Font.ITALIC, 10));
+        // this.add(username);
         
         // Email Address textbox
         this.emailAddress = new InputTextField("Email Address: ");
