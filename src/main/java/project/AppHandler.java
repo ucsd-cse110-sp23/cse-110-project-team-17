@@ -293,6 +293,7 @@ public class AppHandler implements IAppHandler {
         }
         else {
             historyListHandler.setUsername(username);
+            setupEmailHandler.setUsername(username);
             // Populate old list as necessary
             historyListHandler.populateOldHistory();
             oldHistoryHandler();
@@ -307,6 +308,7 @@ public class AppHandler implements IAppHandler {
         boolean verify = getLogInWindowHandler().verifyPassword(username, password);
         if (verify) {
             historyListHandler.setUsername(username);
+            setupEmailHandler.setUsername(username);
             // Populate old list as necessary
             historyListHandler.populateOldHistory();
             oldHistoryHandler();

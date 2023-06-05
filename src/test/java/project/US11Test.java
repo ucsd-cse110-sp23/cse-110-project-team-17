@@ -7,14 +7,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import project.audio_handler.*;
 import project.chat_gpt.*;
-import project.gui.AppGUI;
-import project.gui.InputTextField;
-import project.gui.setupEmailGUI;
 import project.question_handler.*;
 import project.handler.*;
 
-import java.io.File;
-import java.util.ArrayList;
+import java.util.*;
 
 public class US11Test {
     @BeforeEach
@@ -41,16 +37,34 @@ public class US11Test {
         IChatGPT chatGPT = new MockChatGPT();
         IAudioHandler audioHandler = new MockAudioHandler();
         AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
-        ArrayList<String[]> allEmails = DBCreate.readEmailInformation();
-        String[] emailInfo = allEmails.get(0);
+
+
+        LogInWindowHandler loginHandler = testApp.getLogInWindowHandler();
+        loginHandler.createAccount("joseph", "jo");
+        testApp.LogIn("joseph", "jo");
+        setupEmailHandler emailHandler = testApp.getSetupEmailHandler();
+
+
+        emailHandler.setFirstName("Joseph");
+        emailHandler.setLastName("Yeh");
+        emailHandler.setEmailAddress("josephyeh0903@gmail.com");
+        emailHandler.setEmailPassword("1234");
+        emailHandler.setSMTPHost("3456");
+        emailHandler.setTLSPort("5678");
+        emailHandler.setDisplayName("Joseph Yeh");
+        emailHandler.addCurrEmailInfo();
+
+
+
+        Map<String, String> emailInfo = DBCreate.readEmailInformation("joseph");
         
-        assertTrue(emailInfo[0].equals("Joseph"));
-        assertTrue(emailInfo[1].equals("Yeh"));
-        assertTrue(emailInfo[2].equals("joseph"));
-        assertTrue(emailInfo[3].equals("josephyeh0903@gmail.com"));
-        assertTrue(emailInfo[6].equals("1234"));
-        assertTrue(emailInfo[4].equals("1234"));
-        assertTrue(emailInfo[5].equals("1234"));
+        assertTrue(emailInfo.get("firstName_id").equals("Joseph"));
+        assertTrue(emailInfo.get("lastName_id").equals("Yeh"));
+        assertTrue(emailInfo.get("emailAddress_id").equals("josephyeh0903@gmail.com"));
+        assertTrue(emailInfo.get("emailPassword_id").equals("1234"));
+        assertTrue(emailInfo.get("SMTPHost_id").equals("3456"));
+        assertTrue(emailInfo.get("TLSPort_id").equals("5678"));
+        assertTrue(emailInfo.get("displayName_id").equals("Joseph Yeh"));
         testApp.stopServer();
     }
 }

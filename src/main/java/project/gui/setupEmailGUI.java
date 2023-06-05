@@ -1,6 +1,9 @@
 package project.gui;
 
 import project.handler.*;
+
+import java.util.*;
+
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -13,6 +16,7 @@ public class setupEmailGUI extends JPanel {
     Color backgroundColor = new Color(240, 248, 255);
     JButton save;
     JButton cancel;
+    String userString;
     setupEmailHandler handler;
     InputTextField firstName;
     InputTextField lastName;
@@ -25,7 +29,11 @@ public class setupEmailGUI extends JPanel {
 
     // ChatWindow constructor, sets format
     public setupEmailGUI(setupEmailHandler handler) {
+
         this.handler = handler;
+
+        userString = handler.getUsername();
+
         GridLayout layout = new GridLayout(10, 1);
         layout.setVgap(20); // Vertical gap
     
@@ -41,12 +49,7 @@ public class setupEmailGUI extends JPanel {
         // Last Name textbox
         this.lastName = new InputTextField("Last Name: ");
         lastName.setFont(new Font("BrixSansBlack", Font.ITALIC, 10));
-        this.add(lastName);        
-
-        // Username textbox
-        this.username = new InputTextField("Username: ");
-        username.setFont(new Font("BrixSansBlack", Font.ITALIC, 10));
-        this.add(username);
+        this.add(lastName);
         
         // Email Address textbox
         this.emailAddress = new InputTextField("Email Address: ");
@@ -88,16 +91,39 @@ public class setupEmailGUI extends JPanel {
         this.add(cancel);
     }
 
+    public void updateFields() {
+        
+
+        userString = handler.getUsername();
+
+        Map<String, String> emailInfo = DBCreate.readEmailInformation(userString);
+
+        String firstNameString = emailInfo.get("firstName_id");
+        String lastNameString = emailInfo.get("lastName_id");
+        String emailAddressString = emailInfo.get("emailAddress_id");
+        String emailPasswordString = emailInfo.get("emailPassword_id");
+        String SMTPHostString = emailInfo.get("SMTPHost_id");
+        String TLSPortString = emailInfo.get("TLSPort_id");
+        String displayNameString = emailInfo.get("displayName_id");
+
+        
+        firstName.setToolTipText(firstNameString);
+        lastName.setToolTipText(lastNameString);
+        emailAddress.setToolTipText(emailAddressString);
+        emailPassword.setToolTipText(emailPasswordString);
+        SMTPHost.setToolTipText(SMTPHostString);
+        TLSPort.setToolTipText(TLSPortString);
+        displayName.setToolTipText(displayNameString);
+
+
+    }
+
     public String getFirstName() {
         return firstName.getInput();
     }
     
     public String getLastName() {
         return lastName.getInput();
-    }
-    
-    public String getUserName() {
-        return username.getInput();
     }
 
     public String getEmailAddress() {

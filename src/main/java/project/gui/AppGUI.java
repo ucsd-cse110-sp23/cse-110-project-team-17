@@ -269,6 +269,8 @@ public class AppGUI extends JFrame {
 
     public void beginSetupEmail() {
         this.add(setupEmail, BorderLayout.CENTER);
+        setupEmail.setVisible(true);
+        setupEmail.updateFields();
         footer.setVisible(false);
         historyWindowGUI.setVisible(false);
         alGUI.setVisible(false);

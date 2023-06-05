@@ -28,14 +28,13 @@ public class DBCreate {
 
             Document userAccount = new Document("account_id", new ObjectId());
 
-            emailInfo.put("firstname_id", "");
+            emailInfo.put("firstName_id", "");
             emailInfo.put("lastName_id", "");
-            emailInfo.put("username_id", "");
-            emailInfo.put("displayName_id", "");
             emailInfo.put("emailAddress_id", "");
+            emailInfo.put("emailPassword_id", "");
             emailInfo.put("SMTPHost_id", "");
             emailInfo.put("TLSPort_id", "");
-            emailInfo.put("emailPassword_id", "");
+            emailInfo.put("displayName_id", "");
 
             userAccount.append("username_id", username)
                         .append("password_id", password)
@@ -167,7 +166,6 @@ public class DBCreate {
         String uri = "mongodb+srv://josephyeh0903:josephycxyeh0903@cluster0.ytb32ia.mongodb.net/?retryWrites=true&w=majority";
         try (MongoClient mongoClient = MongoClients.create(uri)) {
             MongoDatabase accountDB = mongoClient.getDatabase("UserAccounts");
-            MongoCollection<Document> emailCollection = accountDB.getCollection("emailAccounts");
             MongoCollection<Document> accountCollection = accountDB.getCollection("Accounts");
             
             //Document emailAccount = new Document("emailInfo", new ObjectId());
@@ -179,55 +177,54 @@ public class DBCreate {
             //             .append("TLSPort_id", TLSPort)
             //             .append("emailPassword_id", emailPassword);
 
+
+            System.out.println(userName);
             Bson filter = eq("username_id", userName);
             Document user = accountCollection.find(filter).first();
             Document emailDocument = (Document) user.get("emailInfo");
 
-            emailDocument.put("firstname_id", firstName);
+            emailDocument.put("firstName_id", firstName);
             emailDocument.put("lastName_id", lastName);
-            emailDocument.put("username_id", userName);
-            emailDocument.put("displayName_id", displayName);
             emailDocument.put("emailAddress_id", emailAddress);
+            emailDocument.put("emailPassword_id", emailPassword);
             emailDocument.put("SMTPHost_id", SMTPHost);
             emailDocument.put("TLSPort_id", TLSPort);
-            emailDocument.put("emailPassword_id", emailPassword);
+            emailDocument.put("displayName_id", displayName);
 
-            emailCollection.insertOne(emailDocument);
+            Bson updateOperation = set("emailInfo", emailDocument);
+            accountCollection.updateOne(filter, updateOperation);
         }
     }
 
-    public static ArrayList<String[]> readEmailInformation() {
+    public static Map<String, String> readEmailInformation(String username) {
         String uri = "mongodb+srv://josephyeh0903:josephycxyeh0903@cluster0.ytb32ia.mongodb.net/?retryWrites=true&w=majority";
         try (MongoClient mongoClient = MongoClients.create(uri)) {
             MongoDatabase accountDB = mongoClient.getDatabase("UserAccounts");
-            MongoCollection<Document> emailCollection = accountDB.getCollection("emailAccounts");
+            MongoCollection<Document> accountCollection = accountDB.getCollection("Accounts");
 
-            MongoCursor<Document> cursor = emailCollection.find().cursor();
-            String[] emailInformation = new String[7];
-            ArrayList<String[]> allEmails = new ArrayList<>();
+            Bson filter = eq("username_id", username);
+            Document user = accountCollection.find(filter).first();
+
+            Document emailDocument = (Document) user.get("emailInfo");
+            Map<String, String> emailInformation = new HashMap<String, String>();
             
-            while (cursor.hasNext()) {
-                String jsonString = cursor.next().toJson();
-                JSONObject obj = new JSONObject(jsonString);
-                
-                String firstNameString = obj.get("firstname_id").toString();
-                String lastNameString = obj.get("lastName_id").toString();
-                String userNameString = obj.get("username_id").toString();
-                String emailAddressString = obj.get("emailAddress_id").toString();
-                String emailPasswordString = obj.get("emailPassword_id").toString();
-                String SMTPHostString = obj.get("SMTPHost_id").toString();
-                String TLSPortString = obj.get("TLSPort_id").toString();
+            String firstNameString = emailDocument.get("firstName_id").toString();
+            String lastNameString = emailDocument.get("lastName_id").toString();
+            String emailAddressString = emailDocument.get("emailAddress_id").toString();
+            String emailPasswordString = emailDocument.get("emailPassword_id").toString();
+            String SMTPHostString = emailDocument.get("SMTPHost_id").toString();
+            String TLSPortString = emailDocument.get("TLSPort_id").toString();
+            String displayName = emailDocument.get("displayName_id").toString();
 
-                emailInformation[0] = firstNameString;
-                emailInformation[1] = lastNameString;
-                emailInformation[2] = userNameString;
-                emailInformation[3] = emailAddressString;
-                emailInformation[6] = emailPasswordString;
-                emailInformation[4] = SMTPHostString;
-                emailInformation[5] = TLSPortString;
-                allEmails.add(emailInformation);
-            }
-            return allEmails;
+            emailInformation.put("firstName_id", firstNameString);
+            emailInformation.put("lastName_id", lastNameString);
+            emailInformation.put("emailAddress_id", emailAddressString);
+            emailInformation.put("emailPassword_id", emailPasswordString);
+            emailInformation.put("SMTPHost_id", SMTPHostString);
+            emailInformation.put("TLSPort_id", TLSPortString);
+            emailInformation.put("displayName_id", displayName);
+
+            return emailInformation;
         }
     }
 }
