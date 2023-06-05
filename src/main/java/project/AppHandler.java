@@ -175,7 +175,7 @@ public class AppHandler implements IAppHandler {
                 // Display the new history question in chat window
                 display(prompt, chat_gpt_answer);
                 break;
-                
+
             case "Delete":
                 //call delete
                 deleteSelected();
@@ -224,7 +224,7 @@ public class AppHandler implements IAppHandler {
                 
             case "Create email":
                 try {
-                    chat_gpt_answer = chatGPT.ask(prompt);
+                    chat_gpt_answer = chatGPT.ask("Create email " + prompt + ", without newline characters.");
                 }
                 catch (IOException io_e) {
                     throw new RuntimeException("An IO Exception happened on click.");
