@@ -28,6 +28,7 @@ public class AppHandler implements IAppHandler {
     AppGUI appGUI;
     LogInWindowHandler loginWindowHandler;
     AutomaticLogInHandler alHandler;
+    setupEmailHandler setupEmailHandler;
 
 
     // Constructor, initializes handlers and adds listeners
@@ -43,6 +44,7 @@ public class AppHandler implements IAppHandler {
         this.historyListHandler = new HistoryListHandler(regex, httpRequestMaker);
         this.loginWindowHandler = new LogInWindowHandler();
         this.alHandler = new AutomaticLogInHandler();
+        this.setupEmailHandler = new setupEmailHandler();
 
         // initialize server port and hostname
         final int SERVER_PORT = 8100;
@@ -90,6 +92,10 @@ public class AppHandler implements IAppHandler {
     // Method to return LogInWIndow Handler element
     public LogInWindowHandler getLogInWindowHandler() {
         return this.loginWindowHandler;
+    }
+
+    public setupEmailHandler getSetupEmailHandler() {
+        return this.setupEmailHandler;
     }
 
     // Method to start recording to get question
@@ -211,6 +217,10 @@ public class AppHandler implements IAppHandler {
                 // Display the new history question in chat window
                 // display(prompt, chat_gpt_answer);
                 break;
+            
+            case "Setup email":
+                setupEmail();
+                break;    
 
             default:
                 display(prompt, "Unable to parse command, available commands are Question, Delete, and Clear");
@@ -219,6 +229,9 @@ public class AppHandler implements IAppHandler {
         }
     }
 
+    public void setupEmail() {
+        appGUI.beginSetupEmail();
+    }
     // Method to handle selecting a history button
     public void selectQuestion(HistoryQuestionHandler historyQuestionHandler) {
         // Obtain current state of question
@@ -280,6 +293,7 @@ public class AppHandler implements IAppHandler {
         }
         else {
             historyListHandler.setUsername(username);
+            setupEmailHandler.setUsername(username);
             // Populate old list as necessary
             historyListHandler.populateOldHistory();
             oldHistoryHandler();
@@ -294,6 +308,7 @@ public class AppHandler implements IAppHandler {
         boolean verify = getLogInWindowHandler().verifyPassword(username, password);
         if (verify) {
             historyListHandler.setUsername(username);
+            setupEmailHandler.setUsername(username);
             // Populate old list as necessary
             historyListHandler.populateOldHistory();
             oldHistoryHandler();

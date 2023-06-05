@@ -93,4 +93,13 @@ public class MockAppHandler implements IAppHandler {
     public LogInWindowHandler getLogInWindowHandler() {
         return null;
     }
+
+    public setupEmailHandler getSetupEmailHandler() {
+        return null;
+    }
+
+    public String[] sampleEmailInfo() {
+        String[] test = {"firstname", "lastname", "username", "emailaddress", "SMTPHost", "TLSPort", "emailpassword"};
+        return test;
+    }
 }

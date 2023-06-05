@@ -191,6 +191,12 @@ public class QuestionHandler implements IQuestionHandler {
                 return "Clear";
             }
         }
+        if (prompt.length() >= 12) {
+            cmd = prompt.substring(0, 12);
+            if (cmd.toUpperCase().equals("SET UP EMAIL")) {
+                return "Setup email";
+            }
+        }
         return "invalid";
     }
 }

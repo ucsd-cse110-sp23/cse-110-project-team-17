@@ -16,6 +16,7 @@ public class AppGUI extends JFrame {
     private HistoryListGUI historyListGUI;
     private ChatWindowGUI chatWindowGUI;
     private LogInWindowGUI logInWindowGUI;
+    private setupEmailGUI setupEmail;
     private AutomaticLogInGUI alGUI;
     private HeaderGUI header;
     private FooterGUI footer;
@@ -27,6 +28,8 @@ public class AppGUI extends JFrame {
     private JButton deleteSelected;
     private JButton acceptButton;
     private JButton denyButton;
+    private JButton saveButton;
+    private JButton cancelButton;
     
 
     // Constructor, initializes GUI objects
@@ -43,6 +46,7 @@ public class AppGUI extends JFrame {
         this.chatWindowGUI = new ChatWindowGUI();
         this.logInWindowGUI = appHandler.getLogInWindowHandler().getLogInWindowGUI();
         this.alGUI = new AutomaticLogInGUI();
+        this.setupEmail = appHandler.getSetupEmailHandler().getsetupEmailWindowGUI();
         this.alGUI.register(appHandler.getAutomaticLogInHandler());
         
         // Creates GUI components
@@ -72,6 +76,8 @@ public class AppGUI extends JFrame {
         logIn = logInWindowGUI.getlogIn();
         acceptButton = this.alGUI.getAcceptButton();
         denyButton = this.alGUI.getDenyButton();
+        saveButton = this.setupEmail.getSaveButton();
+        cancelButton = this.setupEmail.getCancelButton();
 
 
         // Adds listeners to the added buttons
@@ -113,25 +119,6 @@ public class AppGUI extends JFrame {
             }
         );
 
-        /*
-        clearAllButton.addMouseListener(
-            new MouseAdapter() {
-                @Override
-                public void mousePressed(MouseEvent e) {
-                    clearAllHandler();
-                }
-            }
-        );
-
-        deleteSelected.addMouseListener(
-            new MouseAdapter() {
-                @Override
-                public void mousePressed(MouseEvent e) {
-                    deleteSelectedHandler();
-                }
-            }
-        );
-        */
         acceptButton.addMouseListener(
             new MouseAdapter() {
                 @Override
@@ -149,25 +136,41 @@ public class AppGUI extends JFrame {
             }
         );
         
+        saveButton.addMouseListener(
+            new MouseAdapter() {
+                @Override
+                public void mousePressed(MouseEvent e) {
+                    saveButtonHandler();
+                }
+            }
+        );
+        cancelButton.addMouseListener(
+            new MouseAdapter() {
+                @Override
+                public void mousePressed(MouseEvent e) {
+                    cancelButtonHandler();
+                }
+            }
+        );
+        
     }
 
+    // Method to handle saving the user's setup email information
+    public void saveButtonHandler() {
+        appHandler.getSetupEmailHandler().addEmailInfo();
+        this.setupEmail.setVisible(false);
+        //revalidate();
+        showApp();
+        revalidate();
+    }
 
-    // private static void createUI(final JFrame frame){  
-    //     JPanel panel = new JPanel();
-    //     LayoutManager layout = new FlowLayout();  
-    //     panel.setLayout(layout);       
-    //     JButton button = new JButton("Click Me!");
-    //     button.addActionListener(new ActionListener() {
-    //        @Override
-    //        public void actionPerformed(ActionEvent e) {
-    //           JOptionPane.showMessageDialog(frame, "Welcome to Swing!");
-    //        }
-    //     });
-  
-    //     panel.add(button);
-    //     frame.getContentPane().add(panel, BorderLayout.CENTER);    
-    //  }  
-
+    // Method to handle canceling the user's setup email information
+    public void cancelButtonHandler() {
+        //revalidate();
+        this.setupEmail.setVisible(false);
+        showApp();
+        revalidate();
+    }
 
     // Method to handle starting the recording to ask a question
     public void QuestionButtonHandler() {
@@ -264,6 +267,16 @@ public class AppGUI extends JFrame {
         }
     }
 
+    public void beginSetupEmail() {
+        this.add(setupEmail, BorderLayout.CENTER);
+        setupEmail.setVisible(true);
+        setupEmail.updateFields();
+        footer.setVisible(false);
+        historyWindowGUI.setVisible(false);
+        alGUI.setVisible(false);
+        chatWindowGUI.setVisible(false);
+    }
+
     // Method to handle creating account
     public void createAccountHandler() {
         String username = logInWindowGUI.getUserName();
@@ -353,6 +366,10 @@ public class AppGUI extends JFrame {
         return logInWindowGUI;
     }
 
+    public setupEmailGUI getSetupEmailGUI() {
+        return setupEmail;
+    }
+
     public JButton getClearButton() {
         return clearAllButton;
     }
@@ -370,16 +387,6 @@ public class AppGUI extends JFrame {
     public JButton getStopButton() {
         return stopRecordingButton;
     }
-
-    // Method to get "Clear All" button
-    // public JButton getClearButton() {
-    //     return createAccount;
-    // }
-
-    // Method to get "Delete Selected" button
-    // public JButton getDeleteButton() {
-    //     return logIn;
-    // }
 
     // Method to get visibility of "Stop Recording" button
     public boolean getStopButtonVisibility() {
