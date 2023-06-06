@@ -224,7 +224,15 @@ public class AppHandler implements IAppHandler {
                 
             case "Create email":
                 try {
-                    chat_gpt_answer = chatGPT.ask("Create email " + prompt + ", without newline characters.");
+                    // chat box ui is not displaying the whole email, problem can be either size of chat box
+                    // or the trim() in ChatGPT.java
+                    chat_gpt_answer = chatGPT.ask("Create email " + prompt); 
+                    // [Your name] : length = 11
+                    chat_gpt_answer = chat_gpt_answer.substring(0, chat_gpt_answer.length() - 11);
+                    Map<String, String> accountEmail = DBCreate.readEmailInformation(historyListHandler.getUsername());
+                    String firstName = accountEmail.get("firstName_id");
+                    // Adding first name of user at the end of email
+                    chat_gpt_answer = chat_gpt_answer + firstName;
                 }
                 catch (IOException io_e) {
                     throw new RuntimeException("An IO Exception happened on click.");
