@@ -14,11 +14,11 @@ public class ChatWindowGUI extends JPanel {
 
     // ChatWindow constructor, sets format
     public ChatWindowGUI() {
-        GridLayout layout = new GridLayout(10, 1);
+        GridLayout layout = new GridLayout(2, 1);
         layout.setVgap(20); // Vertical gap
     
         this.setLayout(layout); // 2 chat boxes
-        this.setPreferredSize(new Dimension(400, 100));
+        this.setPreferredSize(new Dimension(400, 400));
         this.setBackground(backgroundColor);
     }
 

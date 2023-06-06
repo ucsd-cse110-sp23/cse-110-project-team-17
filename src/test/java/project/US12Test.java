@@ -13,7 +13,7 @@ import project.handler.*;
 
 import java.io.File;
 
-public class US10Test {
+public class US12Test {
 
     // Wipe all account histories before
     @BeforeEach
@@ -43,40 +43,17 @@ public class US10Test {
         DBCreate.wipeDB();
     }
 
+
     @Test
-    void testQuestionCommand() {
+    void testCreateEmailCommand() {
         QuestionHandler questionHandler = new QuestionHandler();
-        String prompt = "Question. What is 2+2?";
-        String command = "Question";
+        String prompt = "Create email to Jill. Let's meet at Geisel at 7 pm";
+        String command = "Create email";
         assertTrue(questionHandler.getCommand(prompt).equals(command));
     }
 
     @Test
-    void testDeleteCommand() {
-        QuestionHandler questionHandler = new QuestionHandler();
-        String prompt = "Delete.";
-        String command = "Delete";
-        assertTrue(questionHandler.getCommand(prompt).equals(command));
-    }
-
-    @Test
-    void testClearCommand() {
-        QuestionHandler questionHandler = new QuestionHandler();
-        String prompt = "Clear.";
-        String command = "Clear";
-        assertTrue(questionHandler.getCommand(prompt).equals(command));
-    }
-
-    @Test
-    void testInvalidCommand() {
-        QuestionHandler questionHandler = new QuestionHandler();
-        String prompt = "Not a command.";
-        String command = "invalid";
-        assertTrue(questionHandler.getCommand(prompt).equals(command));
-    }
-
-    @Test
-    void testAllCommands() {
+    void testAppCreateEmail() {
         IQuestionHandler qHandler = new MockQuestionHandler();
         IChatGPT chatGPT = new MockChatGPT();
         IAudioHandler audioHandler = new MockAudioHandler();
@@ -89,41 +66,17 @@ public class US10Test {
 
         // Initialize prompts and commands
         String answer_part = "Mock answer to the following prompt: ";
-        String question = "Question. What is 2+2?";
-        String qCommand = "Question";
-
-        String delete = "Delete.";
-        String dCommand = "Delete";
-
-        String clear = "Clear.";
-        String cCommand = "Clear";
-
-        String invalid = "Not a command.";
-        String iCommand = "invalid";
+        String create_email = "Create email to Jill. Let's meet at Geisel at 7 pm";
+        String ceCommand = "Create email";
 
         // Test question command
-        testApp.handleCommand(question, qCommand);
+        testApp.handleCommand(create_email, ceCommand);
         HistoryListHandler historyList = testApp.getHistoryList();
-        HistoryQuestionHandler question1 = historyList.getHistoryList().get(0);
-        assertTrue(question1.getQuestion().
-            equals(question));
-        assertTrue(question1.getAnswer().
-            equals(answer_part + question));
-
-        // Test delete command
-        testApp.handleCommand(delete, dCommand);
-        assertTrue(historyList.getHistoryList().size() == 0);
-
-        // Re-add question and test invalid and clear commands
-        testApp.handleCommand(question, qCommand);
-        question1 = historyList.getHistoryList().get(0);
-        assertTrue(question1.getQuestion().
-            equals(question));
-        assertTrue(question1.getAnswer().
-            equals(answer_part + question));
-        testApp.handleCommand(invalid, iCommand);
-        testApp.handleCommand(clear, cCommand);
-        assertTrue(historyList.getHistoryList().size() == 0);
+        HistoryQuestionHandler prompt1 = historyList.getHistoryList().get(0);
+        assertTrue(prompt1.getQuestion().
+            equals(create_email));
+        assertTrue(prompt1.getAnswer().
+            equals(answer_part + create_email));
 
         // Close test frame
         testApp.closeApp();

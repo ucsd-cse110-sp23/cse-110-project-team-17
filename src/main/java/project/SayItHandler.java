@@ -67,6 +67,9 @@ public class SayItHandler implements HttpHandler {
         InputStream inStream = httpExchange.getRequestBody();
         Scanner scanner = new Scanner(inStream);
         String postData = scanner.nextLine();
+        while (scanner.hasNext()) {
+            postData = postData + "\n" + scanner.nextLine();
+        }
         String[] chat_data = postData.split(regex);
         String index = chat_data[0];
         String question = chat_data[1];
@@ -88,6 +91,9 @@ public class SayItHandler implements HttpHandler {
         InputStream inStream = httpExchange.getRequestBody();
         Scanner scanner = new Scanner(inStream);
         String postData = scanner.nextLine();
+        while (scanner.hasNext()) {
+            postData = postData + "\n" + scanner.nextLine();
+        }
         String[] chat_data = postData.split(regex);
         String index = chat_data[0];
         String question = chat_data[1];
