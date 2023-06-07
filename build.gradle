@@ -22,6 +22,7 @@ dependencies {
 
     implementation 'org.json:json:20230227'
     implementation files('libs/javax.mail.jar')
+    implementation files('libs/activation-1.1.1.jar')
 
     // This provides the JUnit API.
     testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"

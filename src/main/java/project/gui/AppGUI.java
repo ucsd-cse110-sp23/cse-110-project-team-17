@@ -63,9 +63,6 @@ public class AppGUI extends JFrame {
         this.add(header, BorderLayout.NORTH); // Add title bar on top of the screen
         this.add(footer, BorderLayout.SOUTH); // Add footer on bottom of the screen
         this.add(historyWindowGUI, BorderLayout.WEST); // Add history list in left of screen
-
-        // Start login process
-        beginLogIn();
         
         // Obtains buttons from GUI components for later use
         startButton = footer.getAskQuestion();
@@ -271,6 +268,7 @@ public class AppGUI extends JFrame {
         this.add(setupEmail, BorderLayout.CENTER);
         setupEmail.setVisible(true);
         setupEmail.updateFields();
+        setupEmail.repaint();
         footer.setVisible(false);
         historyWindowGUI.setVisible(false);
         alGUI.setVisible(false);

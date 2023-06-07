@@ -173,10 +173,11 @@ public class QuestionHandler implements IQuestionHandler {
 
         String cmd = "";
 
-        if (prompt.length() >= 8) {
-            cmd = prompt.substring(0, 8);
-            if (cmd.toUpperCase().equals("QUESTION")) {
-                return "Question";
+        
+        if (prompt.length() >= 5) {
+            cmd = prompt.substring(0, 5);
+            if (cmd.toUpperCase().equals("CLEAR")) {
+                return "Clear";
             }
         }
         if (prompt.length() >= 6) {
@@ -185,10 +186,16 @@ public class QuestionHandler implements IQuestionHandler {
                 return "Delete";
             }
         }
-        if (prompt.length() >= 5) {
-            cmd = prompt.substring(0, 5);
-            if (cmd.toUpperCase().equals("CLEAR")) {
-                return "Clear";
+        if (prompt.length() >= 8) {
+            cmd = prompt.substring(0, 8);
+            if (cmd.toUpperCase().equals("QUESTION")) {
+                return "Question";
+            }
+        }
+        if (prompt.length() >= 10) {
+            cmd = prompt.substring(0, 10);
+            if (cmd.toUpperCase().equals("SEND EMAIL")) {
+                return "Send email";
             }
         }
         if (prompt.length() >= 12) {

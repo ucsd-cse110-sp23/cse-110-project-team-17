@@ -1,13 +1,27 @@
 package project.handler;
 
 import java.util.*;
-import project.*;
 import javax.mail.*;
-import javax.mail.internet.*;
 import javax.mail.Session;
 
+import javax.mail.Message;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.activation.FileDataSource;
+
 public class sendEmailHandler {
-    public void sendEmailUtil (Session session, String toEmail, String fromEmail, String name, String subject, String body) {
+
+	String username;
+
+	public sendEmailHandler() {
+		this.username = "";
+	}
+
+    public String sendEmailUtil (Session session, String toEmail, String fromEmail, String name, String subject, String body) {
         try
 	    {
 	      MimeMessage msg = new MimeMessage(session);
@@ -24,25 +38,24 @@ public class sendEmailHandler {
 
 	      msg.setText(body, "UTF-8");
 
-	      msg.setSentDate(new Date());
-
 	      msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail, false));
 	      System.out.println("Message is ready");
     	  Transport.send(msg);  
 
-	      System.out.println("EMail Sent Successfully!!");
+	      return "Email successfully sent.\n";
 	    }
 	    catch (Exception e) {
-	      e.printStackTrace();
+	      return e.getMessage();
 	    }
 	}
     
-    public sendEmailHandler(String username, String subject, String body) {
+    public String sendEmailHelper(String toAddress, String subject, String body) {
         Map<String,String> dbMap = DBCreate.readEmailInformation(username);
 
+		// For testing, use orpheus157@gmail.com and password vsuwlvowusinisbt
         final String fromEmail = dbMap.get("emailAddress_id");
 		final String password = dbMap.get("emailPassword_id");
-		final String toEmail = "fill w/ params"; // can be any email id 
+		final String toEmail = toAddress; // can be any email id 
         final String name = dbMap.get("displayName_id");
 		
 		System.out.println("TLSEmail Start");
@@ -61,8 +74,12 @@ public class sendEmailHandler {
 		};
 		Session session = Session.getInstance(props, auth);
 		
-		this.sendEmailUtil(session, toEmail, fromEmail, name, subject, body);
+		return this.sendEmailUtil(session, toEmail, fromEmail, name, subject, body);
 		
 
     }
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
 }

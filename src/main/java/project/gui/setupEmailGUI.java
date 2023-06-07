@@ -11,6 +11,8 @@ import java.awt.GridLayout;
 import project.handler.setupEmailHandler;
 import javax.swing.JPanel;
 import javax.swing.JButton;
+import javax.swing.JTextField;
+import javax.swing.JLabel;
 
 public class setupEmailGUI extends JPanel {
     Color backgroundColor = new Color(240, 248, 255);
@@ -18,14 +20,14 @@ public class setupEmailGUI extends JPanel {
     JButton cancel;
     String userString;
     setupEmailHandler handler;
-    InputTextField firstName;
-    InputTextField lastName;
-    InputTextField username;
-    InputTextField emailAddress;
-    InputTextField SMTPHost;
-    InputTextField TLSPort;
-    InputTextField emailPassword;
-    InputTextField displayName;
+    JTextField firstName;
+    JTextField lastName;
+    JTextField username;
+    JTextField emailAddress;
+    JTextField SMTPHost;
+    JTextField TLSPort;
+    JTextField emailPassword;
+    JTextField displayName;
 
     // ChatWindow constructor, sets format
     public setupEmailGUI(setupEmailHandler handler) {
@@ -34,7 +36,7 @@ public class setupEmailGUI extends JPanel {
 
         userString = handler.getUsername();
 
-        GridLayout layout = new GridLayout(10, 1);
+        GridLayout layout = new GridLayout(10, 2);
         layout.setVgap(20); // Vertical gap
     
         this.setLayout(layout); // 2 chat boxes
@@ -42,38 +44,58 @@ public class setupEmailGUI extends JPanel {
         this.setBackground(backgroundColor);
 
         // First Name textbox
-        this.firstName = new InputTextField("First Name: ");
+        this.firstName = new JTextField("");
         firstName.setFont(new Font("BrixSansBlack", Font.ITALIC, 10));
+        JLabel firstNameLabel = new JLabel("First name");
+        this.add(firstNameLabel);
         this.add(firstName);
 
         // Last Name textbox
-        this.lastName = new InputTextField("Last Name: ");
+        this.lastName = new JTextField("");
         lastName.setFont(new Font("BrixSansBlack", Font.ITALIC, 10));
+        JLabel lastNameLabel = new JLabel("Last name");
+        lastNameLabel.setLabelFor(lastName);
+        this.add(lastNameLabel);
         this.add(lastName);
         
         // Email Address textbox
-        this.emailAddress = new InputTextField("Email Address: ");
+        this.emailAddress = new JTextField("");
         emailAddress.setFont(new Font("BrixSansBlack", Font.ITALIC, 10));
+        JLabel emailAddressLabel = new JLabel("Email Address");
+        emailAddressLabel.setLabelFor(emailAddress);
+        this.add(emailAddressLabel);
         this.add(emailAddress);
 
         // Email Address Password textbox
-        this.emailPassword = new InputTextField("Email Password: ");
+        this.emailPassword = new JTextField("");
         emailPassword.setFont(new Font("BrixSansBlack", Font.ITALIC, 10));
+        JLabel emailPasswordLabel = new JLabel("Email Password");
+        emailPasswordLabel.setLabelFor(emailPassword);
+        this.add(emailPasswordLabel);
         this.add(emailPassword);
         
         // SMTP Host textbox
-        this.SMTPHost = new InputTextField("SMTP Host: ");
+        this.SMTPHost = new JTextField("");
         SMTPHost.setFont(new Font("BrixSansBlack", Font.ITALIC, 10));
+        JLabel SMTPHostLabel = new JLabel("SMTP Host");
+        SMTPHostLabel.setLabelFor(SMTPHost);
+        this.add(SMTPHostLabel);
         this.add(SMTPHost);
 
         // TLS Port textbox
-        this.TLSPort = new InputTextField("TLS Port: ");
+        this.TLSPort = new JTextField("");
         TLSPort.setFont(new Font("BrixSansBlack", Font.ITALIC, 10));
+        JLabel TLSPortLabel = new JLabel("TLS Port");
+        TLSPortLabel.setLabelFor(TLSPort);
+        this.add(TLSPortLabel);
         this.add(TLSPort);
 
         // displayName textbox
-        this.displayName = new InputTextField("Display Name: ");
+        this.displayName = new JTextField("");
         displayName.setFont(new Font("BrixSansBlack", Font.ITALIC, 10));
+        JLabel displayNameLabel = new JLabel("Display Name");
+        displayNameLabel.setLabelFor(displayName);
+        this.add(displayNameLabel);
         this.add(displayName);
 
         // Add ClearAll button
@@ -107,43 +129,43 @@ public class setupEmailGUI extends JPanel {
         String displayNameString = emailInfo.get("displayName_id");
 
         
-        firstName.setToolTipText(firstNameString);
-        lastName.setToolTipText(lastNameString);
-        emailAddress.setToolTipText(emailAddressString);
-        emailPassword.setToolTipText(emailPasswordString);
-        SMTPHost.setToolTipText(SMTPHostString);
-        TLSPort.setToolTipText(TLSPortString);
-        displayName.setToolTipText(displayNameString);
+        firstName.setText(firstNameString);
+        lastName.setText(lastNameString);
+        emailAddress.setText(emailAddressString);
+        emailPassword.setText(emailPasswordString);
+        SMTPHost.setText(SMTPHostString);
+        TLSPort.setText(TLSPortString);
+        displayName.setText(displayNameString);
 
 
     }
 
     public String getFirstName() {
-        return firstName.getInput();
+        return firstName.getText();
     }
     
     public String getLastName() {
-        return lastName.getInput();
+        return lastName.getText();
     }
 
     public String getEmailAddress() {
-        return emailAddress.getInput();
+        return emailAddress.getText();
     }
     
     public String getSMTPHost() {
-        return SMTPHost.getInput();
+        return SMTPHost.getText();
     }
     
     public String getTLSPort() {
-        return TLSPort.getInput();
+        return TLSPort.getText();
     }
     
     public String getEmailPassword() {
-        return emailPassword.getInput();
+        return emailPassword.getText();
     }
 
     public String getDisplayName() {
-        return displayName.getInput();
+        return displayName.getText();
     }
 
     // Return "Create Account" button
