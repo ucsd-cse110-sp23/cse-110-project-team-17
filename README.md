@@ -4,12 +4,7 @@ Instructions:
 1. Unzip the SayIt Assistant zip file
 2. Open a terminal or command prompt
 2. Navigate to src/main/java
-3. For Windows users run:
-    1. javac -cp ../../../libs/json-20230227.jar;. project/SayItAssistant.java
-    2. java -cp ../../../libs/json-20230227.jar;. project/SayItAssistant
-4. For Linux Users run:
-    1. javac -cp ../../../libs/json-20230227.jar:. project/SayItAssistant.java
-    2. java -cp ../../../libs/json-20230227.jar:. project/SayItAssistant
+3. Use the command "gradle run"
 
 ## Welcome to the SayIt Assistant!
 ### Login Window
@@ -34,7 +29,7 @@ Instructions:
         > Question, when did the War of 1812 end
 
         > Delete selected prompt
-        
+
         > Clear all
 
 ### Email Functionality
