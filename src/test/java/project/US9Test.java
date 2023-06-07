@@ -7,8 +7,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import project.audio_handler.*;
 import project.chat_gpt.*;
-import project.question_handler.*;
 import project.handler.*;
+import project.prompt_handler.*;
 
 import java.io.File;
 
@@ -55,13 +55,13 @@ public class US9Test {
 
     @Test
     void testBDDAutoLogIn() {
-        IQuestionHandler qHandler = new MockQuestionHandler();
+        IPromptHandler qHandler = new MockPromptHandler();
         IChatGPT chatGPT = new MockChatGPT();
         IAudioHandler audioHandler = new MockAudioHandler();
         AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
  
         LogInWindowHandler loginHandler = testApp.getLogInWindowHandler();
-        loginHandler.createAccount("reisandy", "1234");
+        loginHandler.createAccount("reisandy", "1234", "1234");
         assertTrue(loginHandler.verifyUsername("reisandy", "1234"));
         AutomaticLogInHandler alHandler = testApp.getAutomaticLogInHandler();
         alHandler.update("reisandy", "1234");
@@ -71,13 +71,13 @@ public class US9Test {
 
     @Test
     void testBDDNoAutoLogIn() {
-        IQuestionHandler qHandler = new MockQuestionHandler();
+        IPromptHandler qHandler = new MockPromptHandler();
         IChatGPT chatGPT = new MockChatGPT();
         IAudioHandler audioHandler = new MockAudioHandler();
         AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
  
         LogInWindowHandler loginHandler = testApp.getLogInWindowHandler();
-        loginHandler.createAccount("reisandy", "1234");
+        loginHandler.createAccount("reisandy", "1234", "1234");
         assertTrue(loginHandler.verifyUsername("reisandy", "1234"));
         assertTrue(!testApp.canAutoLogin());
         testApp.stopServer();

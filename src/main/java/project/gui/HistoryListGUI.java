@@ -19,13 +19,14 @@ public class HistoryListGUI extends JPanel {
     Color gray = new Color(218, 229, 234);
     HistoryListHandler historyListHandler;
 
+    // HistoryListGUI constructor, attaches a historyListHandler object
     public HistoryListGUI(HistoryListHandler historyListHandler) {
         this.historyListHandler = historyListHandler;
     }
 
-    // Method that adds a HistoryQuestionGUI
-    public void addHistoryQuestionGUI(HistoryQuestionGUI historyQuestionGUI) {
-        this.add(historyQuestionGUI);
+    // Method that adds a historyPromptGUI object
+    public void addHistoryQuestionGUI(HistoryPromptGUI historyPromptGUI) {
+        this.add(historyPromptGUI);
         revalidate();
     }
   
@@ -59,7 +60,7 @@ public class HistoryListGUI extends JPanel {
     public void removeDefault() {
       for (Component c : getComponents()) {
 
-        if (!(c instanceof HistoryQuestionGUI)) {
+        if (!(c instanceof HistoryPromptGUI)) {
           remove(c);
         }
       }
@@ -73,8 +74,8 @@ public class HistoryListGUI extends JPanel {
 
     // Method to handle deleting the selected HistoryQuestion (if any) in 
     // the HistoryList
-    public void deleteSelected(HistoryQuestionGUI historyQuestionGUI) {
-        remove(historyQuestionGUI);
+    public void deleteSelected(HistoryPromptGUI historyPromptGUI) {
+        remove(historyPromptGUI);
         revalidate();
     }
 

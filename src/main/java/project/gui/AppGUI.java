@@ -44,25 +44,15 @@ public class AppGUI extends JFrame {
         else {
             this.historyListGUI = new HistoryListGUI(null);
         }
-        if (appHandler.getLogInWindowHandler() != null) {
-            this.logInWindowGUI = appHandler.getLogInWindowHandler().getLogInWindowGUI();
-        }
-        else {
-            this.logInWindowGUI = new LogInWindowGUI(null);
-        }
-        if (appHandler.getSetupEmailHandler() != null) {
-            this.setupEmail = appHandler.getSetupEmailHandler().getsetupEmailWindowGUI();
-        }
-        else {
-            this.setupEmail = new setupEmailGUI(null);
-        }
+        
 
         
         this.historyWindowGUI = 
             new HistoryWindowGUI(historyListGUI);
         this.chatWindowGUI = new ChatWindowGUI();
-        this.alGUI = new AutomaticLogInGUI();
-        this.alGUI.register(appHandler.getAutomaticLogInHandler());
+        this.setupEmail = null;
+        this.logInWindowGUI = null;
+        this.alGUI = null;
         
         // Creates GUI components
         this.header = new HeaderGUI();
@@ -84,12 +74,12 @@ public class AppGUI extends JFrame {
         stopRecordingButton = footer.getStopRecordingButton();
         //clearAllButton = historyWindowGUI.getHistoryHeader().getClearAll();
         //deleteSelected = historyWindowGUI.getHistoryHeader().getdeleteSelected();
-        createAccount = logInWindowGUI.getCreateAccount();
-        logIn = logInWindowGUI.getlogIn();
-        acceptButton = this.alGUI.getAcceptButton();
-        denyButton = this.alGUI.getDenyButton();
-        saveButton = this.setupEmail.getSaveButton();
-        cancelButton = this.setupEmail.getCancelButton();
+        acceptButton = null;
+        denyButton = null;
+        createAccount = null;
+        logIn = null;
+        saveButton = null;
+        cancelButton = null;
 
 
         // Adds listeners to the added buttons
@@ -102,7 +92,7 @@ public class AppGUI extends JFrame {
             new MouseAdapter() {
                 @Override
                 public void mousePressed(MouseEvent e) {
-                    QuestionButtonHandler();
+                    StartButtonHandler();
                 }
             }
         );
@@ -114,63 +104,16 @@ public class AppGUI extends JFrame {
                 }
             }
         );
-        createAccount.addMouseListener(
-            new MouseAdapter() {
-                @Override
-                public void mousePressed(MouseEvent e) {
-                    createAccountHandler();
-                }
-            }
-        );
-        logIn.addMouseListener(
-            new MouseAdapter() {
-                @Override
-                public void mousePressed(MouseEvent e) {
-                    logInHandler();
-                }
-            }
-        );
-
-        acceptButton.addMouseListener(
-            new MouseAdapter() {
-                @Override
-                public void mousePressed(MouseEvent e) {
-                    acceptButtonHandler();
-                }
-            }
-        );
-        denyButton.addMouseListener(
-            new MouseAdapter() {
-                @Override
-                public void mousePressed(MouseEvent e) {
-                    denyButtonHandler();
-                }
-            }
-        );
-        
-        saveButton.addMouseListener(
-            new MouseAdapter() {
-                @Override
-                public void mousePressed(MouseEvent e) {
-                    saveButtonHandler();
-                }
-            }
-        );
-        cancelButton.addMouseListener(
-            new MouseAdapter() {
-                @Override
-                public void mousePressed(MouseEvent e) {
-                    cancelButtonHandler();
-                }
-            }
-        );
         
     }
 
     // Method to handle saving the user's setup email information
     public void saveButtonHandler() {
         appHandler.getSetupEmailHandler().addEmailInfo();
-        this.setupEmail.setVisible(false);
+        if (setupEmail != null) {
+            setupEmail.dispose();
+        }
+        setupEmail = null;
         //revalidate();
         showApp();
         revalidate();
@@ -179,13 +122,16 @@ public class AppGUI extends JFrame {
     // Method to handle canceling the user's setup email information
     public void cancelButtonHandler() {
         //revalidate();
-        this.setupEmail.setVisible(false);
+        if (setupEmail != null) {
+            setupEmail.dispose();
+        }
+        setupEmail = null;
         showApp();
         revalidate();
     }
 
     // Method to handle starting the recording to ask a question
-    public void QuestionButtonHandler() {
+    public void StartButtonHandler() {
         // Start recording
         appHandler.startRecording();
 
@@ -210,7 +156,7 @@ public class AppGUI extends JFrame {
     public void display(String question, String answer) {
         clearChat();
         revalidate();
-        chatWindowGUI.displayQuestion(question, answer);
+        chatWindowGUI.displayPrompt(question, answer);
         revalidate();
     }
 
@@ -221,7 +167,7 @@ public class AppGUI extends JFrame {
     }
 
     // Method to make a given history question selectable
-    public void makeSelectable(HistoryQuestionGUI historyQuestionGUI) {
+    public void makeSelectable(HistoryPromptGUI historyQuestionGUI) {
         // Add listener to new history question's select button
         JButton selectButton = historyQuestionGUI.getDone();
         selectButton.addActionListener(
@@ -233,10 +179,10 @@ public class AppGUI extends JFrame {
 
 
     // Method to add listener to select button of given history question
-    public void SelectButtonHandler(HistoryQuestionGUI historyQuestionGUI) {
+    public void SelectButtonHandler(HistoryPromptGUI historyQuestionGUI) {
 
         // select History Question Handler and process according to app handler
-        appHandler.selectQuestion(historyQuestionGUI.getHandler());
+        appHandler.selectPrompt(historyQuestionGUI.getHandler());
 
         revalidate(); // Updates the frame
     }
@@ -262,6 +208,7 @@ public class AppGUI extends JFrame {
         revalidate();
     }
 
+    // Method to handle starting the login page
     public void beginLogIn() {
 
         boolean canAutoLogin = appHandler.canAutoLogin();
@@ -271,23 +218,81 @@ public class AppGUI extends JFrame {
             showApp();
         }
         else {
-            this.add(logInWindowGUI, BorderLayout.CENTER);
+            // this.add(logInWindowGUI, BorderLayout.CENTER);
             // chatWindowGUI.setVisible(false);
+            if (appHandler.getLogInWindowHandler() != null) {
+                this.logInWindowGUI = appHandler.getLogInWindowHandler().getLogInWindowGUI();
+            }
+            else {
+                this.logInWindowGUI = new LogInWindowGUI(null);
+            }
+            logInWindowGUI.setVisible(true);
+                
+            createAccount = logInWindowGUI.getCreateAccount();
+            logIn = logInWindowGUI.getlogIn();
+
+            createAccount.addMouseListener(
+                new MouseAdapter() {
+                    @Override
+                    public void mousePressed(MouseEvent e) {
+                        createAccountHandler();
+                    }
+                }
+            );
+            logIn.addMouseListener(
+                new MouseAdapter() {
+                    @Override
+                    public void mousePressed(MouseEvent e) {
+                        logInHandler();
+                    }
+                }
+            );
+
+
             footer.setVisible(false);
             historyWindowGUI.setVisible(false);
-            alGUI.setVisible(false);
+            // alGUI.setVisible(false);
             chatWindowGUI.setVisible(false);
         }
     }
 
+    // Method to handle setting up email
     public void beginSetupEmail() {
-        this.add(setupEmail, BorderLayout.CENTER);
+        // this.add(setupEmail, BorderLayout.CENTER);
+        if (setupEmail == null) {
+            if (appHandler.getSetupEmailHandler() != null) {
+                this.setupEmail = appHandler.getSetupEmailHandler().getsetupEmailWindowGUI();
+            }
+            else {
+                this.setupEmail = new setupEmailGUI(null);
+            }
+        }
+
+        saveButton = this.setupEmail.getSaveButton();
+        cancelButton = this.setupEmail.getCancelButton();
+        
+        saveButton.addMouseListener(
+            new MouseAdapter() {
+                @Override
+                public void mousePressed(MouseEvent e) {
+                    saveButtonHandler();
+                }
+            }
+        );
+        cancelButton.addMouseListener(
+            new MouseAdapter() {
+                @Override
+                public void mousePressed(MouseEvent e) {
+                    cancelButtonHandler();
+                }
+            }
+        );
+
         setupEmail.setVisible(true);
         setupEmail.updateFields();
         setupEmail.repaint();
         footer.setVisible(false);
         historyWindowGUI.setVisible(false);
-        alGUI.setVisible(false);
         chatWindowGUI.setVisible(false);
     }
 
@@ -295,14 +300,25 @@ public class AppGUI extends JFrame {
     public void createAccountHandler() {
         String username = logInWindowGUI.getUserName();
         String password = logInWindowGUI.getPassword();
-        boolean valid = appHandler.getLogInWindowHandler().createAccount(username, password);
+        String password2 = logInWindowGUI.getVerifyPassword();
+        boolean valid = appHandler.getLogInWindowHandler().
+            createAccount(username, password, password2);
         if (valid) {
             revalidate();
             logInHandler();
             revalidate();
         }
         else {
-            JOptionPane.showMessageDialog(null, "Accounts already existed");
+            if (!appHandler.getLogInWindowHandler().
+                    verifyUsername(username, password)) {
+                JOptionPane.showMessageDialog(null, 
+                    "Accounts already existed");
+            }
+            if (!appHandler.getLogInWindowHandler().
+                    checkPassword(password, password2)) {
+                JOptionPane.showMessageDialog(null, 
+                    "Passwords don't match");
+            }
         }
     }
 
@@ -314,20 +330,43 @@ public class AppGUI extends JFrame {
         if (verify) {
             createAccount.setVisible(false);
             logIn.setVisible(false);
-            logInWindowGUI.setVisible(false);
-            remove(logInWindowGUI);
+            logInWindowGUI.dispose();
 
             askAutoLoginHandler(username, password);
+        }
+        else {
+            JOptionPane.showMessageDialog(null, 
+                "Username doesn't match password");
         }
         revalidate();
     }
 
     // Method to display automatic login popup
     public void askAutoLoginHandler(String username, String password) {
+        
+        this.alGUI = new AutomaticLogInGUI();
+        this.alGUI.register(appHandler.getAutomaticLogInHandler());
         this.alGUI.setUsername(username);
         this.alGUI.setPassword(password);
-        this.add(this.alGUI, BorderLayout.CENTER);
         this.alGUI.setVisible(true);
+        this.acceptButton = alGUI.getAcceptButton();
+        this.denyButton = alGUI.getDenyButton();
+        acceptButton.addMouseListener(
+            new MouseAdapter() {
+                @Override
+                public void mousePressed(MouseEvent e) {
+                    acceptButtonHandler();
+                }
+            }
+        );
+        denyButton.addMouseListener(
+            new MouseAdapter() {
+                @Override
+                public void mousePressed(MouseEvent e) {
+                    denyButtonHandler();
+                }
+            }
+        );
         revalidate();
     }
 
@@ -336,15 +375,15 @@ public class AppGUI extends JFrame {
         this.alGUI.notifyObservers();
         acceptButton.setVisible(false);
         denyButton.setVisible(false);
-        remove(alGUI);
+        alGUI.dispose();
         showApp();
     }
 
     // Method to handle denying automatic login
     public void denyButtonHandler() {
-        remove(alGUI);
         acceptButton.setVisible(false);
         denyButton.setVisible(false);
+        alGUI.dispose();
         showApp();
     }
 
@@ -352,7 +391,8 @@ public class AppGUI extends JFrame {
     private void showApp() {
         historyWindowGUI.setVisible(true);
         footer.setVisible(true);
-        this.add(chatWindowGUI, BorderLayout.CENTER); // Add chat list in middle of footer and title
+        // Add chat list in middle of footer and title
+        this.add(chatWindowGUI, BorderLayout.CENTER); 
         chatWindowGUI.setVisible(true);
     }
 
@@ -376,18 +416,22 @@ public class AppGUI extends JFrame {
         return historyListGUI;
     }
 
+    // Method to get log-in window GUI object
     public LogInWindowGUI getLoginWindow() {
         return logInWindowGUI;
     }
 
+    // Method to get setup email GUI object
     public setupEmailGUI getSetupEmailGUI() {
         return setupEmail;
     }
 
+    // Method to get clear button
     public JButton getClearButton() {
         return clearAllButton;
     }
 
+    // Method to get delete button
     public JButton getDeleteButton() {
         return deleteSelected;
     }
@@ -415,6 +459,17 @@ public class AppGUI extends JFrame {
     // Method to close frame
     public void closeFrame() {
         appHandler.stopServer();
+        if (this.setupEmail != null) {
+            this.setupEmail.dispose();
+        }
+        
+        if (this.logInWindowGUI != null) {
+            this.logInWindowGUI.dispose();
+        }
+        
+        if (this.alGUI != null) {
+            this.alGUI.dispose();
+        }
         this.dispose();
     }
 }

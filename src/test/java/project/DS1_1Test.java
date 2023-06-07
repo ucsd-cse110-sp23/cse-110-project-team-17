@@ -8,9 +8,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import project.audio_handler.*;
 import project.chat_gpt.*;
-import project.question_handler.*;
 import project.gui.*;
 import project.handler.*;
+import project.prompt_handler.*;
 
 import java.io.*;
 
@@ -47,14 +47,14 @@ public class DS1_1Test {
     @Test
     public void iterationTest() {
         // Create mock handlers and appframe
-        IQuestionHandler qHandler = new MockQuestionHandler();
+        IPromptHandler qHandler = new MockPromptHandler();
         IChatGPT chatGPT = new MockChatGPT();
         IAudioHandler audioHandler = new MockAudioHandler();
         AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
         AppGUI appGUI = new AppGUI(testApp);
         testApp.createGUI(appGUI);
         LogInWindowHandler logInHandler = testApp.getLogInWindowHandler();
-        logInHandler.createAccount("username", "password");
+        logInHandler.createAccount("username", "password", "password");
         testApp.LogIn("username", "password");
 
         // Set up expected values
@@ -67,8 +67,8 @@ public class DS1_1Test {
         HistoryListHandler historyList = testApp.getHistoryList();
         testApp.startRecording();
         testApp.stopRecording();
-        HistoryQuestionHandler question1 = historyList.getHistoryList().get(0);
-        assertTrue(question1.getQuestion().
+        HistoryPromptHandler question1 = historyList.getHistoryList().get(0);
+        assertTrue(question1.getPrompt().
             equals(questionString1));
         assertTrue(question1.getAnswer().
             equals(answer_part + questionString1));
@@ -77,13 +77,13 @@ public class DS1_1Test {
         // Verify that the selected question and answer show up as expected in chat window
         testApp.startRecording();
         testApp.stopRecording();
-        HistoryQuestionHandler question2 = 
-            (HistoryQuestionHandler) historyList.getHistoryList().get(1);
-        assertTrue(question1.getQuestion().
+        HistoryPromptHandler question2 = 
+            (HistoryPromptHandler) historyList.getHistoryList().get(1);
+        assertTrue(question1.getPrompt().
             equals(questionString1));
-        assertTrue(question2.getQuestion().
+        assertTrue(question2.getPrompt().
             equals(questionString2));
-        testApp.selectQuestion(question1);
+        testApp.selectPrompt(question1);
         assertTrue(question1.isSelected());
         
         // Close test frame

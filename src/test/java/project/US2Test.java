@@ -10,8 +10,8 @@ import javax.swing.JButton;
 
 import project.audio_handler.*;
 import project.chat_gpt.*;
-import project.question_handler.*;
 import project.handler.*;
+import project.prompt_handler.*;
 import project.gui.*;
 
 import java.io.*;
@@ -49,14 +49,14 @@ public class US2Test {
     // Test if ChatGPT handler is made correctly
     @Test 
     void testChatGPT() {
-        IQuestionHandler qHandler = new MockQuestionHandler();
+        IPromptHandler qHandler = new MockPromptHandler();
         IChatGPT chatGPT = new MockChatGPT();
         IAudioHandler audioHandler = new MockAudioHandler();
         AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
         AppGUI appGUI = new AppGUI(testApp);
         testApp.createGUI(appGUI);
         LogInWindowHandler logInHandler = testApp.getLogInWindowHandler();
-        logInHandler.createAccount("username", "password");
+        logInHandler.createAccount("username", "password", "password");
         testApp.LogIn("username", "password");
         assertTrue(testApp.getChatGPT() instanceof IChatGPT);
 
@@ -67,14 +67,14 @@ public class US2Test {
     // Test that "Start" button exists
     @Test 
     void testNewQuestionButton() {
-        IQuestionHandler qHandler = new MockQuestionHandler();
+        IPromptHandler qHandler = new MockPromptHandler();
         IChatGPT chatGPT = new MockChatGPT();
         IAudioHandler audioHandler = new MockAudioHandler();
         AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
         AppGUI appGUI = new AppGUI(testApp);
         testApp.createGUI(appGUI);
         LogInWindowHandler logInHandler = testApp.getLogInWindowHandler();
-        logInHandler.createAccount("username", "password");
+        logInHandler.createAccount("username", "password", "password");
         testApp.LogIn("username", "password");
         assertTrue(appGUI.getStartButton() instanceof JButton);
 
@@ -85,20 +85,20 @@ public class US2Test {
     // Test that "Start" button toggles visibility
     @Test 
     void testQuestionButtonToggle() {
-        IQuestionHandler qHandler = new MockQuestionHandler();
+        IPromptHandler qHandler = new MockPromptHandler();
         IChatGPT chatGPT = new MockChatGPT();
         IAudioHandler audioHandler = new MockAudioHandler();
         AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
         AppGUI appGUI = new AppGUI(testApp);
         testApp.createGUI(appGUI);
         LogInWindowHandler logInHandler = testApp.getLogInWindowHandler();
-        logInHandler.createAccount("username", "password");
+        logInHandler.createAccount("username", "password", "password");
         testApp.LogIn("username", "password");
         JButton startButton = appGUI.getStartButton();
         JButton stopButton = appGUI.getStopButton();
         assertTrue(startButton.isVisible());
         assertFalse(stopButton.isVisible());
-        appGUI.QuestionButtonHandler();
+        appGUI.StartButtonHandler();
         assertFalse(startButton.isVisible());
         assertTrue(stopButton.isVisible());
 
@@ -109,20 +109,20 @@ public class US2Test {
     // Test that "Start" and "Stop Recording" buttons toggle
     @Test
     void testStory() {
-        IQuestionHandler qHandler = new MockQuestionHandler();
+        IPromptHandler qHandler = new MockPromptHandler();
         IChatGPT chatGPT = new MockChatGPT();
         IAudioHandler audioHandler = new MockAudioHandler();
         AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
         AppGUI appGUI = new AppGUI(testApp);
         testApp.createGUI(appGUI);
         LogInWindowHandler logInHandler = testApp.getLogInWindowHandler();
-        logInHandler.createAccount("username", "password");
+        logInHandler.createAccount("username", "password", "password");
         testApp.LogIn("username", "password");
         JButton startButton = appGUI.getStartButton();
         JButton stopButton = appGUI.getStopButton();
         assertTrue(startButton.isVisible());
         assertFalse(stopButton.isVisible());
-        appGUI.QuestionButtonHandler();
+        appGUI.StartButtonHandler();
         assertFalse(startButton.isVisible());
         assertTrue(stopButton.isVisible());
         appGUI.StopButtonHandler();

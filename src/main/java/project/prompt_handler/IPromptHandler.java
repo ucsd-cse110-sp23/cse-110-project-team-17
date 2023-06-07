@@ -1,10 +1,10 @@
-package project.question_handler;
+package project.prompt_handler;
 
 import java.io.IOException;
 
-public interface IQuestionHandler {
+public interface IPromptHandler {
     // Method to obtain question from some file
-    public String getQuestion(String filename) throws IOException;
+    public String getPrompt(String filename) throws IOException;
 
     //Method to discrimiate voice command
     public String getCommand(String prompt) throws IOException;

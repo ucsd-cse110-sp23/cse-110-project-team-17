@@ -8,8 +8,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import project.audio_handler.*;
 import project.chat_gpt.*;
 import project.gui.AppGUI;
-import project.question_handler.*;
 import project.handler.*;
+import project.prompt_handler.*;
 
 import java.io.File;
 
@@ -46,7 +46,7 @@ public class US12Test {
 
     @Test
     void testCreateEmailCommand() {
-        QuestionHandler questionHandler = new QuestionHandler();
+        PromptHandler questionHandler = new PromptHandler();
         String prompt = "Create email to Jill. Let's meet at Geisel at 7 pm";
         String command = "Create email";
         assertTrue(questionHandler.getCommand(prompt).equals(command));
@@ -54,14 +54,14 @@ public class US12Test {
 
     @Test
     void testAppCreateEmail() {
-        IQuestionHandler qHandler = new MockQuestionHandler();
+        IPromptHandler qHandler = new MockPromptHandler();
         IChatGPT chatGPT = new MockChatGPT();
         IAudioHandler audioHandler = new MockAudioHandler();
         AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
         AppGUI appGUI = new AppGUI(testApp);
         testApp.createGUI(appGUI);
         LogInWindowHandler logInHandler = testApp.getLogInWindowHandler();
-        logInHandler.createAccount("username", "password");
+        logInHandler.createAccount("username", "password", "password");
         testApp.LogIn("username", "password");
 
         // Initialize prompts and commands
@@ -72,8 +72,8 @@ public class US12Test {
         // Test question command
         testApp.handleCommand(create_email, ceCommand);
         HistoryListHandler historyList = testApp.getHistoryList();
-        HistoryQuestionHandler prompt1 = historyList.getHistoryList().get(0);
-        assertTrue(prompt1.getQuestion().
+        HistoryPromptHandler prompt1 = historyList.getHistoryList().get(0);
+        assertTrue(prompt1.getPrompt().
             equals(create_email));
         assertTrue(prompt1.getAnswer().
             equals(answer_part + create_email));

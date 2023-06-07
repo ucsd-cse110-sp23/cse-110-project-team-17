@@ -5,19 +5,20 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 
-import javax.swing.JPanel;
 import project.handler.LogInWindowHandler;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 
-public class LogInWindowGUI extends JPanel {
+public class LogInWindowGUI extends JFrame {
     Color backgroundColor = new Color(240, 248, 255);
     JButton createAccount;
     JButton logIn;
     LogInWindowHandler logInWindowHandler;
     InputTextField username;
     InputTextField password;
+    InputTextField verify;
 
-    // ChatWindow constructor, sets format
+    // LogInWindowGUI constructor, sets format
     public LogInWindowGUI(LogInWindowHandler logInWindowHandler) {
         this.logInWindowHandler = logInWindowHandler;
         GridLayout layout = new GridLayout(10, 1);
@@ -34,6 +35,10 @@ public class LogInWindowGUI extends JPanel {
         this.password = new InputTextField("Password: ");
         password.setFont(new Font("BrixSansBlack", Font.ITALIC, 10));
         this.add(password);
+
+        this.verify = new InputTextField("Verify Password: ");
+        verify.setFont(new Font("BrixSansBlack", Font.ITALIC, 10));
+        this.add(verify);
         // Add ClearAll button
         createAccount = new JButton();
         createAccount.setText("Create Account");
@@ -47,15 +52,27 @@ public class LogInWindowGUI extends JPanel {
         logIn.setPreferredSize(new Dimension(80, 30));
         logIn.setFont(new Font("BrixSansBlack", Font.ITALIC, 10));
         this.add(logIn);
+
+        super.pack();
+        super.setSize(800,800);
     }
 
+    // Method to return string in username field
     public String getUserName() {
         return username.getInput();
     }
     
+    // Method to return string in password field
     public String getPassword() {
         return password.getInput();
     }
+
+    // Method to return string in second password field
+    public String getVerifyPassword() {
+        return verify.getInput();
+    }
+
+    
     
     // Return "Create Account" button
     public JButton getCreateAccount() {

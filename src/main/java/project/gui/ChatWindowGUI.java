@@ -33,13 +33,14 @@ public class ChatWindowGUI extends JPanel {
         revalidate();
     }
 
-    public void displayQuestion(String question, String answer) {
+    // Method to display a given prompt and answer pair
+    public void displayPrompt(String prompt, String answer) {
         this.setVisible(true);
-        ChatBoxGUI questionBox = new ChatBoxGUI("Question", question);
+        ChatBoxGUI promptBox = new ChatBoxGUI("Prompt", prompt);
         ChatBoxGUI answerBox = new ChatBoxGUI("Answer", answer);
-        questionBox.setVisible(true);
+        promptBox.setVisible(true);
         answerBox.setVisible(true);
-        this.add(questionBox);
+        this.add(promptBox);
         this.add(answerBox);
         repaint();
         revalidate();

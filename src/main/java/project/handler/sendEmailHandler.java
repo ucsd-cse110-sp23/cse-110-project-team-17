@@ -17,10 +17,12 @@ public class sendEmailHandler {
 
 	String username;
 
+	// SendEmailHandler constructor, initializes username field
 	public sendEmailHandler() {
 		this.username = "";
 	}
 
+	// Main method to send email given required fields
     public String sendEmailUtil (Session session, String toEmail, String fromEmail, String name, String subject, String body) {
         try
 	    {
@@ -49,6 +51,7 @@ public class sendEmailHandler {
 	    }
 	}
     
+	// Helper method that grabs the necessary info to send the email with
     public String sendEmailHelper(String toAddress, String subject, String body) {
         Map<String,String> dbMap = DBCreate.readEmailInformation(username);
 
@@ -79,6 +82,7 @@ public class sendEmailHandler {
 
     }
 
+	// Method to set username
 	public void setUsername(String username) {
 		this.username = username;
 	}

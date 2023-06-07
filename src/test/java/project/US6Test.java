@@ -10,10 +10,10 @@ import java.io.IOException;
 
 import project.audio_handler.*;
 import project.chat_gpt.*;
-import project.question_handler.*;
 import project.gui.*;
 
 import project.handler.*;
+import project.prompt_handler.*;
 
 import java.io.*;
 
@@ -50,12 +50,12 @@ public class US6Test {
     // Test that "Ask a Question" button works as expected
     @Test
     void testGetQuestion() throws IOException, InterruptedException {
-        IQuestionHandler qHandler = new MockQuestionHandler();
+        IPromptHandler qHandler = new MockPromptHandler();
         IAudioHandler audioHandlerTest = new MockAudioHandler();
 
         audioHandlerTest.startRecording();
         String filename = audioHandlerTest.stopRecording();
-        String question = qHandler.getQuestion(filename);
+        String question = qHandler.getPrompt(filename);
 
         // Verify that expected question is equal to actual question
         String filename_first = filename.split("[.]")[0];
@@ -68,7 +68,7 @@ public class US6Test {
     void testGPTAskMethod() throws IOException, InterruptedException {
 
         // Create mock handlers and appframe
-        IQuestionHandler qHandler = new MockQuestionHandler();
+        IPromptHandler qHandler = new MockPromptHandler();
         IChatGPT chatGPT = new MockChatGPT();
         IAudioHandler audioHandler = new MockAudioHandler();
         IAudioHandler audioHandlerTest = new MockAudioHandler();
@@ -76,13 +76,13 @@ public class US6Test {
         AppGUI appGUI = new AppGUI(testApp);
         testApp.createGUI(appGUI);
         LogInWindowHandler logInHandler = testApp.getLogInWindowHandler();
-        logInHandler.createAccount("username", "password");
+        logInHandler.createAccount("username", "password", "password");
         testApp.LogIn("username", "password");
         
         // Use second mock audio handler to obtain expected question
         audioHandlerTest.startRecording();
         String filename = audioHandlerTest.stopRecording();
-        String question = qHandler.getQuestion(filename);
+        String question = qHandler.getPrompt(filename);
         String filename_first = filename.split("[.]")[0];
         String expected_question = "Question: What is " + filename_first + "?";
         assertEquals(question, expected_question);
@@ -95,8 +95,8 @@ public class US6Test {
         HistoryListHandler historyList = testApp.getHistoryList();
         testApp.startRecording();
         testApp.stopRecording();
-        HistoryQuestionHandler question1 = historyList.getHistoryList().get(0);
-        assertTrue(question1.getQuestion().
+        HistoryPromptHandler question1 = historyList.getHistoryList().get(0);
+        assertTrue(question1.getPrompt().
             equals(expected_question));
         assertTrue(question1.getAnswer().
             equals(answer_part));

@@ -18,6 +18,7 @@ public class DBCreate {
 
     private static String regex = ";;;";
 
+    // Method to add a user to the database
     public static void createUser(String username, String password) {
         String uri = "mongodb+srv://josephyeh0903:josephycxyeh0903@cluster0.ytb32ia.mongodb.net/?retryWrites=true&w=majority";
         try (MongoClient mongoClient = MongoClients.create(uri)) {
@@ -45,6 +46,7 @@ public class DBCreate {
         }
     }
 
+    // Method to get a map of usernames and passwords from the database
     public static Map<String,String> readUserInformation() {
         String uri = "mongodb+srv://josephyeh0903:josephycxyeh0903@cluster0.ytb32ia.mongodb.net/?retryWrites=true&w=majority";
         try (MongoClient mongoClient = MongoClients.create(uri)) {
@@ -81,8 +83,8 @@ public class DBCreate {
             ArrayList<String> historyList = new ArrayList<String>();
             if (historyDocument != null) {          
                 for (String key : historyDocument.keySet()) {
-                    String questionData = (String) historyDocument.get(key);
-                    historyList.add(questionData);
+                    String promptData = (String) historyDocument.get(key);
+                    historyList.add(promptData);
                 }
             }
 
@@ -90,8 +92,8 @@ public class DBCreate {
         }
     }
 
-    // Method to add a question to history list
-    public static void addPromptDB(String username, String questionText) {
+    // Method to add a prompt to history list
+    public static void addPromptDB(String username, String promptText) {
         String uri = "mongodb+srv://josephyeh0903:josephycxyeh0903@cluster0.ytb32ia.mongodb.net/?retryWrites=true&w=majority";
         try (MongoClient mongoClient = MongoClients.create(uri)) {
             MongoDatabase accountDB = mongoClient.getDatabase("UserAccounts");
@@ -102,16 +104,16 @@ public class DBCreate {
 
             Document historyDocument = (Document) user.get("historyList");
 
-            String index = questionText.split(regex)[0];
-            historyDocument.put(index, questionText);
+            String index = promptText.split(regex)[0];
+            historyDocument.put(index, promptText);
             Bson updateOperation = set("historyList", historyDocument);
             accountCollection.updateOne(filter, updateOperation);
             
         }
     }
 
-    // Method to delete a specific question from history list
-    public static void deleteQuestionDB(String username, String questionText) {
+    // Method to delete a specific prompt from history list
+    public static void deletePromptDB(String username, String promptText) {
         String uri = "mongodb+srv://josephyeh0903:josephycxyeh0903@cluster0.ytb32ia.mongodb.net/?retryWrites=true&w=majority";
         try (MongoClient mongoClient = MongoClients.create(uri)) {
             MongoDatabase accountDB = mongoClient.getDatabase("UserAccounts");
@@ -122,7 +124,7 @@ public class DBCreate {
 
             Document historyDocument = (Document) user.get("historyList");
 
-            String index = questionText.split(regex)[0];
+            String index = promptText.split(regex)[0];
             historyDocument.remove(index);
             Bson updateOperation = set("historyList", historyDocument);
             accountCollection.updateOne(filter, updateOperation);
@@ -196,6 +198,7 @@ public class DBCreate {
         }
     }
 
+    // Method to get a map representing the email info of a given username
     public static Map<String, String> readEmailInformation(String username) {
         String uri = "mongodb+srv://josephyeh0903:josephycxyeh0903@cluster0.ytb32ia.mongodb.net/?retryWrites=true&w=majority";
         try (MongoClient mongoClient = MongoClients.create(uri)) {

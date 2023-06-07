@@ -2,9 +2,9 @@ package project;
 
 import project.audio_handler.*;
 import project.chat_gpt.*;
-import project.question_handler.*;
 import project.gui.*;
 import project.handler.*;
+import project.prompt_handler.*;
 
 import com.sun.net.httpserver.*;
 
@@ -19,7 +19,7 @@ public class AppHandler implements IAppHandler {
 
     IAudioHandler audioHandler;
     IChatGPT chatGPT;
-    IQuestionHandler questionHandler;
+    IPromptHandler promptHandler;
     private HttpServer server;
     private String regex = ";;;";
     HistoryListHandler historyListHandler;
@@ -34,13 +34,13 @@ public class AppHandler implements IAppHandler {
 
     // Constructor, initializes handlers and adds listeners
     // Also creates associated app GUI object
-    public AppHandler(IQuestionHandler questionHandler, 
+    public AppHandler(IPromptHandler promptHandler, 
             IChatGPT chatGPT, IAudioHandler audioHandler) {
         
         // Initialize handlers
         this.audioHandler = audioHandler;
         this.chatGPT = chatGPT;
-        this.questionHandler = questionHandler;
+        this.promptHandler = promptHandler;
         this.httpRequestMaker = new HTTPRequestMaker(URL, regex);
         this.historyListHandler = new HistoryListHandler(regex, httpRequestMaker);
         this.loginWindowHandler = new LogInWindowHandler();
@@ -87,20 +87,6 @@ public class AppHandler implements IAppHandler {
         this.appGUI.beginLogIn();
     }
 
-    // Method to return HistoryListHandler element
-    public HistoryListHandler getHistoryList() {
-        return this.historyListHandler;
-    }
-
-    // Method to return LogInWIndow Handler element
-    public LogInWindowHandler getLogInWindowHandler() {
-        return this.loginWindowHandler;
-    }
-
-    public setupEmailHandler getSetupEmailHandler() {
-        return this.setupEmailHandler;
-    }
-
     // Method to start recording to get question
     public void startRecording() {
         // Start recording
@@ -119,8 +105,8 @@ public class AppHandler implements IAppHandler {
 
         // Get prompt from filename
         try {
-            prompt = questionHandler.getQuestion(filename);
-            command = questionHandler.getCommand(prompt);
+            prompt = promptHandler.getPrompt(filename);
+            command = promptHandler.getCommand(prompt);
         }
         catch (IOException io_e) {
             throw new RuntimeException("An IO Exception happened while getting question.");
@@ -139,13 +125,13 @@ public class AppHandler implements IAppHandler {
         String chat_gpt_answer = "";
 
         // Initialize history question
-        HistoryQuestionHandler historyQuestion;
+        HistoryPromptHandler historyPrompt;
 
         switch (command) {
             case "Question":
 
                 // Deselect any selected questions
-                for (HistoryQuestionHandler hqh : historyListHandler.getHistoryList()) {
+                for (HistoryPromptHandler hqh : historyListHandler.getHistoryList()) {
                     hqh.deselect();
                 }
                 // Get answer from prompt
@@ -163,15 +149,15 @@ public class AppHandler implements IAppHandler {
                 // via "POST" request
                 httpRequestMaker.postRequest(count_str, prompt, chat_gpt_answer);
 
-                // Create new HistoryQuestion and add to prompt
-                historyQuestion = 
-                    new HistoryQuestionHandler(count_str, httpRequestMaker);
-                historyListHandler.add(historyQuestion, false); // Add new task to list
+                // Create new historyPrompt and add to prompt
+                historyPrompt = 
+                    new HistoryPromptHandler(count_str, httpRequestMaker);
+                historyListHandler.add(historyPrompt, false); // Add new task to list
 
                 // Make the created history question selectable in history list
-                appGUI.makeSelectable(historyQuestion.getHistoryQuestionGUI());
+                appGUI.makeSelectable(historyPrompt.getHistoryPromptGUI());
 
-                selectQuestion(historyQuestion);
+                selectPrompt(historyPrompt);
 
                 // Display the new history question in chat window
                 display(prompt, chat_gpt_answer);
@@ -186,13 +172,13 @@ public class AppHandler implements IAppHandler {
                 // int count_str_updated = Integer.parseInt(count_str) -1;
                 // httpRequestMaker.postRequest(String.valueOf(count_str_updated), prompt, "Deleted");
 
-                // Create new HistoryQuestion and add to prompt
-                // historyQuestion = 
-                //     new HistoryQuestionHandler(String.valueOf(count_str_updated), httpRequestMaker);
-                // historyListHandler.add(historyQuestion, false); // Add new task to list
+                // Create new historyPrompt and add to prompt
+                // historyPrompt = 
+                //     new historyPromptHandler(String.valueOf(count_str_updated), httpRequestMaker);
+                // historyListHandler.add(historyPrompt, false); // Add new task to list
 
                 // Make the created history question selectable in history list
-                // appGUI.makeSelectable(historyQuestion.getHistoryQuestionGUI());
+                // appGUI.makeSelectable(historyPrompt.gethistoryPromptGUI());
 
                 // Display the new history question in chat window
                 // display(prompt, chat_gpt_answer);
@@ -207,13 +193,13 @@ public class AppHandler implements IAppHandler {
                 // via "POST" request
                 // httpRequestMaker.postRequest("0", prompt, "Deleted");
 
-                // Create new HistoryQuestion and add to prompt
-                // historyQuestion = 
-                //     new HistoryQuestionHandler("0", httpRequestMaker);
-                // historyListHandler.add(historyQuestion, false); // Add new task to list
+                // Create new historyPrompt and add to prompt
+                // historyPrompt = 
+                //     new historyPromptHandler("0", httpRequestMaker);
+                // historyListHandler.add(historyPrompt, false); // Add new task to list
 
                 // Make the created history question selectable in history list
-                // appGUI.makeSelectable(historyQuestion.getHistoryQuestionGUI());
+                // appGUI.makeSelectable(historyPrompt.gethistoryPromptGUI());
 
                 // Display the new history question in chat window
                 // display(prompt, chat_gpt_answer);
@@ -225,7 +211,7 @@ public class AppHandler implements IAppHandler {
                 
             case "Create email":
                 // Deselect any selected questions
-                for (HistoryQuestionHandler hqh : historyListHandler.getHistoryList()) {
+                for (HistoryPromptHandler hqh : historyListHandler.getHistoryList()) {
                     hqh.deselect();
                 }
                 try {
@@ -233,8 +219,11 @@ public class AppHandler implements IAppHandler {
                     // or the trim() in ChatGPT.java
                     chat_gpt_answer = chatGPT.ask(prompt); 
                     // [Your name] : length = 11
-                    if (chat_gpt_answer.contains("Your name")) {
+                    if (chat_gpt_answer.toUpperCase().contains("YOUR NAME")) {
                         chat_gpt_answer = chat_gpt_answer.substring(0, chat_gpt_answer.length() - 11);
+                    }
+                    else if (chat_gpt_answer.toUpperCase().contains("NAME")) {
+                        chat_gpt_answer = chat_gpt_answer.substring(0, chat_gpt_answer.length()-6);
                     }
                     Map<String, String> accountEmail = DBCreate.readEmailInformation(historyListHandler.getUsername());
                     String firstName = accountEmail.get("displayName_id");
@@ -255,15 +244,15 @@ public class AppHandler implements IAppHandler {
                 // via "POST" request
                 httpRequestMaker.postRequest(count_str, prompt, chat_gpt_answer);
 
-                // Create new HistoryQuestion and add to prompt
-                historyQuestion = 
-                    new HistoryQuestionHandler(count_str, httpRequestMaker);
-                historyListHandler.add(historyQuestion, false); // Add new task to list
+                // Create new historyPrompt and add to prompt
+                historyPrompt = 
+                    new HistoryPromptHandler(count_str, httpRequestMaker);
+                historyListHandler.add(historyPrompt, false); // Add new task to list
 
                 // Make the created history question selectable in history list
-                appGUI.makeSelectable(historyQuestion.getHistoryQuestionGUI());
+                appGUI.makeSelectable(historyPrompt.getHistoryPromptGUI());
 
-                selectQuestion(historyQuestion);
+                selectPrompt(historyPrompt);
 
                 // Display the new history question in chat window
                 display(prompt, chat_gpt_answer);
@@ -286,25 +275,25 @@ public class AppHandler implements IAppHandler {
     }
 
     // Method to handle selecting a history button
-    public void selectQuestion(HistoryQuestionHandler historyQuestionHandler) {
+    public void selectPrompt(HistoryPromptHandler historyPromptHandler) {
         // Obtain current state of question
-        boolean selected = historyQuestionHandler.isSelected();
+        boolean selected = historyPromptHandler.isSelected();
 
         // If deselecting
         if (selected) {
-            historyQuestionHandler.deselect();
+            historyPromptHandler.deselect();
             clearChat(); // clear window
         }
         // If selecting
         else {
-            for (HistoryQuestionHandler hqh : historyListHandler.getHistoryList()) {
+            for (HistoryPromptHandler hqh : historyListHandler.getHistoryList()) {
                 hqh.deselect();
             }
-            historyQuestionHandler.select();
+            historyPromptHandler.select();
             
             // Display question and answer
-            String question = historyQuestionHandler.getQuestion();
-            String answer = historyQuestionHandler.getAnswer();
+            String question = historyPromptHandler.getPrompt();
+            String answer = historyPromptHandler.getAnswer();
             display(question, answer);
         }
     }
@@ -322,14 +311,14 @@ public class AppHandler implements IAppHandler {
     // Method to add listeners to select buttons from old history questions
     public void oldHistoryHandler() {
         // For all history questions
-        for (HistoryQuestionHandler hqh : historyListHandler.getHistoryList()) {
+        for (HistoryPromptHandler hqh : historyListHandler.getHistoryList()) {
             if (hqh == null) {
                 System.out.println("hqh was null.");
             }
             if (appGUI == null) {
                 System.out.println("appGUI was null.");
             }
-            appGUI.makeSelectable(hqh.getHistoryQuestionGUI());
+            appGUI.makeSelectable(hqh.getHistoryPromptGUI());
         }
     }
 
@@ -396,11 +385,6 @@ public class AppHandler implements IAppHandler {
         }
     }
 
-    // Method to get automatic login handler
-    public AutomaticLogInHandler getAutomaticLogInHandler() {
-        return this.alHandler;
-    }
-
     // Method to handle sending an email
     public void sendEmail(String prompt, String count_str) {
         
@@ -451,26 +435,26 @@ public class AppHandler implements IAppHandler {
         
 
         // Deselect any selected questions
-        for (HistoryQuestionHandler hqh : historyListHandler.getHistoryList()) {
+        for (HistoryPromptHandler hqh : historyListHandler.getHistoryList()) {
             hqh.deselect();
         }
 
         // Initialize history question
-        HistoryQuestionHandler historyQuestion;
+        HistoryPromptHandler historyPrompt;
 
         // Post (Index, question + answer) as a pair to HTTP server
         // via "POST" request
         httpRequestMaker.postRequest(count_str, prompt, result);
 
-        // Create new HistoryQuestion and add to prompt
-        historyQuestion = 
-            new HistoryQuestionHandler(count_str, httpRequestMaker);
-        historyListHandler.add(historyQuestion, false); // Add new task to list
+        // Create new historyPrompt and add to prompt
+        historyPrompt = 
+            new HistoryPromptHandler(count_str, httpRequestMaker);
+        historyListHandler.add(historyPrompt, false); // Add new task to list
 
         // Make the created history question selectable in history list
-        appGUI.makeSelectable(historyQuestion.getHistoryQuestionGUI());
+        appGUI.makeSelectable(historyPrompt.getHistoryPromptGUI());
 
-        selectQuestion(historyQuestion);
+        selectPrompt(historyPrompt);
 
         // Display the new history question in chat window
         display(prompt, result);
@@ -505,5 +489,24 @@ public class AppHandler implements IAppHandler {
     // Method to get HTTPRequestMaker object
     public HTTPRequestMaker getRequestMaker() {
         return httpRequestMaker;
+    }
+
+    // Method to return HistoryListHandler element
+    public HistoryListHandler getHistoryList() {
+        return this.historyListHandler;
+    }
+
+    // Method to return LogInWIndow Handler element
+    public LogInWindowHandler getLogInWindowHandler() {
+        return this.loginWindowHandler;
+    }
+
+    public setupEmailHandler getSetupEmailHandler() {
+        return this.setupEmailHandler;
+    }
+    
+    // Method to get automatic login handler
+    public AutomaticLogInHandler getAutomaticLogInHandler() {
+        return this.alHandler;
     }
 }

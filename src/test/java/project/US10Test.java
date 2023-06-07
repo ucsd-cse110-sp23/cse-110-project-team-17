@@ -8,8 +8,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import project.audio_handler.*;
 import project.chat_gpt.*;
 import project.gui.AppGUI;
-import project.question_handler.*;
 import project.handler.*;
+import project.prompt_handler.*;
 
 import java.io.File;
 
@@ -45,7 +45,7 @@ public class US10Test {
 
     @Test
     void testQuestionCommand() {
-        QuestionHandler questionHandler = new QuestionHandler();
+        PromptHandler questionHandler = new PromptHandler();
         String prompt = "Question. What is 2+2?";
         String command = "Question";
         assertTrue(questionHandler.getCommand(prompt).equals(command));
@@ -53,7 +53,7 @@ public class US10Test {
 
     @Test
     void testDeleteCommand() {
-        QuestionHandler questionHandler = new QuestionHandler();
+        PromptHandler questionHandler = new PromptHandler();
         String prompt = "Delete.";
         String command = "Delete";
         assertTrue(questionHandler.getCommand(prompt).equals(command));
@@ -61,7 +61,7 @@ public class US10Test {
 
     @Test
     void testClearCommand() {
-        QuestionHandler questionHandler = new QuestionHandler();
+        PromptHandler questionHandler = new PromptHandler();
         String prompt = "Clear.";
         String command = "Clear";
         assertTrue(questionHandler.getCommand(prompt).equals(command));
@@ -69,7 +69,7 @@ public class US10Test {
 
     @Test
     void testInvalidCommand() {
-        QuestionHandler questionHandler = new QuestionHandler();
+        PromptHandler questionHandler = new PromptHandler();
         String prompt = "Not a command.";
         String command = "invalid";
         assertTrue(questionHandler.getCommand(prompt).equals(command));
@@ -77,14 +77,14 @@ public class US10Test {
 
     @Test
     void testAllCommands() {
-        IQuestionHandler qHandler = new MockQuestionHandler();
+        IPromptHandler qHandler = new MockPromptHandler();
         IChatGPT chatGPT = new MockChatGPT();
         IAudioHandler audioHandler = new MockAudioHandler();
         AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
         AppGUI appGUI = new AppGUI(testApp);
         testApp.createGUI(appGUI);
         LogInWindowHandler logInHandler = testApp.getLogInWindowHandler();
-        logInHandler.createAccount("username", "password");
+        logInHandler.createAccount("username", "password", "password");
         testApp.LogIn("username", "password");
 
         // Initialize prompts and commands
@@ -104,8 +104,8 @@ public class US10Test {
         // Test question command
         testApp.handleCommand(question, qCommand);
         HistoryListHandler historyList = testApp.getHistoryList();
-        HistoryQuestionHandler question1 = historyList.getHistoryList().get(0);
-        assertTrue(question1.getQuestion().
+        HistoryPromptHandler question1 = historyList.getHistoryList().get(0);
+        assertTrue(question1.getPrompt().
             equals(question));
         assertTrue(question1.getAnswer().
             equals(answer_part + question));
@@ -117,7 +117,7 @@ public class US10Test {
         // Re-add question and test invalid and clear commands
         testApp.handleCommand(question, qCommand);
         question1 = historyList.getHistoryList().get(0);
-        assertTrue(question1.getQuestion().
+        assertTrue(question1.getPrompt().
             equals(question));
         assertTrue(question1.getAnswer().
             equals(answer_part + question));

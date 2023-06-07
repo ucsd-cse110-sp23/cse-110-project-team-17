@@ -12,9 +12,9 @@ import javax.swing.JTextArea;
 
 import project.audio_handler.*;
 import project.chat_gpt.*;
-import project.question_handler.*;
 import project.gui.*;
 import project.handler.*;
+import project.prompt_handler.*;
 
 public class US5Test {
 
@@ -49,14 +49,14 @@ public class US5Test {
     // Test deletion when history list is empty
     @Test
     void testDeleteNothingSelected() throws IOException {
-        IQuestionHandler qHandler = new MockQuestionHandler();
+        IPromptHandler qHandler = new MockPromptHandler();
         IChatGPT chatGPT = new MockChatGPT();
         IAudioHandler audioHandler = new MockAudioHandler();
         AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
         AppGUI appGUI = new AppGUI(testApp);
         testApp.createGUI(appGUI);
         LogInWindowHandler logInHandler = testApp.getLogInWindowHandler();
-        logInHandler.createAccount("username", "password");
+        logInHandler.createAccount("username", "password", "password");
         testApp.LogIn("username", "password");
         HistoryListHandler historyList = testApp.getHistoryList();
         assertTrue(0 == historyList.getHistoryList().size());
@@ -70,29 +70,28 @@ public class US5Test {
     // Test deletion when no history question is selected
     @Test
     void testDeleteNothingSelectedMultiQuestions() throws IOException {
-        IQuestionHandler qHandler = new MockQuestionHandler();
+        IPromptHandler qHandler = new MockPromptHandler();
         IChatGPT chatGPT = new MockChatGPT();
         IAudioHandler audioHandler = new MockAudioHandler();
         AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
         AppGUI appGUI = new AppGUI(testApp);
         testApp.createGUI(appGUI);
         LogInWindowHandler logInHandler = testApp.getLogInWindowHandler();
-        logInHandler.createAccount("username", "password");
+        logInHandler.createAccount("username", "password", "password");
         testApp.LogIn("username", "password");
         HTTPRequestMaker httpRequestMaker = testApp.getRequestMaker();
         HistoryListHandler historyList = testApp.getHistoryList();
-        HistoryQuestionHandler Q1 = 
-            new HistoryQuestionHandler("1", httpRequestMaker);
-        HistoryQuestionHandler Q2 = 
-            new HistoryQuestionHandler("2", httpRequestMaker);
-        HistoryQuestionHandler Q3 = 
-            new HistoryQuestionHandler("3", httpRequestMaker);
-        historyList.add(Q3, false);
-        historyList.add(Q2, false);
-        historyList.add(Q1, false);
-        assertTrue(3 == historyList.getHistoryList().size());
+        testApp.startRecording();
+        testApp.stopRecording();
+        testApp.startRecording();
+        testApp.stopRecording();
+        testApp.startRecording();
+        testApp.stopRecording();
+        assertEquals(3, historyList.getHistoryList().size());
+        HistoryPromptHandler question3 = historyList.getHistoryList().get(2);
+        question3.deselect();
         historyList.deleteSelected();
-        assertTrue(3 == historyList.getHistoryList().size());
+        assertEquals(3, historyList.getHistoryList().size());
 
         // Close app
         testApp.closeApp();
@@ -104,21 +103,21 @@ public class US5Test {
 
         String question1 = "question1";
         String answer1 = "answer1";
-        IQuestionHandler qHandler = new MockQuestionHandler();
+        IPromptHandler qHandler = new MockPromptHandler();
         IChatGPT chatGPT = new MockChatGPT();
         IAudioHandler audioHandler = new MockAudioHandler();
         AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
         AppGUI appGUI = new AppGUI(testApp);
         testApp.createGUI(appGUI);
         LogInWindowHandler logInHandler = testApp.getLogInWindowHandler();
-        logInHandler.createAccount("username", "password");
+        logInHandler.createAccount("username", "password", "password");
         testApp.LogIn("username", "password");
         HTTPRequestMaker httpRequestMaker = testApp.getRequestMaker();
         httpRequestMaker.postRequest("1", question1, answer1);
         HistoryListHandler historyList = testApp.getHistoryList();
 
-        HistoryQuestionHandler Q1 = 
-            new HistoryQuestionHandler("1", httpRequestMaker);
+        HistoryPromptHandler Q1 = 
+            new HistoryPromptHandler("1", httpRequestMaker);
         Q1.toggleSelected();
         historyList.add(Q1, false);
         assertTrue(1 == historyList.getHistoryList().size());
@@ -134,14 +133,14 @@ public class US5Test {
     // Test deletion when deleting a question while there are multiple questions
     @Test
     void testDeleteSelectedMultiQuestions() throws IOException {
-        IQuestionHandler qHandler = new MockQuestionHandler();
+        IPromptHandler qHandler = new MockPromptHandler();
         IChatGPT chatGPT = new MockChatGPT();
         IAudioHandler audioHandler = new MockAudioHandler();
         AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
         AppGUI appGUI = new AppGUI(testApp);
         testApp.createGUI(appGUI);
         LogInWindowHandler logInHandler = testApp.getLogInWindowHandler();
-        logInHandler.createAccount("username", "password");
+        logInHandler.createAccount("username", "password", "password");
         testApp.LogIn("username", "password");
         HTTPRequestMaker httpRequestMaker = testApp.getRequestMaker();
         HistoryListHandler historyList = testApp.getHistoryList();
@@ -154,11 +153,11 @@ public class US5Test {
         httpRequestMaker.postRequest("1", question1, answer1);
         httpRequestMaker.postRequest("2", question2, answer2);
 
-        HistoryQuestionHandler Q1 = 
-            new HistoryQuestionHandler("1", httpRequestMaker);
+        HistoryPromptHandler Q1 = 
+            new HistoryPromptHandler("1", httpRequestMaker);
         Q1.toggleSelected();
-        HistoryQuestionHandler Q2 = 
-            new HistoryQuestionHandler("2", httpRequestMaker);
+        HistoryPromptHandler Q2 = 
+            new HistoryPromptHandler("2", httpRequestMaker);
         Q2.toggleSelected();
         Q2.toggleSelected();
         historyList.add(Q1, false);
@@ -167,9 +166,9 @@ public class US5Test {
         historyList.deleteSelected();
         assertTrue(1 == historyList.getHistoryList().size());
 
-        HistoryQuestionHandler remainingQ = 
-            (HistoryQuestionHandler) historyList.getHistoryList().get(0);
-        assertTrue(remainingQ.getQuestion().equals(question2));
+        HistoryPromptHandler remainingQ = 
+            (HistoryPromptHandler) historyList.getHistoryList().get(0);
+        assertTrue(remainingQ.getPrompt().equals(question2));
 
         // Close app
         testApp.closeApp();

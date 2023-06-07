@@ -8,8 +8,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import project.audio_handler.*;
 import project.chat_gpt.*;
 import project.gui.AppGUI;
-import project.question_handler.*;
 import project.handler.*;
+import project.prompt_handler.*;
 
 import java.io.File;
 
@@ -45,14 +45,14 @@ public class DS4_1Test {
 
     @Test
     void iterationTest() {
-        IQuestionHandler qHandler = new MockQuestionHandler();
+        IPromptHandler qHandler = new MockPromptHandler();
         IChatGPT chatGPT = new MockChatGPT();
         IAudioHandler audioHandler = new MockAudioHandler();
         AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
         AppGUI appGUI = new AppGUI(testApp);
         testApp.createGUI(appGUI);
         LogInWindowHandler logInHandler = testApp.getLogInWindowHandler();
-        logInHandler.createAccount("username", "password");
+        logInHandler.createAccount("username", "password", "password");
         testApp.LogIn("username", "password");
 
 
@@ -84,8 +84,8 @@ public class DS4_1Test {
         // Test question command
         testApp.handleCommand(create_email, ceCommand);
         HistoryListHandler historyList = testApp.getHistoryList();
-        HistoryQuestionHandler prompt1 = historyList.getHistoryList().get(0);
-        assertEquals(prompt1.getQuestion(),
+        HistoryPromptHandler prompt1 = historyList.getHistoryList().get(0);
+        assertEquals(prompt1.getPrompt(),
             (create_email));
         assertEquals(prompt1.getAnswer(),
             (answer_part + create_email + "Daniel Tran"));
@@ -93,7 +93,7 @@ public class DS4_1Test {
         prompt1.select();
 
         testApp.handleCommand(send_email, seCommand);
-        HistoryQuestionHandler prompt2 = historyList.getHistoryList().get(1);
+        HistoryPromptHandler prompt2 = historyList.getHistoryList().get(1);
         assertTrue(prompt2.getAnswer().
             contains(wrongUsername));
         
@@ -110,7 +110,7 @@ public class DS4_1Test {
         prompt1.select();
 
         testApp.handleCommand(send_email, seCommand);
-        HistoryQuestionHandler prompt3 = historyList.getHistoryList().get(1);
+        HistoryPromptHandler prompt3 = historyList.getHistoryList().get(1);
         assertEquals(prompt3.getAnswer(),
             (emailSentString));
 

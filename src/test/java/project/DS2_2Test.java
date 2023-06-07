@@ -7,10 +7,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import project.audio_handler.*;
 import project.chat_gpt.*;
-import project.question_handler.*;
 import project.gui.*;
 import project.handler.*;
-
+import project.prompt_handler.*;
 
 import java.io.*;
 
@@ -47,14 +46,14 @@ public class DS2_2Test {
     @Test
     public void iterationTest() {
         // Create mock handlers and appframe
-        IQuestionHandler qHandler = new MockQuestionHandler();
+        IPromptHandler qHandler = new MockPromptHandler();
         IChatGPT chatGPT = new MockChatGPT();
         IAudioHandler audioHandler = new MockAudioHandler();
         AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
         AppGUI appGUI = new AppGUI(testApp);
         testApp.createGUI(appGUI);
         LogInWindowHandler logInHandler = testApp.getLogInWindowHandler();
-        logInHandler.createAccount("username", "password");
+        logInHandler.createAccount("username", "password", "password");
         testApp.LogIn("username", "password");
 
         // Set up expected values
@@ -66,20 +65,20 @@ public class DS2_2Test {
         HistoryListHandler historyList = testApp.getHistoryList();
         testApp.startRecording();
         testApp.stopRecording();
-        HistoryQuestionHandler question1 = historyList.getHistoryList().get(0);
-        assertTrue(question1.getQuestion().
+        HistoryPromptHandler question1 = historyList.getHistoryList().get(0);
+        assertTrue(question1.getPrompt().
             equals(questionString1));
         assertTrue(question1.getAnswer().
             equals(answer_part + questionString1));
         
         // Deselect first question
-        testApp.selectQuestion(question1);
+        testApp.selectPrompt(question1);
         assertTrue(!question1.isSelected());
 
         // Select first question
         // Test deletion of first question - chat window should be empty
         // and history list should be set to default
-        testApp.selectQuestion(question1);
+        testApp.selectPrompt(question1);
         assertTrue(question1.isSelected());
         testApp.deleteSelected();
         assertTrue(historyList.getHistoryList().size() == 0);

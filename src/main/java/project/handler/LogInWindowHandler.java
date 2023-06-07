@@ -16,11 +16,14 @@ public class LogInWindowHandler {
     }
 
     // Create an account for new users
-    public boolean createAccount(String username, String password) {
+    public boolean createAccount(String username, String password, String password2) {
         if (verifyUsername(username, password)) {
             return false;
         }
         if (username.equals("") || password.equals("")) {
+            return false;
+        }
+        if (!password.equals(password2)) {
             return false;
         }
         DBCreate.createUser(username, password);
@@ -39,6 +42,11 @@ public class LogInWindowHandler {
     // Use "GET" request from server to check if username has been taken
     public boolean verifyUsername(String username, String password) {
         return dbMap.containsKey(username);
+    }
+
+    // Check if the two passwords are the same
+    public boolean checkPassword(String password1, String password2) {
+        return password1.equals(password2);
     }
 
     // Use "GET" request from server to check the password matched withe the

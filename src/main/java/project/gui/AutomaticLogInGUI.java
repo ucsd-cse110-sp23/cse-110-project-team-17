@@ -6,12 +6,12 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import javax.swing.JButton;
-import javax.swing.JPanel;
+import javax.swing.JFrame;
 import javax.swing.JTextArea;
 
 import java.util.ArrayList;
 
-public class AutomaticLogInGUI extends JPanel implements AutomaticLogInGUISubject {
+public class AutomaticLogInGUI extends JFrame implements AutomaticLogInGUISubject {
 
     private JButton acceptButton;
     private JButton denyButton;
@@ -21,8 +21,8 @@ public class AutomaticLogInGUI extends JPanel implements AutomaticLogInGUISubjec
     private ArrayList<AutomaticLoginGUIObserver> algObservers;
     
 
-    // Constructor
-    AutomaticLogInGUI() {
+    // AutomaticLogInGUI Constructor
+    public AutomaticLogInGUI() {
         Color backgroundColor = new Color(240, 248, 255);
         GridLayout layout = new GridLayout(10, 1);
         layout.setVgap(20); // Vertical gap
@@ -53,6 +53,9 @@ public class AutomaticLogInGUI extends JPanel implements AutomaticLogInGUISubjec
         denyButton.setPreferredSize(new Dimension(80, 30));
         denyButton.setFont(new Font("BrixSansBlack", Font.ITALIC, 10));
         this.add(denyButton);
+
+        super.pack();
+        super.setSize(800,800);
 
         algObservers = new ArrayList<AutomaticLoginGUIObserver>();
     }

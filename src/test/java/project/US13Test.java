@@ -8,8 +8,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import project.audio_handler.*;
 import project.chat_gpt.*;
 import project.gui.AppGUI;
-import project.question_handler.*;
 import project.handler.*;
+import project.prompt_handler.*;
 
 import java.io.File;
 
@@ -45,14 +45,14 @@ public class US13Test {
 
     @Test
     void testIncorrectEmailSetup() {
-        IQuestionHandler qHandler = new MockQuestionHandler();
+        IPromptHandler qHandler = new MockPromptHandler();
         IChatGPT chatGPT = new MockChatGPT();
         IAudioHandler audioHandler = new MockAudioHandler();
         AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
         AppGUI appGUI = new AppGUI(testApp);
         testApp.createGUI(appGUI);
         LogInWindowHandler logInHandler = testApp.getLogInWindowHandler();
-        logInHandler.createAccount("username", "password");
+        logInHandler.createAccount("username", "password", "password");
         testApp.LogIn("username", "password");
 
 
@@ -84,8 +84,8 @@ public class US13Test {
         // Test question command
         testApp.handleCommand(create_email, ceCommand);
         HistoryListHandler historyList = testApp.getHistoryList();
-        HistoryQuestionHandler prompt1 = historyList.getHistoryList().get(0);
-        assertEquals(prompt1.getQuestion(),
+        HistoryPromptHandler prompt1 = historyList.getHistoryList().get(0);
+        assertEquals(prompt1.getPrompt(),
             (create_email));
         assertEquals(prompt1.getAnswer(),
             (answer_part + create_email + "Daniel Tran"));
@@ -93,7 +93,7 @@ public class US13Test {
         prompt1.select();
 
         testApp.handleCommand(send_email, seCommand);
-        HistoryQuestionHandler prompt2 = historyList.getHistoryList().get(1);
+        HistoryPromptHandler prompt2 = historyList.getHistoryList().get(1);
         assertTrue(prompt2.getAnswer().
             contains(wrongUsername));
 
@@ -103,7 +103,7 @@ public class US13Test {
         emailHandler.addCurrEmailInfo();
         prompt1.select();
         testApp.handleCommand(send_email, seCommand);
-        HistoryQuestionHandler prompt3 = historyList.getHistoryList().get(2);
+        HistoryPromptHandler prompt3 = historyList.getHistoryList().get(2);
         assertTrue(prompt3.getAnswer().
             contains(wrongSMTP));
 
@@ -112,20 +112,20 @@ public class US13Test {
         emailHandler.addCurrEmailInfo();
         prompt1.select();
         testApp.handleCommand(send_email, seCommand);
-        HistoryQuestionHandler prompt4 = historyList.getHistoryList().get(3);
+        HistoryPromptHandler prompt4 = historyList.getHistoryList().get(3);
         assertTrue(prompt4.getAnswer().
             contains(wrongRecipient));
 
         
         prompt2.select();
         testApp.handleCommand(send_email, seCommand);
-        HistoryQuestionHandler prompt5 = historyList.getHistoryList().get(4);
+        HistoryPromptHandler prompt5 = historyList.getHistoryList().get(4);
         assertTrue(prompt5.getAnswer().
             contains(noEmailSelected));
 
         
         testApp.handleCommand(send_email, seCommand);
-        HistoryQuestionHandler prompt6 = historyList.getHistoryList().get(5);
+        HistoryPromptHandler prompt6 = historyList.getHistoryList().get(5);
         assertTrue(prompt6.getAnswer().
             contains(noEmailSelected));
 
@@ -136,14 +136,14 @@ public class US13Test {
 
     @Test
     void testCorrectEmailSetup() {
-        IQuestionHandler qHandler = new MockQuestionHandler();
+        IPromptHandler qHandler = new MockPromptHandler();
         IChatGPT chatGPT = new MockChatGPT();
         IAudioHandler audioHandler = new MockAudioHandler();
         AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
         AppGUI appGUI = new AppGUI(testApp);
         testApp.createGUI(appGUI);
         LogInWindowHandler logInHandler = testApp.getLogInWindowHandler();
-        logInHandler.createAccount("username", "password");
+        logInHandler.createAccount("username", "password", "password");
         testApp.LogIn("username", "password");
 
 
@@ -172,8 +172,8 @@ public class US13Test {
         // Test question command
         testApp.handleCommand(create_email, ceCommand);
         HistoryListHandler historyList = testApp.getHistoryList();
-        HistoryQuestionHandler prompt1 = historyList.getHistoryList().get(0);
-        assertEquals(prompt1.getQuestion(),
+        HistoryPromptHandler prompt1 = historyList.getHistoryList().get(0);
+        assertEquals(prompt1.getPrompt(),
             (create_email));
         assertEquals(prompt1.getAnswer(),
             (answer_part + create_email + "Daniel Tran"));
@@ -181,7 +181,7 @@ public class US13Test {
         prompt1.select();
 
         testApp.handleCommand(send_email, seCommand);
-        HistoryQuestionHandler prompt2 = historyList.getHistoryList().get(1);
+        HistoryPromptHandler prompt2 = historyList.getHistoryList().get(1);
         assertEquals(prompt2.getAnswer(),
             (emailSentString));
 

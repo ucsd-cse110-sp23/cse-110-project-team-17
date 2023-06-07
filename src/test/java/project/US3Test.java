@@ -9,9 +9,9 @@ import java.io.IOException;
 
 import project.audio_handler.*;
 import project.chat_gpt.*;
-import project.question_handler.*;
 import project.gui.*;
 import project.handler.*;
+import project.prompt_handler.*;
 
 import java.io.*;
 
@@ -61,7 +61,7 @@ public class US3Test {
     @Test
     void testStartAndStopRecordingGUI() throws IOException, InterruptedException {
         // Create mock handlers
-        IQuestionHandler qHandler = new MockQuestionHandler();
+        IPromptHandler qHandler = new MockPromptHandler();
         IChatGPT chatGPT = new MockChatGPT();
         IAudioHandler audioHandler = new MockAudioHandler();
         IAudioHandler audioHandler2 = new MockAudioHandler();
@@ -77,7 +77,7 @@ public class US3Test {
         AppGUI appGUI = new AppGUI(testApp);
         testApp.createGUI(appGUI);
         LogInWindowHandler logInHandler = testApp.getLogInWindowHandler();
-        logInHandler.createAccount("username", "password");
+        logInHandler.createAccount("username", "password", "password");
         testApp.LogIn("username", "password");
 
         // Verify that on stopping and starting recording, the actual 
@@ -85,8 +85,8 @@ public class US3Test {
         testApp.startRecording();
         testApp.stopRecording();
         HistoryListHandler historyList = testApp.getHistoryList();
-        HistoryQuestionHandler question = historyList.getHistoryList().get(0);
-        assertTrue(question.getQuestion().
+        HistoryPromptHandler question = historyList.getHistoryList().get(0);
+        assertTrue(question.getPrompt().
             equals(expected_question));
 
         // Close test frame

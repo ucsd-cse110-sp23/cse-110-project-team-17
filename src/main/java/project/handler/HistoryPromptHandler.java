@@ -1,34 +1,36 @@
 package project.handler;
 
-import project.gui.HistoryQuestionGUI;
-
+import project.gui.HistoryPromptGUI;
+import project.prompt_handler.PromptHandler;
 import project.*;
 
-public class HistoryQuestionHandler {
+public class HistoryPromptHandler {
     String index;
-    HistoryQuestionGUI historyQuestionGUI;
-    String question;
+    HistoryPromptGUI historyPromptGUI;
+    PromptHandler questionHandler;
+    String prompt;
     String answer;
     HTTPRequestMaker httpRequestMaker;
     boolean selected;
 
-    // Constructor, creates a corresponding HistoryQuestionGUI object
+    // Constructor, creates a corresponding historyPromptGUI object
     // and initializes with index, question, and answer
-    public HistoryQuestionHandler(String index, HTTPRequestMaker httpRequestMaker) {
+    public HistoryPromptHandler(String index, HTTPRequestMaker httpRequestMaker) {
         this.index = index;
         this.httpRequestMaker = httpRequestMaker;
         String[] chat_data = httpRequestMaker.getRequest(index);
-        question = chat_data[0];
+        prompt = chat_data[0];
         answer = chat_data[1];
-        this.historyQuestionGUI = new HistoryQuestionGUI(this);
+        this.historyPromptGUI = new HistoryPromptGUI(this);
         this.selected = false;
+        questionHandler = new PromptHandler();
     }
 
 
     // Method to update data if needed
     public void updateData() {
         String[] chat_data = httpRequestMaker.getRequest(index);
-        question = chat_data[0];
+        prompt = chat_data[0];
         answer = chat_data[1];
     }
 
@@ -38,8 +40,8 @@ public class HistoryQuestionHandler {
     }
 
     // Method to get question
-    public String getQuestion() {
-        return question;
+    public String getPrompt() {
+        return prompt;
     }
 
     // Method to get answer associated with question
@@ -49,19 +51,19 @@ public class HistoryQuestionHandler {
 
     // Method to toggle selected state of history question
     public void toggleSelected() {
-        historyQuestionGUI.toggleSelectedGUI(selected);
+        historyPromptGUI.toggleSelectedGUI(selected);
         selected = !selected;
     }
 
     // Method to deselect history question
     public void deselect() {
-        historyQuestionGUI.deselectGUI();
+        historyPromptGUI.deselectGUI();
         selected = false;
     }
 
     // Method to select history question
     public void select() {
-        historyQuestionGUI.selectGUI();
+        historyPromptGUI.selectGUI();
         selected = true;
     }
 
@@ -71,15 +73,15 @@ public class HistoryQuestionHandler {
     }
 
     // Method to get associated HistoryQuestionGUI object
-    public HistoryQuestionGUI getHistoryQuestionGUI() {
-        return historyQuestionGUI;
+    public HistoryPromptGUI getHistoryPromptGUI() {
+        return historyPromptGUI;
     }
 
     // Method to get history question as one string, 
     // separated by regex
     public String getString(String regex) {
         String index = this.getIndex();
-        String prompt = this.getQuestion();
+        String prompt = this.getPrompt();
         String answer = this.getAnswer();
         String fullString = index + regex + prompt + regex + answer;
         return fullString;
