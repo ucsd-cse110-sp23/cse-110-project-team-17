@@ -8,7 +8,7 @@ Instructions:
 
 ## Welcome to the SayIt Assistant!
 ### Login Window
-- There are 2 fields for users to input their username and password for SayIt Assistant 2
+- There are 3 fields for users to input their username, password, and password again (for verification) for SayIt Assistant 2
     - Select "Create Account" to create a new account usering this username and password
     - Select "Log In" to log in using this username and password
 - An additional window will appear asking if the user wants their login information saved on this computer
