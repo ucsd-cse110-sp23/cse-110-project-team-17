@@ -34,7 +34,13 @@ public class setupEmailGUI extends JPanel {
 
         this.handler = handler;
 
-        userString = handler.getUsername();
+        if (handler != null) {
+            userString = handler.getUsername();
+        }
+        else {
+            userString = "";
+        }
+        
 
         GridLayout layout = new GridLayout(10, 2);
         layout.setVgap(20); // Vertical gap

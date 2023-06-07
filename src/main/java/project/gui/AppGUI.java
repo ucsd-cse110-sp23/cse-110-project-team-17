@@ -1,5 +1,5 @@
 package project.gui;
-import project.IAppHandler;
+import project.*;
 
 import java.awt.BorderLayout;
 import java.awt.event.MouseAdapter;
@@ -35,18 +35,33 @@ public class AppGUI extends JFrame {
     // Constructor, initializes GUI objects
     public AppGUI(IAppHandler appHandler) {
         this.appHandler = appHandler;
+        if (this.appHandler == null) {
+            this.appHandler = new MockAppHandler();
+        }
         if (appHandler.getHistoryList() != null) {
             this.historyListGUI = appHandler.getHistoryList().getHistoryListGUI();
         }
         else {
             this.historyListGUI = new HistoryListGUI(null);
         }
+        if (appHandler.getLogInWindowHandler() != null) {
+            this.logInWindowGUI = appHandler.getLogInWindowHandler().getLogInWindowGUI();
+        }
+        else {
+            this.logInWindowGUI = new LogInWindowGUI(null);
+        }
+        if (appHandler.getSetupEmailHandler() != null) {
+            this.setupEmail = appHandler.getSetupEmailHandler().getsetupEmailWindowGUI();
+        }
+        else {
+            this.setupEmail = new setupEmailGUI(null);
+        }
+
+        
         this.historyWindowGUI = 
             new HistoryWindowGUI(historyListGUI);
         this.chatWindowGUI = new ChatWindowGUI();
-        this.logInWindowGUI = appHandler.getLogInWindowHandler().getLogInWindowGUI();
         this.alGUI = new AutomaticLogInGUI();
-        this.setupEmail = appHandler.getSetupEmailHandler().getsetupEmailWindowGUI();
         this.alGUI.register(appHandler.getAutomaticLogInHandler());
         
         // Creates GUI components
