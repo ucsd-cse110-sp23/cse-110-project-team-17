@@ -5,6 +5,7 @@ import project.chat_gpt.*;
 import project.question_handler.*;
 import project.gui.*;
 import project.handler.*;
+import project.input_handler.SendEmailHandler;
 
 import com.sun.net.httpserver.*;
 
@@ -234,6 +235,7 @@ public class AppHandler implements IAppHandler {
                     String firstName = accountEmail.get("displayName_id");
                     // Adding first name of user at the end of email
                     chat_gpt_answer = chat_gpt_answer +  firstName;
+                    sendEmailHandler sendEmailHandler = new sendEmailHandler(historyListHandler.getUsername(), "TODO FILL SUBJECT",chat_gpt_answer);
                 }
                 catch (IOException io_e) {
                     throw new RuntimeException("An IO Exception happened on click.");
