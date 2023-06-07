@@ -340,7 +340,29 @@ public class AppHandler implements IAppHandler {
 
     // Method that automatically logs in if possible
     // and returns whether or not you can autologin on this computer
-    public boolean autoLogin() {
+    public void autoLogin() {
+        String[] login_info = this.alHandler.getLogInInfo();
+        if (login_info.length != 2) {
+            return;
+        }
+        String username = login_info[0];
+        String password = login_info[1];
+        if (username.equals("") || password.equals("")) {
+            return;
+        }
+        else {
+            historyListHandler.setUsername(username);
+            setupEmailHandler.setUsername(username);
+            sendEmailHandler.setUsername(username);
+            // Populate old list as necessary
+            historyListHandler.populateOldHistory();
+            oldHistoryHandler();
+            return;
+        }
+    }
+
+    // Method to return whether or not you can autologin on this computer
+    public boolean canAutoLogin() {
         String[] login_info = this.alHandler.getLogInInfo();
         if (login_info.length != 2) {
             return false;
@@ -351,12 +373,6 @@ public class AppHandler implements IAppHandler {
             return false;
         }
         else {
-            historyListHandler.setUsername(username);
-            setupEmailHandler.setUsername(username);
-            sendEmailHandler.setUsername(username);
-            // Populate old list as necessary
-            historyListHandler.populateOldHistory();
-            oldHistoryHandler();
             return true;
         }
     }

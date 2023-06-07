@@ -52,8 +52,13 @@ public class MockAppHandler implements IAppHandler {
         return false;
     }
 
+    // Dummy method to substitute for automatically logging in
+    public void autoLogin() {
+        return;
+    }
+
     // Dummy method to substitute for determining if you can autologin
-    public boolean autoLogin() {
+    public boolean canAutoLogin() {
         return false;
     }
 
