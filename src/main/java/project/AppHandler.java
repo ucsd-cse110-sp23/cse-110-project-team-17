@@ -29,6 +29,7 @@ public class AppHandler implements IAppHandler {
     LogInWindowHandler loginWindowHandler;
     AutomaticLogInHandler alHandler;
     setupEmailHandler setupEmailHandler;
+    sendEmailHandler sendEmailHandler;
 
 
     // Constructor, initializes handlers and adds listeners
@@ -45,6 +46,7 @@ public class AppHandler implements IAppHandler {
         this.loginWindowHandler = new LogInWindowHandler();
         this.alHandler = new AutomaticLogInHandler();
         this.setupEmailHandler = new setupEmailHandler();
+        this.sendEmailHandler = new sendEmailHandler();
 
         // initialize server port and hostname
         final int SERVER_PORT = 8100;
@@ -82,6 +84,7 @@ public class AppHandler implements IAppHandler {
     public void createGUI(AppGUI appGUI) {
         // Create GUI object
         this.appGUI = appGUI;
+        this.appGUI.beginLogIn();
     }
 
     // Method to return HistoryListHandler element
@@ -102,12 +105,6 @@ public class AppHandler implements IAppHandler {
     public void startRecording() {
         // Start recording
         audioHandler.startRecording();
-
-        
-        // Deselect any selected questions
-        for (HistoryQuestionHandler hqh : historyListHandler.getHistoryList()) {
-            hqh.deselect();
-        }
     }
 
     // Method to stop recording and receive answer
@@ -146,6 +143,11 @@ public class AppHandler implements IAppHandler {
 
         switch (command) {
             case "Question":
+
+                // Deselect any selected questions
+                for (HistoryQuestionHandler hqh : historyListHandler.getHistoryList()) {
+                    hqh.deselect();
+                }
                 // Get answer from prompt
                 try {
                     chat_gpt_answer = chatGPT.ask(prompt);
@@ -222,6 +224,10 @@ public class AppHandler implements IAppHandler {
                 break; 
                 
             case "Create email":
+                // Deselect any selected questions
+                for (HistoryQuestionHandler hqh : historyListHandler.getHistoryList()) {
+                    hqh.deselect();
+                }
                 try {
                     // chat box ui is not displaying the whole email, problem can be either size of chat box
                     // or the trim() in ChatGPT.java
@@ -262,6 +268,11 @@ public class AppHandler implements IAppHandler {
                 // Display the new history question in chat window
                 display(prompt, chat_gpt_answer);
                 break;
+
+            case "Send email":
+                sendEmail(prompt, count_str);
+                break;
+                
 
             default:
                 display(prompt, "Unable to parse command, available commands are Question, Delete, and Clear");
@@ -312,6 +323,12 @@ public class AppHandler implements IAppHandler {
     public void oldHistoryHandler() {
         // For all history questions
         for (HistoryQuestionHandler hqh : historyListHandler.getHistoryList()) {
+            if (hqh == null) {
+                System.out.println("hqh was null.");
+            }
+            if (appGUI == null) {
+                System.out.println("appGUI was null.");
+            }
             appGUI.makeSelectable(hqh.getHistoryQuestionGUI());
         }
     }
@@ -336,6 +353,7 @@ public class AppHandler implements IAppHandler {
         else {
             historyListHandler.setUsername(username);
             setupEmailHandler.setUsername(username);
+            sendEmailHandler.setUsername(username);
             // Populate old list as necessary
             historyListHandler.populateOldHistory();
             oldHistoryHandler();
@@ -351,6 +369,7 @@ public class AppHandler implements IAppHandler {
         if (verify) {
             historyListHandler.setUsername(username);
             setupEmailHandler.setUsername(username);
+            sendEmailHandler.setUsername(username);
             // Populate old list as necessary
             historyListHandler.populateOldHistory();
             oldHistoryHandler();
@@ -364,6 +383,82 @@ public class AppHandler implements IAppHandler {
     // Method to get automatic login handler
     public AutomaticLogInHandler getAutomaticLogInHandler() {
         return this.alHandler;
+    }
+
+    // Method to handle sending an email
+    public void sendEmail(String prompt, String count_str) {
+        
+        String body = historyListHandler.getEmailBody();
+        String subject = historyListHandler.getEmailSubject();
+        String result;
+        if (body.equals("No message selected.\n") || 
+                subject.equals("No message selected.\n")) {
+            result = "No email selected.";
+        }
+
+        else {
+            String emailRecipient = "No email found";
+            if (prompt.contains("to") && prompt.length() > 14) {
+                String emailRecipientString = prompt.substring(14);
+                emailRecipientString = emailRecipientString.toLowerCase();
+                if (emailRecipientString.contains(" ")) {
+                    String[] emailAddressParts = emailRecipientString.split(" ");
+                    emailRecipientString = "";
+                    for (int i = 0; i < emailAddressParts.length; i++) {
+                        if (emailAddressParts[i].equals("at")) {
+                            emailRecipientString = emailRecipientString + "@";
+                        }
+                        else if (emailAddressParts[i].equals("dot")) {
+                            emailRecipientString = emailRecipientString + ".";
+                        }
+                        else if (emailAddressParts[i].equals("underscore")) {
+                            emailRecipientString = emailRecipientString + "_";
+                        }
+                        else {
+                            emailRecipientString = 
+                                emailRecipientString + emailAddressParts[i];
+                        }
+                        
+                    }
+                    int lastIndex = emailRecipientString.length() - 1;
+                    if (emailRecipientString.substring(lastIndex).equals(".")) {
+                        emailRecipientString = emailRecipientString.substring(0, lastIndex);
+                    }
+
+                }
+                emailRecipient = emailRecipientString;
+            }
+            
+            result = sendEmailHandler.sendEmailHelper(emailRecipient,
+                subject, body);
+        }
+        
+
+        // Deselect any selected questions
+        for (HistoryQuestionHandler hqh : historyListHandler.getHistoryList()) {
+            hqh.deselect();
+        }
+
+        // Initialize history question
+        HistoryQuestionHandler historyQuestion;
+
+        // Post (Index, question + answer) as a pair to HTTP server
+        // via "POST" request
+        httpRequestMaker.postRequest(count_str, prompt, result);
+
+        // Create new HistoryQuestion and add to prompt
+        historyQuestion = 
+            new HistoryQuestionHandler(count_str, httpRequestMaker);
+        historyListHandler.add(historyQuestion, false); // Add new task to list
+
+        // Make the created history question selectable in history list
+        appGUI.makeSelectable(historyQuestion.getHistoryQuestionGUI());
+
+        selectQuestion(historyQuestion);
+
+        // Display the new history question in chat window
+        display(prompt, result);
+
     }
 
     // Method to clear chat window

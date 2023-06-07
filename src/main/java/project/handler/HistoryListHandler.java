@@ -198,4 +198,47 @@ public class HistoryListHandler {
         String numRegex = "[0-9]+[\\.]?[0-9]*";
         return Pattern.matches(numRegex, numString);
     }
+
+    // Method to return email body from email HistoryQuestionHandler
+    public String getEmailBody() {
+        String body = "No message selected.\n";
+
+        if (username.equals("")) {
+            System.out.println("No username given.");
+            return body;
+        }
+        for (int i = 0; i < historyList.size(); i++) {
+            HistoryQuestionHandler hqh = historyList.get(i);
+            if (hqh.isSelected()) {
+                String tempSubject = hqh.getQuestion();
+                if (tempSubject.contains("Create email")) {
+                    body = hqh.getAnswer();
+                }
+            }
+        }
+
+        return body;
+    }
+
+    // Method to return email subject from email HistoryQuestionHandler
+    public String getEmailSubject() {
+        String subject = "No message selected.\n";
+
+        if (username.equals("")) {
+            System.out.println("No username given.");
+            return subject;
+        }
+        for (int i = 0; i < historyList.size(); i++) {
+            HistoryQuestionHandler hqh = historyList.get(i);
+            if (hqh.isSelected()) {
+                String tempSubject = hqh.getQuestion();
+                if (tempSubject.contains("Create email") && 
+                        tempSubject.length() > 12) {
+                    subject = tempSubject.substring(12);
+                }
+            }
+        }
+
+        return subject;
+    }
 }
