@@ -8,8 +8,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import project.audio_handler.*;
 import project.chat_gpt.*;
 import project.gui.AppGUI;
-import project.question_handler.*;
 import project.handler.*;
+import project.prompt_handler.*;
 
 import java.io.File;
 
@@ -45,14 +45,14 @@ public class DS4_2Test {
 
     @Test
     void iterationTest() {
-        IQuestionHandler qHandler = new MockQuestionHandler();
+        IPromptHandler qHandler = new MockPromptHandler();
         IChatGPT chatGPT = new MockChatGPT();
         IAudioHandler audioHandler = new MockAudioHandler();
         AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
         AppGUI appGUI = new AppGUI(testApp);
         testApp.createGUI(appGUI);
         LogInWindowHandler logInHandler = testApp.getLogInWindowHandler();
-        logInHandler.createAccount("username", "password");
+        logInHandler.createAccount("username", "password", "password");
         testApp.LogIn("username", "password");
 
         AutomaticLogInHandler alHandler = testApp.getAutomaticLogInHandler();
@@ -71,15 +71,15 @@ public class DS4_2Test {
         HistoryListHandler historyList = testApp.getHistoryList();
         testApp.startRecording();
         testApp.stopRecording();
-        HistoryQuestionHandler question1 = historyList.getHistoryList().get(0);
-        assertTrue(question1.getQuestion().
+        HistoryPromptHandler question1 = historyList.getHistoryList().get(0);
+        assertTrue(question1.getPrompt().
             equals(questionString1));
         assertTrue(question1.getAnswer().
             equals(answer_part + questionString1));
 
         // Test the "Select" button
-        testApp.selectQuestion(question1);
-        testApp.selectQuestion(question1);
+        testApp.selectPrompt(question1);
+        testApp.selectPrompt(question1);
         assertTrue(question1.isSelected());
         
         // Add a second question
@@ -87,8 +87,8 @@ public class DS4_2Test {
         // in history list as expected
         testApp.startRecording();
         testApp.stopRecording();
-        HistoryQuestionHandler question2 = historyList.getHistoryList().get(1);
-        assertTrue(question2.getQuestion().
+        HistoryPromptHandler question2 = historyList.getHistoryList().get(1);
+        assertTrue(question2.getPrompt().
             equals(questionString2));
         assertTrue(question2.getAnswer().
             equals(answer_part + questionString2));
@@ -98,8 +98,8 @@ public class DS4_2Test {
         // in history list as expected
         testApp.startRecording();
         testApp.stopRecording();
-        HistoryQuestionHandler question3 = historyList.getHistoryList().get(2);
-        assertTrue(question3.getQuestion().
+        HistoryPromptHandler question3 = historyList.getHistoryList().get(2);
+        assertTrue(question3.getPrompt().
             equals(questionString3));
         assertTrue(question3.getAnswer().
             equals(answer_part + questionString3));
@@ -110,8 +110,8 @@ public class DS4_2Test {
         // in history list as expected
         testApp.startRecording();
         testApp.stopRecording();
-        HistoryQuestionHandler question4 = historyList.getHistoryList().get(3);
-        assertTrue(question4.getQuestion().
+        HistoryPromptHandler question4 = historyList.getHistoryList().get(3);
+        assertTrue(question4.getPrompt().
             equals(questionString4));
         assertTrue(question4.getAnswer().
             equals(answer_part + questionString4));
@@ -145,8 +145,8 @@ public class DS4_2Test {
 
         // Test question command
         testApp.handleCommand(create_email, ceCommand);
-        HistoryQuestionHandler prompt1 = historyList.getHistoryList().get(4);
-        assertEquals(prompt1.getQuestion(),
+        HistoryPromptHandler prompt1 = historyList.getHistoryList().get(4);
+        assertEquals(prompt1.getPrompt(),
             (create_email));
         assertEquals(prompt1.getAnswer(),
             (answer_part + create_email + "Daniel Tran"));
@@ -154,7 +154,7 @@ public class DS4_2Test {
         prompt1.select();
 
         testApp.handleCommand(send_email, seCommand);
-        HistoryQuestionHandler prompt2 = historyList.getHistoryList().get(5);
+        HistoryPromptHandler prompt2 = historyList.getHistoryList().get(5);
         assertTrue(prompt2.getAnswer().
             contains(emailSentString));
         
@@ -198,7 +198,7 @@ public class DS4_2Test {
         assertTrue(historyList3.getHistoryList().size() == 6);
 
         // Test delete command
-        HistoryQuestionHandler prompt6 = historyList3.getHistoryList().get(5);
+        HistoryPromptHandler prompt6 = historyList3.getHistoryList().get(5);
         prompt6.select();
         testApp3.handleCommand(delete, dCommand);
         assertTrue(historyList3.getHistoryList().size() == 5);

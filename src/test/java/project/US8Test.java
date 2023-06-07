@@ -8,9 +8,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import project.audio_handler.*;
 import project.chat_gpt.*;
-import project.question_handler.*;
 import project.gui.*;
 import project.handler.*;
+import project.prompt_handler.*;
 
 import java.io.*;
 
@@ -46,7 +46,7 @@ public class US8Test {
     // Test that history list defaults to empty when there are no questions
     @Test 
     void testHistoryDefault() {
-        IQuestionHandler qHandler = new MockQuestionHandler();
+        IPromptHandler qHandler = new MockPromptHandler();
         IChatGPT chatGPT = new MockChatGPT();
         IAudioHandler audioHandler = new MockAudioHandler();
 
@@ -54,7 +54,7 @@ public class US8Test {
         AppGUI appGUI = new AppGUI(testApp);
         testApp.createGUI(appGUI);
         LogInWindowHandler logInHandler = testApp.getLogInWindowHandler();
-        logInHandler.createAccount("username", "password");
+        logInHandler.createAccount("username", "password", "password");
         testApp.LogIn("username", "password");
         HistoryListHandler historyListHandler = testApp.getHistoryList();
 
@@ -74,14 +74,14 @@ public class US8Test {
         String answer_part = "Mock answer to the following prompt: ";
 
         // Create mock handlers and appframe
-        IQuestionHandler qHandler = new MockQuestionHandler();
+        IPromptHandler qHandler = new MockPromptHandler();
         IChatGPT chatGPT = new MockChatGPT();
         IAudioHandler audioHandler = new MockAudioHandler();
         AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
         AppGUI appGUI = new AppGUI(testApp);
         testApp.createGUI(appGUI);
         LogInWindowHandler logInHandler = testApp.getLogInWindowHandler();
-        logInHandler.createAccount("username", "password");
+        logInHandler.createAccount("username", "password", "password");
         testApp.LogIn("username", "password");
 
         // Confirm that HistoryQuestion components correspond to 
@@ -91,30 +91,30 @@ public class US8Test {
         testApp.stopRecording();
         testApp.startRecording();
         testApp.stopRecording();
-        HistoryQuestionHandler question1 = 
-            (HistoryQuestionHandler) historyList.getHistoryList().get(0);
-        HistoryQuestionHandler question2 = 
-            (HistoryQuestionHandler) historyList.getHistoryList().get(1);
-        assertTrue(question1.getQuestion().
+        HistoryPromptHandler question1 = 
+            (HistoryPromptHandler) historyList.getHistoryList().get(0);
+        HistoryPromptHandler question2 = 
+            (HistoryPromptHandler) historyList.getHistoryList().get(1);
+        assertTrue(question1.getPrompt().
             equals(questionString1));
         assertTrue(question1.getAnswer().
             equals(answer_part + questionString1));
-        assertTrue(question2.getQuestion().
+        assertTrue(question2.getPrompt().
             equals(questionString2));
         assertTrue(question2.getAnswer().
             equals(answer_part + questionString2));
         
         // Confirm that select button works as expected 
         // (i.e., chat window displays the correct question)
-        testApp.selectQuestion(question1);
+        testApp.selectPrompt(question1);
         assertTrue(question1.isSelected());
 
         // Confirm that deleting question properly deletes question
         testApp.deleteSelected();
         assertTrue(historyList.getHistoryList().size() == 1);
-        HistoryQuestionHandler remainingQuestion = 
-            (HistoryQuestionHandler) historyList.getHistoryList().get(0);
-        assertTrue(remainingQuestion.getQuestion().
+        HistoryPromptHandler remainingQuestion = 
+            (HistoryPromptHandler) historyList.getHistoryList().get(0);
+        assertTrue(remainingQuestion.getPrompt().
             equals(questionString2));
         assertTrue(remainingQuestion.getAnswer().
             equals(answer_part + questionString2));
@@ -132,9 +132,9 @@ public class US8Test {
         // Test persistence of remaining question
         HistoryListHandler historyList2 = testApp2.getHistoryList();
         assertTrue(historyList2.getHistoryList().size() == 1);
-        HistoryQuestionHandler persistentQuestion = 
-            (HistoryQuestionHandler) historyList2.getHistoryList().get(0);
-        assertTrue(persistentQuestion.getQuestion().
+        HistoryPromptHandler persistentQuestion = 
+            (HistoryPromptHandler) historyList2.getHistoryList().get(0);
+        assertTrue(persistentQuestion.getPrompt().
             equals(questionString2));
         assertTrue(persistentQuestion.getAnswer().
             equals(answer_part + questionString2));
@@ -172,14 +172,14 @@ public class US8Test {
         String answer_part = "Mock answer to the following prompt: ";
 
         // Create mock handlers and appframe
-        IQuestionHandler qHandler = new MockQuestionHandler();
+        IPromptHandler qHandler = new MockPromptHandler();
         IChatGPT chatGPT = new MockChatGPT();
         IAudioHandler audioHandler = new MockAudioHandler();
         AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
         AppGUI appGUI = new AppGUI(testApp);
         testApp.createGUI(appGUI);
         LogInWindowHandler logInHandler = testApp.getLogInWindowHandler();
-        logInHandler.createAccount("username", "password");
+        logInHandler.createAccount("username", "password", "password");
         testApp.LogIn("username", "password");
 
         // Confirm that HistoryQuestion components correspond to 
@@ -189,30 +189,30 @@ public class US8Test {
         testApp.stopRecording();
         testApp.startRecording();
         testApp.stopRecording();
-        HistoryQuestionHandler question1 = 
-            (HistoryQuestionHandler) historyList.getHistoryList().get(0);
-        HistoryQuestionHandler question2 = 
-            (HistoryQuestionHandler) historyList.getHistoryList().get(1);
-        assertTrue(question1.getQuestion().
+        HistoryPromptHandler question1 = 
+            (HistoryPromptHandler) historyList.getHistoryList().get(0);
+        HistoryPromptHandler question2 = 
+            (HistoryPromptHandler) historyList.getHistoryList().get(1);
+        assertTrue(question1.getPrompt().
             equals(questionString1));
         assertTrue(question1.getAnswer().
             equals(answer_part + questionString1));
-        assertTrue(question2.getQuestion().
+        assertTrue(question2.getPrompt().
             equals(questionString2));
         assertTrue(question2.getAnswer().
             equals(answer_part + questionString2));
         
         // Confirm that select button works as expected 
         // (i.e., chat window displays the correct question)
-        testApp.selectQuestion(question1);
+        testApp.selectPrompt(question1);
         assertTrue(question1.isSelected());
 
         // Confirm that deleting question properly deletes question
         testApp.deleteSelected();
         assertTrue(historyList.getHistoryList().size() == 1);
-        HistoryQuestionHandler remainingQuestion = 
-            (HistoryQuestionHandler) historyList.getHistoryList().get(0);
-        assertTrue(remainingQuestion.getQuestion().
+        HistoryPromptHandler remainingQuestion = 
+            (HistoryPromptHandler) historyList.getHistoryList().get(0);
+        assertTrue(remainingQuestion.getPrompt().
             equals(questionString2));
         assertTrue(remainingQuestion.getAnswer().
             equals(answer_part + questionString2));
@@ -230,9 +230,9 @@ public class US8Test {
         // Test persistence of remaining question
         HistoryListHandler historyList2 = testApp2.getHistoryList();
         assertTrue(historyList2.getHistoryList().size() == 1);
-        HistoryQuestionHandler persistentQuestion = 
-            (HistoryQuestionHandler) historyList2.getHistoryList().get(0);
-        assertTrue(persistentQuestion.getQuestion().
+        HistoryPromptHandler persistentQuestion = 
+            (HistoryPromptHandler) historyList2.getHistoryList().get(0);
+        assertTrue(persistentQuestion.getPrompt().
             equals(questionString2));
         assertTrue(persistentQuestion.getAnswer().
             equals(answer_part + questionString2));
@@ -249,7 +249,7 @@ public class US8Test {
         AppGUI appGUI3 = new AppGUI(testApp3);
         testApp3.createGUI(appGUI3);
         LogInWindowHandler logInHandler2 = testApp3.getLogInWindowHandler();
-        logInHandler2.createAccount("username2", "password2");
+        logInHandler2.createAccount("username2", "password2", "password2");
         testApp3.LogIn("username2", "password2");
 
         // Setup data (add two question and delete a different one 
@@ -261,18 +261,18 @@ public class US8Test {
         testApp3.stopRecording();
         HistoryListHandler historyList3 = testApp3.getHistoryList();
 
-        HistoryQuestionHandler question3 = 
-            (HistoryQuestionHandler) historyList3.getHistoryList().get(1);
+        HistoryPromptHandler question3 = 
+            (HistoryPromptHandler) historyList3.getHistoryList().get(1);
 
         // De-select and re-select second question
-        testApp3.selectQuestion(question3);
-        testApp3.selectQuestion(question3);
+        testApp3.selectPrompt(question3);
+        testApp3.selectPrompt(question3);
         testApp3.deleteSelected();
 
         assertTrue(historyList3.getHistoryList().size() == 1);
-        HistoryQuestionHandler remainingQuestion2 = 
-            (HistoryQuestionHandler) historyList3.getHistoryList().get(0);
-        assertTrue(remainingQuestion2.getQuestion().
+        HistoryPromptHandler remainingQuestion2 = 
+            (HistoryPromptHandler) historyList3.getHistoryList().get(0);
+        assertTrue(remainingQuestion2.getPrompt().
             equals(questionString3));
         assertTrue(remainingQuestion2.getAnswer().
             equals(answer_part + questionString3));
@@ -290,9 +290,9 @@ public class US8Test {
         // Test persistence of previous session with this account
         HistoryListHandler historyList4 = testApp4.getHistoryList();
         assertTrue(historyList4.getHistoryList().size() == 1);
-        HistoryQuestionHandler persistentQuestion2 = 
-            (HistoryQuestionHandler) historyList4.getHistoryList().get(0);
-        assertTrue(persistentQuestion2.getQuestion().
+        HistoryPromptHandler persistentQuestion2 = 
+            (HistoryPromptHandler) historyList4.getHistoryList().get(0);
+        assertTrue(persistentQuestion2.getPrompt().
             equals(questionString3));
         assertTrue(persistentQuestion2.getAnswer().
             equals(answer_part + questionString3));

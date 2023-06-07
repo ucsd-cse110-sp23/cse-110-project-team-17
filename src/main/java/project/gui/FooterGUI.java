@@ -44,6 +44,7 @@ public class FooterGUI extends JPanel {
         return askQuestion;
     }
 
+    // Returns the "Stop Recording" button
     public JButton getStopRecordingButton() {
         return stopRecordingButton;
     }

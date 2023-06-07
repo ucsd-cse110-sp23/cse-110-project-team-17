@@ -15,6 +15,7 @@ public class InputTextField extends JPanel{
     Color gray = new Color(218, 229, 234);
     Color green = new Color(188, 226, 158);
 
+    // InputTextField constructor, handles formatting and components
     public InputTextField(String label) {
         this.setPreferredSize(new Dimension(400, 20)); // set size of task
         this.setBackground(gray); // set background color of task
@@ -33,10 +34,12 @@ public class InputTextField extends JPanel{
         this.add(inputBox, BorderLayout.CENTER);
     }
 
+    // Method to get input from text box
     public String getInput() {
         return inputBox.getText();
     }
 
+    // Method to set text box's text
     public void setInput(String word) {
         inputBox.setText(word);
     }

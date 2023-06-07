@@ -7,10 +7,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.io.IOException;
 
 import project.chat_gpt.*;
-import project.question_handler.*;
 import project.gui.*;
 import project.audio_handler.*;
 import project.handler.*;
+import project.prompt_handler.*;
 
 import java.io.*;
 
@@ -48,14 +48,14 @@ public class US4Test {
     @Test
     void testClearAllButtons() throws IOException {
         // Create mock handlers and appframe
-        IQuestionHandler qHandler = new MockQuestionHandler();
+        IPromptHandler qHandler = new MockPromptHandler();
         IChatGPT chatGPT = new MockChatGPT();
         IAudioHandler audioHandler = new MockAudioHandler();
         AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
         AppGUI appGUI = new AppGUI(testApp);
         testApp.createGUI(appGUI);
         LogInWindowHandler logInHandler = testApp.getLogInWindowHandler();
-        logInHandler.createAccount("username", "password");
+        logInHandler.createAccount("username", "password", "password");
         testApp.LogIn("username", "password");
 
         // Verify that all relevant HistoryList components (and ChatList) are

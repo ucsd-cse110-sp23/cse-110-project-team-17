@@ -1,15 +1,15 @@
-package project.question_handler;
+package project.prompt_handler;
 
 import java.io.IOException;
 
-public class MockQuestionHandler implements IQuestionHandler {
+public class MockPromptHandler implements IPromptHandler {
 
     // Empty Constructor
-    public MockQuestionHandler() {}
+    public MockPromptHandler() {}
 
     // Returns a mock "question" String, obtained by extracting the 
     // filename without the extension
-    public String getQuestion(String filename) throws IOException {
+    public String getPrompt(String filename) throws IOException {
         String question = filename.split("[.]")[0];
         String prompt = "Question: What is " + question + "?";
         return prompt;

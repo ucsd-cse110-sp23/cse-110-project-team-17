@@ -31,7 +31,7 @@ public class MockAppHandler implements IAppHandler {
     }
 
     // Dummy method to substitute for selecting a question
-    public void selectQuestion(HistoryQuestionHandler historyQuestionHandler) {}
+    public void selectPrompt(HistoryPromptHandler historyQuestionHandler) {}
 
     // Dummy method to substitute for clearing all history
     public void clearAll() {}

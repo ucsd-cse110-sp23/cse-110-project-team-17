@@ -9,9 +9,9 @@ import javax.swing.JTextArea;
 
 import project.audio_handler.*;
 import project.chat_gpt.*;
-import project.question_handler.*;
 import project.gui.*;
 import project.handler.*;
+import project.prompt_handler.*;
 
 import java.io.*;
 
@@ -48,7 +48,7 @@ public class US1Test {
     // Test that text area is displayed as default when there are no questions
     @Test 
     void testHistoryDefault() {
-        IQuestionHandler qHandler = new MockQuestionHandler();
+        IPromptHandler qHandler = new MockPromptHandler();
         IChatGPT chatGPT = new MockChatGPT();
         IAudioHandler audioHandler = new MockAudioHandler();
 
@@ -72,14 +72,14 @@ public class US1Test {
         String answer_part = "Mock answer to the following prompt: ";
 
         // Create mock handlers and appframe
-        IQuestionHandler qHandler = new MockQuestionHandler();
+        IPromptHandler qHandler = new MockPromptHandler();
         IChatGPT chatGPT = new MockChatGPT();
         IAudioHandler audioHandler = new MockAudioHandler();
         AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
         AppGUI appGUI = new AppGUI(testApp);
         testApp.createGUI(appGUI);
         LogInWindowHandler logInHandler = testApp.getLogInWindowHandler();
-        logInHandler.createAccount("username", "password");
+        logInHandler.createAccount("username", "password", "password");
         testApp.LogIn("username", "password");
 
         // Confirm that HistoryQuestion components correspond to 
@@ -89,22 +89,22 @@ public class US1Test {
         testApp.stopRecording();
         testApp.startRecording();
         testApp.stopRecording();
-        HistoryQuestionHandler question1 = 
-            (HistoryQuestionHandler) historyList.getHistoryList().get(0);
-        HistoryQuestionHandler question2 = 
-            (HistoryQuestionHandler) historyList.getHistoryList().get(1);
-        assertTrue(question1.getQuestion().
+        HistoryPromptHandler question1 = 
+            (HistoryPromptHandler) historyList.getHistoryList().get(0);
+        HistoryPromptHandler question2 = 
+            (HistoryPromptHandler) historyList.getHistoryList().get(1);
+        assertTrue(question1.getPrompt().
             equals(questionString1));
         assertTrue(question1.getAnswer().
             equals(answer_part + questionString1));
-        assertTrue(question2.getQuestion().
+        assertTrue(question2.getPrompt().
             equals(questionString2));
         assertTrue(question2.getAnswer().
             equals(answer_part + questionString2));
         
         // Confirm that select button works as expected 
         // (i.e., chat window displays the correct question)
-        testApp.selectQuestion(question1);
+        testApp.selectPrompt(question1);
         assertTrue(question1.isSelected());
 
         // Close test frame
@@ -114,14 +114,14 @@ public class US1Test {
     // Test that default history list values are set to empty / 0 as appropriate
     @Test
     void testingHistoryListParameters() {
-        IQuestionHandler qHandler = new MockQuestionHandler();
+        IPromptHandler qHandler = new MockPromptHandler();
         IChatGPT chatGPT = new MockChatGPT();
         IAudioHandler audioHandler = new MockAudioHandler();
         AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
         AppGUI appGUI = new AppGUI(testApp);
         testApp.createGUI(appGUI);
         LogInWindowHandler logInHandler = testApp.getLogInWindowHandler();
-        logInHandler.createAccount("username", "password");
+        logInHandler.createAccount("username", "password", "password");
         testApp.LogIn("username", "password");
         HistoryListHandler historyList = testApp.getHistoryList();
         assertTrue(historyList.getHistoryList().size() == 0);

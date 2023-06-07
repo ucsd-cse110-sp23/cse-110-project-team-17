@@ -1,4 +1,4 @@
-package project.question_handler;
+package project.prompt_handler;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -13,7 +13,7 @@ import org.json.JSONObject;
 
 import org.json.JSONException;
 
-public class QuestionHandler implements IQuestionHandler {
+public class PromptHandler implements IPromptHandler {
 
     // API Constants
     private static String API_ENDPOINT;
@@ -21,7 +21,7 @@ public class QuestionHandler implements IQuestionHandler {
     private static String MODEL;
 
     // QuestionHandler Constructor, prepares for use of Whisper API
-    public QuestionHandler() {
+    public PromptHandler() {
         API_ENDPOINT = 
             "https://api.openai.com/v1/audio/transcriptions";
         TOKEN = "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";
@@ -110,7 +110,7 @@ public class QuestionHandler implements IQuestionHandler {
 
 
     // Main method to get question
-    public String getQuestion(String filename) throws IOException {
+    public String getPrompt(String filename) throws IOException {
         String FILE_PATH = filename;
         // Create file object from file path
         File file = new File(FILE_PATH);
@@ -169,6 +169,7 @@ public class QuestionHandler implements IQuestionHandler {
         return result;
     }
 
+    // Method to get command given prompt
     public String getCommand(String prompt) {
 
         String cmd = "";

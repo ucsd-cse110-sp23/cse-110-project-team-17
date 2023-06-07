@@ -19,7 +19,7 @@ public interface IAppHandler {
     public void stopRecording();
 
     // Method to handle selecting a history button
-    public void selectQuestion(HistoryQuestionHandler historyQuestionHandler);
+    public void selectPrompt(HistoryPromptHandler historyQuestionHandler);
 
     // Method to clear all history from list
     public void clearAll();

@@ -9,12 +9,12 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 import project.handler.setupEmailHandler;
-import javax.swing.JPanel;
+import javax.swing.JFrame;
 import javax.swing.JButton;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
 
-public class setupEmailGUI extends JPanel {
+public class setupEmailGUI extends JFrame {
     Color backgroundColor = new Color(240, 248, 255);
     JButton save;
     JButton cancel;
@@ -109,6 +109,7 @@ public class setupEmailGUI extends JPanel {
         save.setText("Save");
         save.setPreferredSize(new Dimension(80, 30));
         save.setFont(new Font("BrixSansBlack", Font.ITALIC, 10));
+        save.setVisible(true);
         this.add(save);
 
         // Add deleteSelected button
@@ -116,9 +117,14 @@ public class setupEmailGUI extends JPanel {
         cancel.setText("Cancel");
         cancel.setPreferredSize(new Dimension(80, 30));
         cancel.setFont(new Font("BrixSansBlack", Font.ITALIC, 10));
+        cancel.setVisible(true);
         this.add(cancel);
+
+        super.pack();
+        super.setSize(800,800);
     }
 
+    // Helper method to update all fields with current info
     public void updateFields() {
         
 
@@ -146,30 +152,37 @@ public class setupEmailGUI extends JPanel {
 
     }
 
+    // Method to get first name
     public String getFirstName() {
         return firstName.getText();
     }
     
+    // Method to get last name
     public String getLastName() {
         return lastName.getText();
     }
 
+    // Method to get email address
     public String getEmailAddress() {
         return emailAddress.getText();
     }
+
+    // Method to get email password
+    public String getEmailPassword() {
+        return emailPassword.getText();
+    }
     
+    // Method to get SMTP host
     public String getSMTPHost() {
         return SMTPHost.getText();
     }
     
+    // Method to get TLS port
     public String getTLSPort() {
         return TLSPort.getText();
     }
-    
-    public String getEmailPassword() {
-        return emailPassword.getText();
-    }
 
+    // Method to get display name
     public String getDisplayName() {
         return displayName.getText();
     }

@@ -7,8 +7,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import project.audio_handler.*;
 import project.chat_gpt.*;
-import project.question_handler.*;
 import project.handler.*;
+import project.prompt_handler.*;
 
 import java.util.*;
 
@@ -25,7 +25,7 @@ public class US11Test {
 
     @Test
     void testSetupEmailCommand() {
-        QuestionHandler questionHandler = new QuestionHandler();
+        PromptHandler questionHandler = new PromptHandler();
         String prompt = "Set up email";
         String command = "Setup email";
         assertTrue(questionHandler.getCommand(prompt).equals(command));
@@ -33,14 +33,14 @@ public class US11Test {
 
     @Test
     void verifyUsername() {
-        IQuestionHandler qHandler = new MockQuestionHandler();
+        IPromptHandler qHandler = new MockPromptHandler();
         IChatGPT chatGPT = new MockChatGPT();
         IAudioHandler audioHandler = new MockAudioHandler();
         AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
 
 
         LogInWindowHandler loginHandler = testApp.getLogInWindowHandler();
-        loginHandler.createAccount("joseph", "jo");
+        loginHandler.createAccount("joseph", "jo", "jo");
         testApp.LogIn("joseph", "jo");
         setupEmailHandler emailHandler = testApp.getSetupEmailHandler();
 

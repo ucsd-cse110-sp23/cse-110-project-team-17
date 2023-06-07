@@ -12,14 +12,14 @@ import project.*;
 
 public class HistoryListHandler {
     Boolean empty;
-    int questions;
+    int prompts;
     int count;
     String filename;
     String path;
     String folder;
     private String regex;
     HistoryListGUI historyListGUI;
-    Vector<HistoryQuestionHandler> historyList;
+    Vector<HistoryPromptHandler> historyList;
     HTTPRequestMaker httpRequestMaker;
     String username;
 
@@ -27,9 +27,9 @@ public class HistoryListHandler {
     public HistoryListHandler(String regex, HTTPRequestMaker httpRequestMaker) {
         count = 0;
         empty = true;
-        questions = 0;
+        prompts = 0;
         this.regex = regex;
-        historyList = new Vector<HistoryQuestionHandler>();
+        historyList = new Vector<HistoryPromptHandler>();
         this.httpRequestMaker = httpRequestMaker;
 
         this.historyListGUI = new HistoryListGUI(this);
@@ -48,25 +48,25 @@ public class HistoryListHandler {
         username = "";
     }
 
-    // Method to add a HistoryQuestionHandler to the list
-    public void add(HistoryQuestionHandler historyQuestionHandler, boolean old) {
+    // Method to add a historyPromptHandler to the list
+    public void add(HistoryPromptHandler historyPromptHandler, boolean old) {
         if (username.equals("")) {
             System.out.println("No username given.");
             return;
         }
         historyListGUI.removeDefault();
-        historyList.add(historyQuestionHandler);
-        historyListGUI.add(historyQuestionHandler.getHistoryQuestionGUI());
+        historyList.add(historyPromptHandler);
+        historyListGUI.add(historyPromptHandler.getHistoryPromptGUI());
         if (isEmpty()) {
             toggleEmpty();
         }
         if (!old) {
             // Add the prompt data to database
-            String promptString = historyQuestionHandler.getString(regex);
+            String promptString = historyPromptHandler.getString(regex);
             DBCreate.addPromptDB(username, promptString);
         }
         count++;
-        questions++;
+        prompts++;
     }
 
 
@@ -95,12 +95,12 @@ public class HistoryListHandler {
         empty = !empty;
     }
 
-    // Method to return list of HistoryQuestion objects
-    public Vector<HistoryQuestionHandler> getHistoryList() {
+    // Method to return list of HistoryPrompt objects
+    public Vector<HistoryPromptHandler> getHistoryList() {
         return historyList;
     }
 
-    // Method to delete selected history question (if any) in
+    // Method to delete selected history prompt (if any) in
     // history list
     public void deleteSelected() {
         if (username.equals("")) {
@@ -108,18 +108,18 @@ public class HistoryListHandler {
             return;
         }
         for (int i = 0; i < historyList.size(); i++) {
-            HistoryQuestionHandler hqh = historyList.get(i);
-            if (hqh.isSelected()) {
-                String removalString = hqh.getString(regex);
-                String removal_index = hqh.getIndex();
-                DBCreate.deleteQuestionDB(username, removalString);
+            HistoryPromptHandler hph = historyList.get(i);
+            if (hph.isSelected()) {
+                String removalString = hph.getString(regex);
+                String removal_index = hph.getIndex();
+                DBCreate.deletePromptDB(username, removalString);
 
-                // Actually delete the question and remove default as needed
-                historyListGUI.deleteSelected(hqh.getHistoryQuestionGUI());
+                // Actually delete the prompt and remove default as needed
+                historyListGUI.deleteSelected(hph.getHistoryPromptGUI());
                 httpRequestMaker.deleteRequest(removal_index);
-                historyList.remove(hqh);
-                questions--;
-                if (questions == 0) {
+                historyList.remove(hph);
+                prompts--;
+                if (prompts == 0) {
                     setDefault();
                     empty = true;
                 }
@@ -133,13 +133,13 @@ public class HistoryListHandler {
             System.out.println("No username given.");
             return;
         }
-        questions = 0;
+        prompts = 0;
         DBCreate.clearAllDB(username);
         setDefault();
         empty = true;
         for (int i = 0; i < historyList.size(); i++) {
-            HistoryQuestionHandler hqh = historyList.get(i);
-            String removal_index = hqh.getIndex();
+            HistoryPromptHandler hph = historyList.get(i);
+            String removal_index = hph.getIndex();
             httpRequestMaker.deleteRequest(removal_index);
         }
         historyList.clear();
@@ -163,20 +163,20 @@ public class HistoryListHandler {
         if (!(historyArrayList == null || historyArrayList.size() == 0)) {
             int max = -1;
             for (int i = 0; i < historyArrayList.size(); i++) {
-                // Parse line and create HistoryQuestion
-                String[] question_parts = historyArrayList.get(i).split(regex);
-                String index_str = question_parts[0];
+                // Parse line and create historyPrompt
+                String[] prompt_parts = historyArrayList.get(i).split(regex);
+                String index_str = prompt_parts[0];
                 if (isInteger(index_str)) {
                     int index = Integer.parseInt(index_str);
-                    String question = question_parts[1];
-                    String answer = question_parts[2];
+                    String prompt = prompt_parts[1];
+                    String answer = prompt_parts[2];
                     if (index > max) {
                         max = index;
                     }
-                    httpRequestMaker.postRequest(index_str, question, answer);
-                    HistoryQuestionHandler historyQuestion = 
-                        new HistoryQuestionHandler(index_str, httpRequestMaker);
-                    add(historyQuestion, true);
+                    httpRequestMaker.postRequest(index_str, prompt, answer);
+                    HistoryPromptHandler historyprompt = 
+                        new HistoryPromptHandler(index_str, httpRequestMaker);
+                    add(historyprompt, true);
                 }   
             }
             if (max != -1) {
@@ -199,7 +199,7 @@ public class HistoryListHandler {
         return Pattern.matches(numRegex, numString);
     }
 
-    // Method to return email body from email HistoryQuestionHandler
+    // Method to return email body from email historyPromptHandler
     public String getEmailBody() {
         String body = "No message selected.\n";
 
@@ -208,11 +208,11 @@ public class HistoryListHandler {
             return body;
         }
         for (int i = 0; i < historyList.size(); i++) {
-            HistoryQuestionHandler hqh = historyList.get(i);
-            if (hqh.isSelected()) {
-                String tempSubject = hqh.getQuestion();
+            HistoryPromptHandler hph = historyList.get(i);
+            if (hph.isSelected()) {
+                String tempSubject = hph.getPrompt();
                 if (tempSubject.contains("Create email")) {
-                    body = hqh.getAnswer();
+                    body = hph.getAnswer();
                 }
             }
         }
@@ -220,7 +220,7 @@ public class HistoryListHandler {
         return body;
     }
 
-    // Method to return email subject from email HistoryQuestionHandler
+    // Method to return email subject from email historyPromptHandler
     public String getEmailSubject() {
         String subject = "No message selected.\n";
 
@@ -229,9 +229,9 @@ public class HistoryListHandler {
             return subject;
         }
         for (int i = 0; i < historyList.size(); i++) {
-            HistoryQuestionHandler hqh = historyList.get(i);
-            if (hqh.isSelected()) {
-                String tempSubject = hqh.getQuestion();
+            HistoryPromptHandler hph = historyList.get(i);
+            if (hph.isSelected()) {
+                String tempSubject = hph.getPrompt();
                 if (tempSubject.contains("Create email") && 
                         tempSubject.length() > 12) {
                     subject = tempSubject.substring(12);
