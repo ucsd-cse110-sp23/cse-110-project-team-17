@@ -9,7 +9,7 @@ public class MockAppHandler implements IAppHandler {
 
 
     // Empty constructor
-    MockAppHandler() {}
+    public MockAppHandler() {}
 
     // Method to create GUI aspect of app
     public void createGUI(AppGUI appGUI) {
