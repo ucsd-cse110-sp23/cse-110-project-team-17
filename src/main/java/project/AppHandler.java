@@ -103,12 +103,11 @@ public class AppHandler implements IAppHandler {
         // Start recording
         audioHandler.startRecording();
 
-        /* 
+        
         // Deselect any selected questions
         for (HistoryQuestionHandler hqh : historyListHandler.getHistoryList()) {
             hqh.deselect();
         }
-        */
     }
 
     // Method to stop recording and receive answer
@@ -174,8 +173,8 @@ public class AppHandler implements IAppHandler {
 
                 // Display the new history question in chat window
                 display(prompt, chat_gpt_answer);
-
                 break;
+
             case "Delete":
                 //call delete
                 deleteSelected();
@@ -220,7 +219,49 @@ public class AppHandler implements IAppHandler {
             
             case "Setup email":
                 setupEmail();
-                break;    
+                break; 
+                
+            case "Create email":
+                try {
+                    // chat box ui is not displaying the whole email, problem can be either size of chat box
+                    // or the trim() in ChatGPT.java
+                    chat_gpt_answer = chatGPT.ask(prompt); 
+                    // [Your name] : length = 11
+                    if (chat_gpt_answer.contains("Your name")) {
+                        chat_gpt_answer = chat_gpt_answer.substring(0, chat_gpt_answer.length() - 11);
+                    }
+                    Map<String, String> accountEmail = DBCreate.readEmailInformation(historyListHandler.getUsername());
+                    String firstName = accountEmail.get("displayName_id");
+                    // Adding first name of user at the end of email
+                    chat_gpt_answer = chat_gpt_answer +  firstName;
+                }
+                catch (IOException io_e) {
+                    throw new RuntimeException("An IO Exception happened on click.");
+                }
+                catch (InterruptedException int_e) {
+                    throw new RuntimeException("An Interruption Exception happened on click.");
+                }
+
+
+                System.out.println(chat_gpt_answer);
+
+                // Post (Index, question + answer) as a pair to HTTP server
+                // via "POST" request
+                httpRequestMaker.postRequest(count_str, prompt, chat_gpt_answer);
+
+                // Create new HistoryQuestion and add to prompt
+                historyQuestion = 
+                    new HistoryQuestionHandler(count_str, httpRequestMaker);
+                historyListHandler.add(historyQuestion, false); // Add new task to list
+
+                // Make the created history question selectable in history list
+                appGUI.makeSelectable(historyQuestion.getHistoryQuestionGUI());
+
+                selectQuestion(historyQuestion);
+
+                // Display the new history question in chat window
+                display(prompt, chat_gpt_answer);
+                break;
 
             default:
                 display(prompt, "Unable to parse command, available commands are Question, Delete, and Clear");
@@ -232,6 +273,7 @@ public class AppHandler implements IAppHandler {
     public void setupEmail() {
         appGUI.beginSetupEmail();
     }
+
     // Method to handle selecting a history button
     public void selectQuestion(HistoryQuestionHandler historyQuestionHandler) {
         // Obtain current state of question

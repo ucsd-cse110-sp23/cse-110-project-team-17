@@ -27,6 +27,10 @@ public class HTTPRequestMaker {
             new InputStreamReader(conn.getInputStream())
             );
             String chat_string = in.readLine();
+            String temp_line;
+            while ((temp_line = in.readLine()) != null) {
+                chat_string = chat_string + "\n" + temp_line;
+            }
             String[] temp = chat_string.split(regex);
             if (temp.length == 2) {
                 chat_data = temp;

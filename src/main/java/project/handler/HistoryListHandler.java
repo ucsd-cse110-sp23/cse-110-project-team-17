@@ -75,8 +75,10 @@ public class HistoryListHandler {
         this.username = username;
     }
 
-
-
+    // Method to get username
+    public String getUsername() {
+        return this.username;
+    }
 
     // Method to return current count
     public String getCount() {
