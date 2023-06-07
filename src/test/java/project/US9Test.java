@@ -65,7 +65,7 @@ public class US9Test {
         assertTrue(loginHandler.verifyUsername("reisandy", "1234"));
         AutomaticLogInHandler alHandler = testApp.getAutomaticLogInHandler();
         alHandler.update("reisandy", "1234");
-        assertTrue(testApp.autoLogin());
+        assertTrue(testApp.canAutoLogin());
         testApp.stopServer();
     }
 
@@ -79,7 +79,7 @@ public class US9Test {
         LogInWindowHandler loginHandler = testApp.getLogInWindowHandler();
         loginHandler.createAccount("reisandy", "1234");
         assertTrue(loginHandler.verifyUsername("reisandy", "1234"));
-        assertTrue(!testApp.autoLogin());
+        assertTrue(!testApp.canAutoLogin());
         testApp.stopServer();
     }
 }

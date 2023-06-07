@@ -264,9 +264,10 @@ public class AppGUI extends JFrame {
 
     public void beginLogIn() {
 
-        boolean autoLogin = appHandler.autoLogin();
+        boolean canAutoLogin = appHandler.canAutoLogin();
 
-        if (autoLogin) {
+        if (canAutoLogin) {
+            appHandler.autoLogin();
             showApp();
         }
         else {

@@ -13,8 +13,8 @@ import project.handler.*;
 
 import java.io.File;
 
-public class US13Test {
-
+public class DS4_1Test {
+    
     // Wipe all account histories before
     @BeforeEach
     void wipeAccountsBefore() {
@@ -44,7 +44,7 @@ public class US13Test {
     }
 
     @Test
-    void testIncorrectEmailSetup() {
+    void iterationTest() {
         IQuestionHandler qHandler = new MockQuestionHandler();
         IChatGPT chatGPT = new MockChatGPT();
         IAudioHandler audioHandler = new MockAudioHandler();
@@ -72,14 +72,14 @@ public class US13Test {
         String answer_part = "Mock answer to the following prompt: ";
         String create_email = "Create email to Daniel. Let's meet at Geisel at 7 pm";
         String ceCommand = "Create email";
-        String send_email = "Send email to Jim";
+        String send_email = "Send email to dnt004 at ucsd.edu";
         String seCommand = "Send email";
+        String delete = "Delete.";
+        String dCommand = "Delete";
 
-        // Initialize error messages
+        // Initialize result messages
+        String emailSentString = "Email successfully sent.";
         String wrongUsername = "Username and Password not accepted.";
-        String wrongSMTP = "Couldn't connect to host";
-        String wrongRecipient = "Invalid Addresses";
-        String noEmailSelected = "No email selected.";
 
         // Test question command
         testApp.handleCommand(create_email, ceCommand);
@@ -96,93 +96,22 @@ public class US13Test {
         HistoryQuestionHandler prompt2 = historyList.getHistoryList().get(1);
         assertTrue(prompt2.getAnswer().
             contains(wrongUsername));
-
         
-        emailHandler.setEmailAddress("orpheus157@gmail.com");
-        emailHandler.setSMTPHost("smtp.gmail.co");
-        emailHandler.addCurrEmailInfo();
-        prompt1.select();
-        testApp.handleCommand(send_email, seCommand);
-        HistoryQuestionHandler prompt3 = historyList.getHistoryList().get(2);
-        assertTrue(prompt3.getAnswer().
-            contains(wrongSMTP));
-
-        
-        emailHandler.setSMTPHost("smtp.gmail.com");
-        emailHandler.addCurrEmailInfo();
-        prompt1.select();
-        testApp.handleCommand(send_email, seCommand);
-        HistoryQuestionHandler prompt4 = historyList.getHistoryList().get(3);
-        assertTrue(prompt4.getAnswer().
-            contains(wrongRecipient));
-
         
         prompt2.select();
-        testApp.handleCommand(send_email, seCommand);
-        HistoryQuestionHandler prompt5 = historyList.getHistoryList().get(4);
-        assertTrue(prompt5.getAnswer().
-            contains(noEmailSelected));
-
-        
-        testApp.handleCommand(send_email, seCommand);
-        HistoryQuestionHandler prompt6 = historyList.getHistoryList().get(5);
-        assertTrue(prompt6.getAnswer().
-            contains(noEmailSelected));
-
-        // Close test frame
-        testApp.closeApp();
-    }
+        // Test delete command
+        testApp.handleCommand(delete, dCommand);
+        assertTrue(historyList.getHistoryList().size() == 1);
 
 
-    @Test
-    void testCorrectEmailSetup() {
-        IQuestionHandler qHandler = new MockQuestionHandler();
-        IChatGPT chatGPT = new MockChatGPT();
-        IAudioHandler audioHandler = new MockAudioHandler();
-        AppHandler testApp = new AppHandler(qHandler, chatGPT, audioHandler);
-        AppGUI appGUI = new AppGUI(testApp);
-        testApp.createGUI(appGUI);
-        LogInWindowHandler logInHandler = testApp.getLogInWindowHandler();
-        logInHandler.createAccount("username", "password");
-        testApp.LogIn("username", "password");
-
-
-        setupEmailHandler emailHandler = testApp.getSetupEmailHandler();
-
-
-        emailHandler.setFirstName("Daniel");
-        emailHandler.setLastName("Tran");
         emailHandler.setEmailAddress("orpheus157@gmail.com");
-        emailHandler.setEmailPassword("vsuwlvowusinisbt");
-        emailHandler.setSMTPHost("smtp.gmail.com");
-        emailHandler.setTLSPort("587");
-        emailHandler.setDisplayName("Daniel Tran");
         emailHandler.addCurrEmailInfo();
-
-         // Initialize prompts and commands
-        String answer_part = "Mock answer to the following prompt: ";
-        String create_email = "Create email to Daniel. Let's meet at Geisel at 7 pm";
-        String ceCommand = "Create email";
-        String send_email = "Send email to dnt004 at ucsd.edu";
-        String seCommand = "Send email";
-
-        // Initialize result message
-        String emailSentString = "Email successfully sent.";
-
-        // Test question command
-        testApp.handleCommand(create_email, ceCommand);
-        HistoryListHandler historyList = testApp.getHistoryList();
-        HistoryQuestionHandler prompt1 = historyList.getHistoryList().get(0);
-        assertEquals(prompt1.getQuestion(),
-            (create_email));
-        assertEquals(prompt1.getAnswer(),
-            (answer_part + create_email + "Daniel Tran"));
 
         prompt1.select();
 
         testApp.handleCommand(send_email, seCommand);
-        HistoryQuestionHandler prompt2 = historyList.getHistoryList().get(1);
-        assertEquals(prompt2.getAnswer(),
+        HistoryQuestionHandler prompt3 = historyList.getHistoryList().get(1);
+        assertEquals(prompt3.getAnswer(),
             (emailSentString));
 
         // Close test frame

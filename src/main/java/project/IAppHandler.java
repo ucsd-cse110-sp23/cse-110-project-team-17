@@ -36,11 +36,14 @@ public interface IAppHandler {
     // Method to log in, returning true if it works and false if it doesn't
     public boolean LogIn(String username, String password);
 
+    // Method to return if you can autologin on this computer
+    public boolean canAutoLogin();
+
     // Method to return automatic login handler
     public AutomaticLogInHandler getAutomaticLogInHandler();
 
-    // Method to check whether or not we automatically login
-    public boolean autoLogin();
+    // Method to check whether or not we can automatically login
+    public void autoLogin();
 
     // Method to clear chat window
     public void clearChat();
