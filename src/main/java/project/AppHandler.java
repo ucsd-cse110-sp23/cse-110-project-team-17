@@ -264,7 +264,8 @@ public class AppHandler implements IAppHandler {
                 
 
             default:
-                display(prompt, "Unable to parse command, available commands are Question, Delete, and Clear");
+                display(prompt, "Unable to parse command, available commands are " +
+                    "Question, Delete, Clear, Setup Email, Create Email, and Send Email");
                 break;
 
         }
