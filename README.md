@@ -18,6 +18,7 @@ Instructions:
     - Previous questions asked on this account will appear in the history window, including questions asked on other devices
     - To select a prompt, find the specific prompt desired in the history window and click the select button to the right of that prompt
         - Selecting a prompt shows the prompt and response in the chatbox window and selectes it for deletion if the "Delete" command is given (described below)
+        - Selecting an email prompt will also allow it to be sent using the "Send Email" command (described below)
 - The Right window contains the chatbox where SayIt Assistant will display the user's prompt and SayIt Assistant's response
 - The footer will has a "Start" button and a "Stop Recording " button will appear after "Start" is pressed
 
